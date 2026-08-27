@@ -1,9 +1,14 @@
-# Patron Ol! – İş İmparatorluğu Tycoon 🏙️
+# Fenomen Ol! – İçerik İmparatorluğu 🔥
 
 iPhone (ve her modern tarayıcı) için kapsamlı bir **tycoon / idle** oyunu.
-Küçük bir simit arabasıyla başlayıp Uzay Şirketi'ne kadar 14 farklı işletme
-işletiyor, yönetici tutup otomasyona geçiyor, prestij yaparak kalıcı
-bonuslar kazanıyor ve başarımları tamamlıyorsun.
+Telefonda çektiğin ilk vlogdan küresel bir medya imparatorluğuna kadar 14
+farklı içerik platformu işletiyor, menajer tutup otomasyona geçiyor,
+viral olup kalıcı bonuslar kazanıyor ve başarımları tamamlıyorsun.
+
+Konu ve görsel dil, güncel **içerik üreticisi / influencer ekonomisi**
+trendinden ilham alıyor (Tuber Simulator, Vlogger Go Viral gibi türün en
+popüler oyunlarının damarında) — canlı pembe→mor gradyanlı, sosyal medya
+hissiyatlı bir arayüzle.
 
 Tamamen **vanilla HTML/CSS/JS** ile yazıldı — build aracı, framework veya
 harici bağımlılık yok. Bir PWA (Progressive Web App) olarak paketlendi,
@@ -12,33 +17,36 @@ uygulama gibi kurulabilir; internetsiz de çalışır.
 
 ## Özellikler
 
-- **14 işletme**: Simit Arabası → Kahveci → Fırın → Restoran → Kuaför
-  Zinciri → Market Zinciri → Otel → İnşaat Firması → AVM → Fabrika → Banka
-  → Teknoloji Şirketi → Gökdelen İmparatorluğu → Uzay Şirketi. Her biri
+- **14 içerik platformu**: Telefon Vlogları → Kısa Video Kanalı →
+  Instagram Sayfası → Canlı Yayın Kanalı → YouTube Kanalı → Podcast
+  Stüdyosu → Kendi Markan (Merch) → İçerik Ajansı (MCN) → Reklam Ajansı →
+  Prodüksiyon Stüdyosu → Dijital TV Kanalı → Sosyal Medya Uygulaması →
+  Yapay Zeka İçerik Stüdyosu → Küresel Medya İmparatorluğu. Her biri
   öncekinin en az 1 adedi alınınca kilidini açıyor.
 - **1x / 10x / 100x / Maks** toplu satın alma.
-- **Yöneticiler**: bir işletmeye yönetici atarsan elle dokunmana gerek
-  kalmadan sürekli üretim yapar; atamazsan üretim tamamlandığında dokunup
-  tahsil etmen gerekir (klasik idle-tycoon mekaniği).
-- **x2 kilometre taşı yükseltmeleri** (10/25/50/100/200/300/500/750/1000
-  adet eşiklerinde).
-- **Prestij ("Yeniden Yapılanma")**: her şeyi sıfırla, kalıcı
-  **İmparatorluk Puanı** kazan → her puan tüm gelire kalıcı %2 ekler.
-- **6 kalıcı yatırım (perk)**: İmparatorluk Puanı harcayarak gelir,
-  maliyet indirimi, üretim hızı, yönetici indirimi, bonus şansı ve offline
-  kazanç süresi/verimini kalıcı olarak artır.
+- **Menajerler**: bir kanala menajer atarsan elle dokunmana gerek kalmadan
+  sürekli üretim yapar; atamazsan üretim tamamlandığında dokunup tahsil
+  etmen gerekir (klasik idle-tycoon mekaniği).
+- **x2 viral an yükseltmeleri** (10/25/50/100/200/300/500/750/1000 adet
+  eşiklerinde).
+- **Prestij ("Yeniden Viral Ol!")**: her şeyi sıfırla, kalıcı **Etki
+  Puanı** kazan → her puan tüm gelire kalıcı %2 ekler.
+- **6 kalıcı avantaj**: Etki Puanı harcayarak gelir, kurulum maliyeti,
+  üretim hızı, menajer indirimi, trend şansı ve offline kazanç
+  süresi/verimini kalıcı olarak artır.
 - **20 başarım**, her biri tamamlandığında kalıcı %1 gelir bonusu katar.
-- **Rastgele bonus ödülü**: ekranda beliren 🎁'i yakala, ya anlık nakit ya
+- **Rastgele trend anı**: ekranda beliren 🔥'i yakala, ya anlık nakit ya
   da 60 saniyelik 2x gelir kazan.
-- **Offline kazanç**: uygulamayı kapatıp geri döndüğünde, yöneticili
-  işletmelerin sende yokken kazandırdığı parayı bir açılış ekranıyla
+- **Offline kazanç**: uygulamayı kapatıp geri döndüğünde, menajerli
+  kanalların sende yokken kazandırdığı parayı bir açılış ekranıyla
   gösterir ve hesaba yatırır.
 - **Kayıt**: `localStorage` ile otomatik kayıt (5 saniyede bir + sekme
   kapanışında). Ayarlar sekmesinden yedek dışa/içe aktarma ve sıfırlama.
 - **Ses & animasyon**: WebAudio ile üretilen efektler (harici ses dosyası
   yok), açılıp kapatılabilir.
 - **iOS'a özel arayüz**: alt sekme çubuğu, çentik/güvenli alan desteği,
-  açık/koyu tema, "Ana Ekrana Ekle" önerisi banner'ı.
+  açık/koyu tema, "Ana Ekrana Ekle" önerisi banner'ı, canlı pembe→mor
+  gradyanlı sosyal medya estetiği.
 
 ## Dosya yapısı
 
@@ -80,8 +88,8 @@ GitHub Pages, Netlify, Vercel) yayınlaman gerekir — service worker'lar
 Tüm oyun ekonomisi `app.js` dosyasının en üstündeki **"AYARLANABİLİR OYUN
 VERİLERİ"** bölümünde tek yerde toplanmıştır: `BUSINESSES`, `PERKS`,
 `ACHIEVEMENTS`, `MILESTONE_THRESHOLDS`, `GROWTH`, `PRESTIGE_DIVISOR`. Yeni
-bir işletme eklemek için `BUSINESSES` dizisine yeni bir satır eklemen
-yeterli — kilit açma sırası dizideki konuma göre otomatik işler.
+bir içerik platformu eklemek için `BUSINESSES` dizisine yeni bir satır
+eklemen yeterli — kilit açma sırası dizideki konuma göre otomatik işler.
 
 ## Gizlilik
 

@@ -1,7 +1,7 @@
 {
-  "name": "Patron Ol! – İş İmparatorluğu Tycoon",
-  "short_name": "Patron Ol!",
-  "description": "Küçük bir simit arabasından küresel bir imparatorluğa: kapsamlı bir tycoon / idle oyun.",
+  "name": "Fenomen Ol! – İçerik İmparatorluğu",
+  "short_name": "Fenomen Ol!",
+  "description": "Telefonda çektiğin ilk videodan küresel bir medya imparatorluğuna: kapsamlı bir influencer tycoon / idle oyunu.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

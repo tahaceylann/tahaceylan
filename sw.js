@@ -1,7 +1,7 @@
-/* Patron Ol! – basit önbellek-öncelikli (cache-first) service worker.
+/* Fenomen Ol! – basit önbellek-öncelikli (cache-first) service worker.
    Oyun tamamen istemci tarafında çalıştığı için offline'da da açılabilir. */
 
-const CACHE_NAME = "patron-ol-tycoon-v1";
+const CACHE_NAME = "fenomen-ol-tycoon-v1";
 const CORE_ASSETS = [
   "./",
   "./index.html",

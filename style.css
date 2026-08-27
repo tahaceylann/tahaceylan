@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Patron Ol! – İş İmparatorluğu Tycoon
+   Fenomen Ol! – İçerik İmparatorluğu
    Stil dosyası — iOS benzeri görünüm, koyu/açık tema desteği, mobil öncelikli
    ========================================================================== */
 
@@ -13,9 +13,10 @@
   --text: #f3f1fb;
   --text-dim: #a79fc9;
   --text-faint: #766f96;
-  --accent: #ffcc4d;
-  --accent-2: #ff8a3d;
-  --accent-grad: linear-gradient(135deg, #ffcc4d, #ff8a3d);
+  --accent: #ff2d78;
+  --accent-2: #7b2ff7;
+  --accent-grad: linear-gradient(135deg, #ff2d78, #7b2ff7);
+  --accent-ink: #ffffff;
   --green: #34d399;
   --red: #ff5d6c;
   --blue: #5b8def;
@@ -124,7 +125,7 @@ body{
   flex:1; padding: 8px; border-radius: 12px; border:1px solid var(--card-border);
   background: var(--card-bg); color: var(--text-dim); font-weight:700; font-size:12.5px;
 }
-.buy-mult-btn.active{ background: var(--accent-grad); color:#241100; border-color: transparent; }
+.buy-mult-btn.active{ background: var(--accent-grad); color: var(--accent-ink); border-color: transparent; }
 
 /* ------------------------------ İş kartları ------------------------------ */
 .business-list{ display:flex; flex-direction:column; gap:10px; }
@@ -143,7 +144,7 @@ body{
 
 .biz-progress-fill{
   position:absolute; left:0; top:0; bottom:0; width:0%;
-  background: linear-gradient(90deg, rgba(255,204,77,0.20), rgba(255,138,61,0.30));
+  background: linear-gradient(90deg, rgba(255,45,120,0.18), rgba(123,47,247,0.26));
   transition: width 0.12s linear;
   z-index:0;
 }
@@ -164,7 +165,7 @@ body{
 .biz-actions{ display:flex; flex-direction:column; gap:5px; z-index:1; flex:0 0 auto; align-items:stretch; }
 .biz-buy-btn{
   font-size: 12px; font-weight:700; padding: 7px 10px; border-radius: 12px;
-  border:none; background: var(--accent-grad); color:#241100; min-width: 92px;
+  border:none; background: var(--accent-grad); color: var(--accent-ink); min-width: 92px;
   text-align:center; white-space:nowrap;
 }
 .biz-buy-btn:disabled{ background: rgba(255,255,255,0.08); color: var(--text-faint); }
@@ -203,7 +204,7 @@ body{
   display:block; width:100%; text-align:center; padding: 12px; border-radius: 14px; border:none;
   font-weight: 700; font-size: 14px; margin-bottom: 8px; cursor:pointer;
 }
-.btn-primary{ background: var(--accent-grad); color:#241100; }
+.btn-primary{ background: var(--accent-grad); color: var(--accent-ink); }
 .btn-secondary{ background: rgba(255,255,255,0.08); color: var(--text); border: 1px solid var(--card-border); }
 .btn-danger{ background: rgba(255,93,108,0.15); color: var(--red); border: 1px solid rgba(255,93,108,0.3); }
 .btn-big{ font-size:16px; padding:15px; }
@@ -237,7 +238,7 @@ body{
   display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:14px;
   background: rgba(255,255,255,0.04); border:1px solid var(--card-border); opacity:0.5;
 }
-.ach-card.unlocked{ opacity:1; border-color: rgba(255,204,77,0.4); background: rgba(255,204,77,0.06); }
+.ach-card.unlocked{ opacity:1; border-color: rgba(255,45,120,0.4); background: rgba(255,45,120,0.06); }
 .ach-icon{ font-size:22px; width:36px; text-align:center; }
 .ach-main{ flex:1; }
 .ach-name{ font-size:13px; font-weight:700; }
@@ -290,10 +291,10 @@ body{
 .bonus-orb{
   position: fixed; z-index: 40; width:52px; height:52px; border-radius:50%;
   border:none; font-size:24px; background: var(--accent-grad);
-  box-shadow: 0 0 0 0 rgba(255,204,77,0.6), var(--shadow);
+  box-shadow: 0 0 0 0 rgba(255,45,120,0.6), var(--shadow);
   animation: orbPulse 1.4s ease-in-out infinite, orbFloat 3s ease-in-out infinite;
 }
-@keyframes orbPulse{ 0%{box-shadow:0 0 0 0 rgba(255,204,77,0.55);} 70%{box-shadow:0 0 0 14px rgba(255,204,77,0);} 100%{box-shadow:0 0 0 0 rgba(255,204,77,0);} }
+@keyframes orbPulse{ 0%{box-shadow:0 0 0 0 rgba(255,45,120,0.55);} 70%{box-shadow:0 0 0 14px rgba(255,45,120,0);} 100%{box-shadow:0 0 0 0 rgba(255,45,120,0);} }
 @keyframes orbFloat{ 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(-6px);} }
 
 /* -------------------------------- Toasts -------------------------------- */

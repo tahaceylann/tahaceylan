@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Patron Ol! – İş İmparatorluğu Tycoon
+   Fenomen Ol! – İçerik İmparatorluğu
    Tüm oyun mantığı, kayıt sistemi ve arayüz güncellemeleri burada.
    Harici kütüphane / build aracı yok: doğrudan tarayıcıda çalışır.
    ========================================================================== */
@@ -12,58 +12,58 @@
 
 const GROWTH = 1.15;              // her birim alımda maliyet artış oranı
 const MILESTONE_THRESHOLDS = [10, 25, 50, 100, 200, 300, 500, 750, 1000];
-const PRESTIGE_DIVISOR = 1e9;     // prestij puanı = floor(sqrt(toplamKazanc / bu değer))
-const SAVE_KEY = "patronOlTycoonSave_v1";
+const PRESTIGE_DIVISOR = 1e9;     // etki puanı = floor(sqrt(toplamKazanc / bu değer))
+const SAVE_KEY = "fenomenOlTycoonSave_v1";
 const AUTOSAVE_EVERY_TICKS = 50;  // 50 * 100ms = 5 sn
 const ACHIEVEMENT_CHECK_EVERY_TICKS = 10; // 1 sn
 
 const BUSINESSES = [
-  { id: "simit",     name: "Simit Arabası",        icon: "🥨", baseCost: 10,                 baseRevenue: 1.2,              baseCycle: 1,  managerCost: 1000 },
-  { id: "kahve",     name: "Kahveci",               icon: "☕", baseCost: 100,                baseRevenue: 9,                baseCycle: 2,  managerCost: 12000 },
-  { id: "firin",     name: "Fırın",                 icon: "🍞", baseCost: 1200,               baseRevenue: 72,               baseCycle: 4,  managerCost: 150000 },
-  { id: "restoran",  name: "Restoran",               icon: "🍽️", baseCost: 15000,              baseRevenue: 720,              baseCycle: 7,  managerCost: 2000000 },
-  { id: "kuafor",    name: "Kuaför Zinciri",        icon: "💈", baseCost: 200000,             baseRevenue: 8200,             baseCycle: 10, managerCost: 26000000 },
-  { id: "market",    name: "Market Zinciri",        icon: "🛒", baseCost: 2600000,            baseRevenue: 92000,            baseCycle: 14, managerCost: 340000000 },
-  { id: "otel",      name: "Otel",                   icon: "🏨", baseCost: 34000000,           baseRevenue: 1050000,          baseCycle: 18, managerCost: 4400000000 },
-  { id: "insaat",    name: "İnşaat Firması",        icon: "🏗️", baseCost: 440000000,          baseRevenue: 11500000,         baseCycle: 24, managerCost: 56000000000 },
-  { id: "avm",       name: "AVM",                    icon: "🏬", baseCost: 5700000000,         baseRevenue: 132000000,        baseCycle: 30, managerCost: 720000000000 },
-  { id: "fabrika",   name: "Fabrika",               icon: "🏭", baseCost: 74000000000,        baseRevenue: 1550000000,       baseCycle: 38, managerCost: 9300000000000 },
-  { id: "banka",     name: "Banka",                  icon: "🏦", baseCost: 960000000000,       baseRevenue: 17500000000,      baseCycle: 46, managerCost: 120000000000000 },
-  { id: "teknoloji", name: "Teknoloji Şirketi",     icon: "💻", baseCost: 12500000000000,     baseRevenue: 205000000000,     baseCycle: 55, managerCost: 1550000000000000 },
-  { id: "gokdelen",  name: "Gökdelen İmparatorluğu", icon: "🌆", baseCost: 160000000000000,    baseRevenue: 2350000000000,    baseCycle: 65, managerCost: 20000000000000000 },
-  { id: "uzay",      name: "Uzay Şirketi",          icon: "🚀", baseCost: 2100000000000000,   baseRevenue: 27500000000000,   baseCycle: 80, managerCost: 260000000000000000 },
+  { id: "vlog",       name: "Telefon Vlogları",         icon: "📱", baseCost: 10,                 baseRevenue: 1.2,              baseCycle: 1,  managerCost: 1000 },
+  { id: "kisavideo",  name: "Kısa Video Kanalı",         icon: "🎵", baseCost: 100,                baseRevenue: 9,                baseCycle: 2,  managerCost: 12000 },
+  { id: "instagram",  name: "Instagram Sayfası",         icon: "📸", baseCost: 1200,               baseRevenue: 72,               baseCycle: 4,  managerCost: 150000 },
+  { id: "yayin",      name: "Canlı Yayın Kanalı",        icon: "🎮", baseCost: 15000,              baseRevenue: 720,              baseCycle: 7,  managerCost: 2000000 },
+  { id: "youtube",    name: "YouTube Kanalı",            icon: "▶️", baseCost: 200000,             baseRevenue: 8200,             baseCycle: 10, managerCost: 26000000 },
+  { id: "podcast",    name: "Podcast Stüdyosu",          icon: "🎙️", baseCost: 2600000,            baseRevenue: 92000,            baseCycle: 14, managerCost: 340000000 },
+  { id: "marka",      name: "Kendi Markan (Merch)",      icon: "👕", baseCost: 34000000,           baseRevenue: 1050000,          baseCycle: 18, managerCost: 4400000000 },
+  { id: "ajans",      name: "İçerik Ajansı (MCN)",       icon: "🤝", baseCost: 440000000,          baseRevenue: 11500000,         baseCycle: 24, managerCost: 56000000000 },
+  { id: "reklam",     name: "Reklam Ajansı",             icon: "📢", baseCost: 5700000000,         baseRevenue: 132000000,        baseCycle: 30, managerCost: 720000000000 },
+  { id: "produksiyon",name: "Prodüksiyon Stüdyosu",      icon: "🎬", baseCost: 74000000000,        baseRevenue: 1550000000,       baseCycle: 38, managerCost: 9300000000000 },
+  { id: "tv",         name: "Dijital TV Kanalı",         icon: "📺", baseCost: 960000000000,       baseRevenue: 17500000000,      baseCycle: 46, managerCost: 120000000000000 },
+  { id: "app",        name: "Sosyal Medya Uygulaması",   icon: "🌐", baseCost: 12500000000000,     baseRevenue: 205000000000,     baseCycle: 55, managerCost: 1550000000000000 },
+  { id: "yapayzeka",  name: "Yapay Zeka İçerik Stüdyosu",icon: "🤖", baseCost: 160000000000000,    baseRevenue: 2350000000000,    baseCycle: 65, managerCost: 20000000000000000 },
+  { id: "medya",      name: "Küresel Medya İmparatorluğu",icon: "🛰️", baseCost: 2100000000000000,   baseRevenue: 27500000000000,   baseCycle: 80, managerCost: 260000000000000000 },
 ];
 
 const PERKS = [
-  { id: "income",           name: "Küresel Sinerji",     icon: "📈", baseCost: 5,  maxLevel: 10, per: 0.05, unit: "%",  desc: lvl => `Tüm işletme geliri +%${Math.round(lvl * 5)}` },
-  { id: "discount",         name: "Ucuz Genişleme",      icon: "🏷️", baseCost: 8,  maxLevel: 5,  per: 0.02, unit: "%",  desc: lvl => `Satın alma maliyetleri -%${Math.round(lvl * 2)}` },
-  { id: "speed",            name: "Hız Ustası",          icon: "⚡", baseCost: 8,  maxLevel: 5,  per: 0.05, unit: "%",  desc: lvl => `Üretim süresi -%${Math.round(lvl * 5)}` },
-  { id: "managerDiscount",  name: "Yönetici Anlaşması",  icon: "🤝", baseCost: 10, maxLevel: 5,  per: 0.10, unit: "%",  desc: lvl => `Yönetici maliyeti -%${Math.round(lvl * 10)}` },
-  { id: "orbLuck",          name: "Şanslı Hediyeler",    icon: "🎁", baseCost: 6,  maxLevel: 5,  per: 0.20, unit: "%",  desc: lvl => `Bonus ödülleri +%${Math.round(lvl * 20)}` },
-  { id: "offline",          name: "Offline Patron",      icon: "🌙", baseCost: 10, maxLevel: 5,  per: 1,    unit: "",   desc: lvl => `Offline süre sınırı ${2 + lvl * 2} saat, verim %${Math.min(100, 50 + lvl * 10)}` },
+  { id: "income",           name: "Algoritma Dostu",     icon: "📈", baseCost: 5,  maxLevel: 10, per: 0.05, unit: "%",  desc: lvl => `Tüm içerik geliri +%${Math.round(lvl * 5)}` },
+  { id: "discount",         name: "Ucuz Ekipman",        icon: "🏷️", baseCost: 8,  maxLevel: 5,  per: 0.02, unit: "%",  desc: lvl => `Kurulum maliyetleri -%${Math.round(lvl * 2)}` },
+  { id: "speed",            name: "Hızlı Kurgu",         icon: "⚡", baseCost: 8,  maxLevel: 5,  per: 0.05, unit: "%",  desc: lvl => `Üretim süresi -%${Math.round(lvl * 5)}` },
+  { id: "managerDiscount",  name: "Menajer Ağı",         icon: "🤝", baseCost: 10, maxLevel: 5,  per: 0.10, unit: "%",  desc: lvl => `Menajer maliyeti -%${Math.round(lvl * 10)}` },
+  { id: "orbLuck",          name: "Trend Şansı",         icon: "🔥", baseCost: 6,  maxLevel: 5,  per: 0.20, unit: "%",  desc: lvl => `Trend ödülleri +%${Math.round(lvl * 20)}` },
+  { id: "offline",          name: "İçerik Planlayıcı",   icon: "🌙", baseCost: 10, maxLevel: 5,  per: 1,    unit: "",   desc: lvl => `Offline süre sınırı ${2 + lvl * 2} saat, verim %${Math.min(100, 50 + lvl * 10)}` },
 ];
 
 const ACHIEVEMENTS = [
-  { id: "cash_1k",     icon: "🥉", name: "İlk Adım",            desc: "₺1.000 biriktir",              cond: s => s.cash >= 1e3 },
-  { id: "cash_1m",     icon: "🥈", name: "Milyoner",             desc: "₺1.000.000 biriktir",           cond: s => s.cash >= 1e6 },
-  { id: "cash_1b",     icon: "🥇", name: "Milyarder",            desc: "₺1 Milyar biriktir",            cond: s => s.cash >= 1e9 },
-  { id: "cash_1t",     icon: "💠", name: "Trilyoner",            desc: "₺1 Trilyon biriktir",           cond: s => s.cash >= 1e12 },
-  { id: "cash_1qa",    icon: "🌟", name: "Efsanevi Zenginlik",   desc: "₺1 Katrilyon biriktir",         cond: s => s.cash >= 1e15 },
-  { id: "first_biz",   icon: "🏗️", name: "Girişimci",           desc: "İlk işletmeni satın al",        cond: s => Object.values(s.businesses).some(b => b.owned > 0) },
-  { id: "own_simit_25",icon: "🥨", name: "Simitçi Kralı",       desc: "25 Simit Arabası'na sahip ol",  cond: s => s.businesses.simit.owned >= 25 },
-  { id: "own_all_1",   icon: "🏙️", name: "İmparatorluk Kuruldu", desc: "Her işletmeden en az 1 tane al", cond: s => BUSINESSES.every(b => s.businesses[b.id].owned > 0) },
-  { id: "first_manager", icon: "🤖", name: "İlk Yönetici",       desc: "İlk yöneticini işe al",          cond: s => Object.values(s.businesses).some(b => b.managers) },
-  { id: "all_managers", icon: "⚙️", name: "Tam Otomasyon",       desc: "Her işletmeye yönetici ata",     cond: s => BUSINESSES.every(b => s.businesses[b.id].managers) },
-  { id: "first_milestone", icon: "⭐", name: "İlk Yükseltme",     desc: "İlk x2 yükseltmeni satın al",   cond: s => Object.values(s.businesses).some(b => b.milestones > 0) },
-  { id: "first_prestige", icon: "👑", name: "Yeniden Doğuş",     desc: "İlk kez yeniden yapılan",        cond: s => s.totalPrestiges >= 1 },
-  { id: "prestige_10",  icon: "💎", name: "İmparator",            desc: "10 İmparatorluk Puanı'na ulaş", cond: s => s.prestigeEarnedTotal >= 10 },
-  { id: "prestige_50",  icon: "🏵️", name: "Efsane Patron",       desc: "50 İmparatorluk Puanı'na ulaş", cond: s => s.prestigeEarnedTotal >= 50 },
-  { id: "perk_bought",  icon: "🛠️", name: "Kalıcı Yatırımcı",    desc: "Bir kalıcı yatırım satın al",   cond: s => Object.values(s.perks).some(l => l > 0) },
-  { id: "all_perks_maxed", icon: "🏆", name: "Stratejist",        desc: "Tüm kalıcı yatırımları maksimuma çıkar", cond: s => PERKS.every(p => (s.perks[p.id] || 0) >= p.maxLevel) },
-  { id: "taps_100",    icon: "👆", name: "Çalışkan Patron",      desc: "100 kez elle tahsilat yap",     cond: s => s.totalTaps >= 100 },
-  { id: "taps_1000",   icon: "✋", name: "Yorulmak Bilmeyen",    desc: "1.000 kez elle tahsilat yap",   cond: s => s.totalTaps >= 1000 },
-  { id: "orbs_10",     icon: "🍀", name: "Şanslı Patron",        desc: "10 bonus ödülü topla",          cond: s => s.orbsClaimed >= 10 },
-  { id: "offline_claim", icon: "🌙", name: "Uyurken Kazan",       desc: "Offline kazancını tahsil et",  cond: s => s.offlineClaims >= 1 },
+  { id: "cash_1k",     icon: "🥉", name: "İlk Reklam Geliri",   desc: "₺1.000 biriktir",              cond: s => s.cash >= 1e3 },
+  { id: "cash_1m",     icon: "🥈", name: "Mikro Fenomen",       desc: "₺1.000.000 biriktir",           cond: s => s.cash >= 1e6 },
+  { id: "cash_1b",     icon: "🥇", name: "Makro Fenomen",       desc: "₺1 Milyar biriktir",            cond: s => s.cash >= 1e9 },
+  { id: "cash_1t",     icon: "💠", name: "Küresel Yıldız",      desc: "₺1 Trilyon biriktir",           cond: s => s.cash >= 1e12 },
+  { id: "cash_1qa",    icon: "🌟", name: "Efsane Statüsü",      desc: "₺1 Katrilyon biriktir",         cond: s => s.cash >= 1e15 },
+  { id: "first_biz",   icon: "📱", name: "İlk Video",           desc: "İlk içerik kanalını aç",        cond: s => Object.values(s.businesses).some(b => b.owned > 0) },
+  { id: "own_vlog_25", icon: "🎥", name: "Video Makinesi",      desc: "25 vlog yayınla",               cond: s => s.businesses.vlog.owned >= 25 },
+  { id: "own_all_1",   icon: "🛰️", name: "Medya İmparatorluğu Kuruldu", desc: "Her platform türünden en az 1 tane aç", cond: s => BUSINESSES.every(b => s.businesses[b.id].owned > 0) },
+  { id: "first_manager", icon: "🧑‍💼", name: "İlk Menajer",       desc: "İlk menajerini işe al",         cond: s => Object.values(s.businesses).some(b => b.managers) },
+  { id: "all_managers", icon: "⚙️", name: "Tam Ekip",            desc: "Her platforma menajer ata",      cond: s => BUSINESSES.every(b => s.businesses[b.id].managers) },
+  { id: "first_milestone", icon: "🔥", name: "İlk Viral An",      desc: "İlk x2 viral yükseltmeni satın al", cond: s => Object.values(s.businesses).some(b => b.milestones > 0) },
+  { id: "first_prestige", icon: "🚀", name: "Algoritmayı Kırdın", desc: "İlk kez yeniden viral ol",       cond: s => s.totalPrestiges >= 1 },
+  { id: "prestige_10",  icon: "💎", name: "Etki Ustası",          desc: "10 Etki Puanı'na ulaş",          cond: s => s.prestigeEarnedTotal >= 10 },
+  { id: "prestige_50",  icon: "🏵️", name: "Efsanevi Fenomen",    desc: "50 Etki Puanı'na ulaş",          cond: s => s.prestigeEarnedTotal >= 50 },
+  { id: "perk_bought",  icon: "🛠️", name: "İlk Yatırım",         desc: "Bir kalıcı avantaj satın al",   cond: s => Object.values(s.perks).some(l => l > 0) },
+  { id: "all_perks_maxed", icon: "🏆", name: "Stratejist",        desc: "Tüm kalıcı avantajları maksimuma çıkar", cond: s => PERKS.every(p => (s.perks[p.id] || 0) >= p.maxLevel) },
+  { id: "taps_100",    icon: "👆", name: "Çalışkan İçerik Üreticisi", desc: "100 kez elle tahsilat yap", cond: s => s.totalTaps >= 100 },
+  { id: "taps_1000",   icon: "✋", name: "Yorulmak Bilmeyen Yaratıcı", desc: "1.000 kez elle tahsilat yap", cond: s => s.totalTaps >= 1000 },
+  { id: "orbs_10",     icon: "🍀", name: "Trend Avcısı",        desc: "10 trend anı yakala",            cond: s => s.orbsClaimed >= 10 },
+  { id: "offline_claim", icon: "🌙", name: "Otomatik Pilot",     desc: "Sen yokken kazancını tahsil et", cond: s => s.offlineClaims >= 1 },
 ];
 
 /* ==========================================================================
@@ -350,7 +350,7 @@ function doPrestige() {
   closeModal();
   checkAchievements();
   renderAll();
-  toast(`🎉 Yeniden yapılanma tamam! +${fmtPlain(gain)} İmparatorluk Puanı`);
+  toast(`🚀 Yeniden viral oldun! +${fmtPlain(gain)} Etki Puanı`);
 }
 
 function buyPerk(id) {
@@ -359,7 +359,7 @@ function buyPerk(id) {
   if (lvl >= perk.maxLevel) return;
   const cost = perkCost(perk, lvl);
   if (state.prestigePoints < cost) {
-    toast("Yetersiz İmparatorluk Puanı 💎");
+    toast("Yetersiz Etki Puanı 💎");
     return;
   }
   state.prestigePoints -= cost;
@@ -425,11 +425,11 @@ function claimBonusOrb(e) {
     const perSec = currentAutoIncomePerSec();
     const gain = Math.max(500, perSec * randRange(30, 90)) * perkOrbMultiplier();
     addCash(gain);
-    toast(`🎁 Bonus nakit: ${fmt(gain)}`);
+    toast(`🔥 Trend bonusu: ${fmt(gain)}`);
     floatGain(e.clientX, e.clientY, "+" + fmt(gain), "var(--green)");
   } else {
     state.tempBoostUntil = Date.now() + 60000;
-    toast("⚡ 60 saniye boyunca 2x gelir!");
+    toast("🔥 60 saniye boyunca viral etkisi: 2x gelir!");
     floatGain(e.clientX, e.clientY, "x2 GELİR!", "var(--accent)");
   }
   checkAchievements();
@@ -467,8 +467,8 @@ function grantOfflineEarnings() {
   const timeStr = hours > 0 ? `${hours} saat ${mins} dk` : `${mins} dk`;
   showModal(`
     <div style="font-size:40px;">🌙</div>
-    <h2>Hoş geldin, patron!</h2>
-    <p>${timeStr} uzaktaydın. Otomatik işletmelerin senin için çalışmaya devam etti.</p>
+    <h2>Hoş geldin, fenomen!</h2>
+    <p>${timeStr} uzaktaydın. Menajerlerinin idare ettiği kanalların sen yokken kazanmaya devam etti.</p>
     <div class="modal-big-num">+${fmt(total)}</div>
     <button class="btn btn-primary" onclick="closeModal()">Harika!</button>
   `);
@@ -628,7 +628,7 @@ function refreshBuyButtonsText() {
     }
     if (refs.managerBtn) {
       const cost = managerCost(bizDef);
-      refs.managerBtn.textContent = `🤖 Yönetici ${fmt(cost)}`;
+      refs.managerBtn.textContent = `🧑‍💼 Menajer ${fmt(cost)}`;
       refs.managerBtn.disabled = bs.owned <= 0 || state.cash < cost;
     }
     if (refs.milestoneBtn) {
@@ -859,12 +859,12 @@ function wireEvents() {
       return;
     }
     showModal(`
-      <div style="font-size:40px;">👑</div>
-      <h2>Yeniden Yapılanma</h2>
-      <p>Tüm işletmelerin ve kasandaki nakit sıfırlanacak. Karşılığında kalıcı olarak</p>
+      <div style="font-size:40px;">🚀</div>
+      <h2>Yeniden Viral Ol!</h2>
+      <p>Tüm kanalların ve kasandaki nakit sıfırlanacak. Karşılığında kalıcı olarak</p>
       <div class="modal-big-num">+${fmtPlain(gain)} 💎</div>
-      <p>İmparatorluk Puanı kazanacaksın. Başarımların ve kalıcı yatırımların korunur.</p>
-      <button class="btn btn-primary" onclick="doPrestige()">Onayla ve Yeniden Yapılan</button>
+      <p>Etki Puanı kazanacaksın. Başarımların ve kalıcı avantajların korunur.</p>
+      <button class="btn btn-primary" onclick="doPrestige()">Onayla ve Yeniden Viral Ol</button>
       <button class="btn btn-secondary" onclick="closeModal()">Vazgeç</button>
     `);
   });
@@ -921,7 +921,7 @@ function wireEvents() {
     showModal(`
       <div style="font-size:40px;">⚠️</div>
       <h2>Oyunu Sıfırla</h2>
-      <p>Tüm ilerlemen (nakit, işletmeler, prestij, başarımlar) kalıcı olarak silinecek. Bu işlem geri alınamaz!</p>
+      <p>Tüm ilerlemen (nakit, kanallar, etki puanı, başarımlar) kalıcı olarak silinecek. Bu işlem geri alınamaz!</p>
       <button class="btn btn-danger" id="confirmResetBtn">Evet, Her Şeyi Sil</button>
       <button class="btn btn-secondary" onclick="closeModal()">Vazgeç</button>
     `);

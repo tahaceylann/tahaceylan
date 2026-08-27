@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
-<title>Patron Ol! – İş İmparatorluğu Tycoon</title>
-<meta name="description" content="Küçük bir simit arabasından küresel bir imparatorluğa: iPhone için kapsamlı bir tycoon / idle oyun." />
+<title>Fenomen Ol! – İçerik İmparatorluğu</title>
+<meta name="description" content="Telefonda çektiğin ilk videodan küresel bir medya imparatorluğuna: iPhone için kapsamlı bir influencer tycoon / idle oyunu." />
 
 <!-- iOS PWA (Add to Home Screen) ayarları -->
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="Patron Ol!" />
+<meta name="apple-mobile-web-app-title" content="Fenomen Ol!" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="theme-color" content="#150c33" />
 <link rel="apple-touch-icon" href="icons/icon-180.png" />
@@ -23,9 +23,9 @@
 
 <!-- ======================= AÇILIŞ EKRANI ======================= -->
 <div id="splash" class="splash">
-  <div class="splash-icon">🏙️</div>
-  <div class="splash-title">Patron Ol!</div>
-  <div class="splash-sub">İş İmparatorluğu Tycoon</div>
+  <div class="splash-icon">🔥</div>
+  <div class="splash-title">Fenomen Ol!</div>
+  <div class="splash-sub">İçerik İmparatorluğu</div>
   <div class="splash-bar"><div class="splash-bar-fill" id="splashBarFill"></div></div>
 </div>
 
@@ -36,7 +36,7 @@
   <header class="topbar">
     <div class="cash-row">
       <div class="cash-main">
-        <span class="cash-label">Kasa</span>
+        <span class="cash-label">Kazanç</span>
         <span class="cash-value" id="cashValue">₺0</span>
       </div>
       <div class="income-main">
@@ -45,14 +45,14 @@
     </div>
     <div class="prestige-row" id="prestigeRow">
       <span class="prestige-badge">👑 <span id="prestigeMultLabel">+0%</span></span>
-      <span class="prestige-points">💎 <span id="prestigePointsLabel">0</span> İmparatorluk Puanı</span>
+      <span class="prestige-points">💎 <span id="prestigePointsLabel">0</span> Etki Puanı</span>
     </div>
   </header>
 
   <!-- Sekme içerikleri -->
   <main class="content" id="content">
 
-    <!-- İşletmeler sekmesi -->
+    <!-- Kanallar sekmesi -->
     <section class="tab-panel" id="tab-businesses" data-tab="businesses">
       <div class="buy-mult-row" id="buyMultRow">
         <button class="buy-mult-btn" data-mult="1">1x</button>
@@ -66,10 +66,10 @@
     <!-- Prestij sekmesi -->
     <section class="tab-panel" id="tab-prestige" data-tab="prestige" hidden>
       <div class="panel-card">
-        <h2>👑 Yeniden Yapılanma</h2>
+        <h2>🚀 Yeniden Viral Ol!</h2>
         <p class="panel-desc">
-          Şirketini kapat, tüm işletmelerini sıfırla ve bunun karşılığında kalıcı
-          <b>İmparatorluk Puanı</b> kazan. Her puan, gelecekteki tüm gelirine
+          Hesabını kapat, tüm kanallarını sıfırla ve bunun karşılığında kalıcı
+          <b>Etki Puanı</b> kazan. Her puan, gelecekteki tüm gelirine
           <b>kalıcı olarak %2</b> ekler. Ne kadar çok kazanırsan, o kadar çok puan alırsın!
         </p>
         <div class="prestige-preview">
@@ -86,12 +86,12 @@
             <b id="prestigeNewBonus">+0%</b>
           </div>
         </div>
-        <button class="btn btn-primary btn-big" id="prestigeBtn">Yeniden Yapılan (Prestij)</button>
+        <button class="btn btn-primary btn-big" id="prestigeBtn">Yeniden Viral Ol (Prestij)</button>
       </div>
 
       <div class="panel-card">
-        <h2>🛠️ Kalıcı Yatırımlar</h2>
-        <p class="panel-desc">İmparatorluk Puanı harcayarak kalıcı avantajlar satın al. Bunlar prestij yapsan bile kaybolmaz.</p>
+        <h2>🛠️ Kalıcı Avantajlar</h2>
+        <p class="panel-desc">Etki Puanı harcayarak kalıcı avantajlar satın al. Bunlar viral olsan bile kaybolmaz.</p>
         <div id="perkList" class="perk-list"></div>
       </div>
     </section>
@@ -127,7 +127,7 @@
       </div>
       <div class="panel-card">
         <h2>ℹ️ Hakkında</h2>
-        <p class="panel-desc">Patron Ol! – İş İmparatorluğu Tycoon<br>v1.0.0 · Tamamen tarayıcında çalışır, veri hiçbir sunucuya gönderilmez.</p>
+        <p class="panel-desc">Fenomen Ol! – İçerik İmparatorluğu<br>v1.0.0 · Tamamen tarayıcında çalışır, veri hiçbir sunucuya gönderilmez.</p>
       </div>
     </section>
 
@@ -136,10 +136,10 @@
   <!-- Alt sekme çubuğu (iOS tarzı tab bar) -->
   <nav class="tabbar" id="tabbar">
     <button class="tab-btn active" data-tab="businesses">
-      <span class="tab-icon">🏢</span><span class="tab-label">İşletmeler</span>
+      <span class="tab-icon">📱</span><span class="tab-label">Kanallar</span>
     </button>
     <button class="tab-btn" data-tab="prestige">
-      <span class="tab-icon">👑</span><span class="tab-label">Prestij</span>
+      <span class="tab-icon">🚀</span><span class="tab-label">Prestij</span>
     </button>
     <button class="tab-btn" data-tab="achievements">
       <span class="tab-icon">🏆</span><span class="tab-label">Başarımlar</span>
@@ -150,8 +150,8 @@
     </button>
   </nav>
 
-  <!-- Uçan bonus rozeti (rastgele ödül) -->
-  <button id="bonusOrb" class="bonus-orb hidden">🎁</button>
+  <!-- Uçan bonus rozeti (rastgele trend anı) -->
+  <button id="bonusOrb" class="bonus-orb hidden">🔥</button>
 
   <!-- Bildirim / toast alanı -->
   <div id="toastArea" class="toast-area"></div>
