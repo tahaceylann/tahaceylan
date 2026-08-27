@@ -66,6 +66,24 @@ const ACHIEVEMENTS = [
   { id: "offline_claim", icon: "🌙", name: "Otomatik Pilot",     desc: "Sen yokken kazancını tahsil et", cond: s => s.offlineClaims >= 1 },
 ];
 
+// Mağaza: kalıcı hesap rozetleri (kozmetik unvan + tik), nakit ile satın alınır.
+const BADGES = [
+  { id: "caylak",       name: "Çaylak İçerik Üretici", icon: "🌱", cost: 0 },
+  { id: "yukselen",     name: "Yükselen Yıldız",       icon: "🌟", cost: 100000 },
+  { id: "dogrulanmis",  name: "Doğrulanmış Hesap",     icon: "✅", cost: 10000000 },
+  { id: "viral",        name: "Viral Fenomen",         icon: "🔥", cost: 1000000000 },
+  { id: "efsane",       name: "Efsane Yaratıcı",       icon: "👑", cost: 100000000000000 },
+];
+
+// Mağaza: kozmetik profil temaları (vurgu rengi paletini değiştirir), nakit ile satın alınır.
+const SKINS = [
+  { id: "classic", name: "Klasik",     icon: "🌆", cost: 0 },
+  { id: "gold",    name: "Altın Çağ",  icon: "🏆", cost: 500000 },
+  { id: "neon",    name: "Neon Gece",  icon: "🌃", cost: 50000000 },
+  { id: "ocean",   name: "Okyanus",    icon: "🌊", cost: 5000000000 },
+  { id: "fire",    name: "Ateş",       icon: "🔥", cost: 500000000000 },
+];
+
 /* ==========================================================================
    2) DURUM (STATE) YÖNETİMİ
    ========================================================================== */
@@ -93,6 +111,10 @@ function freshState() {
     offlineClaims: 0,
     tempBoostUntil: 0,
     buyMult: 10,
+    ownedBadges: ["caylak"],
+    equippedBadge: "caylak",
+    ownedSkins: ["classic"],
+    activeSkin: "classic",
     settings: { sound: true, fx: true },
     lastSeen: Date.now(),
   };
@@ -300,13 +322,13 @@ function buyManager(id) {
 function buyMilestone(id) {
   const bizDef = BUSINESSES.find(b => b.id === id);
   const bs = state.businesses[id];
-  if (bs.milestones >= MILESTONE_THRESHOLDS.length) return;
+  if (bs.milestones >= MILESTONE_THRESHOLDS.length) return false;
   const threshold = MILESTONE_THRESHOLDS[bs.milestones];
-  if (bs.owned < threshold) return;
+  if (bs.owned < threshold) return false;
   const cost = costForMilestone(bizDef, threshold);
   if (state.cash < cost) {
     toast("Yetersiz bakiye 💸");
-    return;
+    return false;
   }
   state.cash -= cost;
   bs.milestones++;
@@ -314,6 +336,7 @@ function buyMilestone(id) {
   checkAchievements();
   renderBusinessList();
   updateHeader();
+  return true;
 }
 
 function collectBusiness(id) {
@@ -351,6 +374,7 @@ function doPrestige() {
   checkAchievements();
   renderAll();
   toast(`🚀 Yeniden viral oldun! +${fmtPlain(gain)} Etki Puanı`);
+  particleBurst(window.innerWidth / 2, window.innerHeight / 2, { emojis: ["🚀", "✨", "💫", "🔥"], count: 24 });
 }
 
 function buyPerk(id) {
@@ -372,6 +396,91 @@ function buyPerk(id) {
 }
 
 /* ==========================================================================
+   5b) MAĞAZA (satın alınabilir kozmetik rozetler, profil temaları, boost)
+   ========================================================================== */
+
+function updateCreatorBadge() {
+  const badge = BADGES.find(b => b.id === state.equippedBadge) || BADGES[0];
+  const label = document.getElementById("creatorBadgeLabel");
+  if (label) label.textContent = `${badge.icon} ${badge.name}`;
+}
+
+function buyBadge(id, x, y) {
+  const badge = BADGES.find(b => b.id === id);
+  if (!badge) return;
+  if (state.ownedBadges.includes(id)) {
+    state.equippedBadge = id;
+    playSound("perk");
+  } else {
+    if (state.cash < badge.cost) {
+      toast("Yetersiz bakiye 💸");
+      return;
+    }
+    state.cash -= badge.cost;
+    state.ownedBadges.push(id);
+    state.equippedBadge = id;
+    playSound("achievement");
+    if (typeof x === "number") particleBurst(x, y, { emojis: ["✅", "✨", badge.icon], count: 16 });
+  }
+  updateCreatorBadge();
+  renderShop();
+  updateHeader();
+  saveState();
+}
+
+function applySkin() {
+  document.documentElement.setAttribute("data-skin", state.activeSkin);
+}
+
+function buySkin(id, x, y) {
+  const skin = SKINS.find(s => s.id === id);
+  if (!skin) return;
+  if (state.ownedSkins.includes(id)) {
+    state.activeSkin = id;
+    playSound("perk");
+  } else {
+    if (state.cash < skin.cost) {
+      toast("Yetersiz bakiye 💸");
+      return;
+    }
+    state.cash -= skin.cost;
+    state.ownedSkins.push(id);
+    state.activeSkin = id;
+    playSound("achievement");
+    if (typeof x === "number") particleBurst(x, y, { emojis: ["🎨", "✨", skin.icon], count: 16 });
+  }
+  applySkin();
+  renderShop();
+  updateHeader();
+  saveState();
+}
+
+// Sponsorlu içerik patlaması: nakit ile tekrar tekrar satın alınabilen, 1
+// saatliğine gelirini 2 katına çıkaran bir reklam paketi. Fiyatı mevcut
+// otomatik gelirine göre ölçeklenir, böylece oyunun her aşamasında anlamlı
+// kalır. Üst üste alınırsa süresi birikir (stacklenir).
+function sponsorBoostPrice() {
+  return Math.max(2000, currentAutoIncomePerSec() * 600);
+}
+
+function buySponsorBoost(x, y) {
+  const price = sponsorBoostPrice();
+  if (state.cash < price) {
+    toast("Yetersiz bakiye 💸");
+    return;
+  }
+  state.cash -= price;
+  const base = Math.max(Date.now(), state.tempBoostUntil);
+  state.tempBoostUntil = base + 3600000;
+  playSound("perk");
+  toast("📈 Sponsorlu içerik patlaması başladı! 1 saat boyunca 2x gelir");
+  particleBurst(x, y, { emojis: ["📈", "🔥", "✨"], count: 18 });
+  renderShop();
+  updateHeader();
+  saveState();
+}
+
+/* ==========================================================================
    6) BAŞARIMLAR
    ========================================================================== */
 
@@ -384,6 +493,7 @@ function checkAchievements() {
       changed = true;
       toast(`🏆 Başarım: ${a.name}`);
       playSound("achievement");
+      particleBurst(window.innerWidth / 2, 130, { emojis: ["🏆", "⭐", "✨"], count: 16 });
     }
   });
   if (changed) {
@@ -427,11 +537,13 @@ function claimBonusOrb(e) {
     addCash(gain);
     toast(`🔥 Trend bonusu: ${fmt(gain)}`);
     floatGain(e.clientX, e.clientY, "+" + fmt(gain), "var(--green)");
+    pulseCashDisplay();
   } else {
     state.tempBoostUntil = Date.now() + 60000;
     toast("🔥 60 saniye boyunca viral etkisi: 2x gelir!");
     floatGain(e.clientX, e.clientY, "x2 GELİR!", "var(--accent)");
   }
+  particleBurst(e.clientX, e.clientY, { emojis: ["🔥", "✨", "⭐"], count: 10 });
   checkAchievements();
   updateHeader();
 }
@@ -469,9 +581,10 @@ function grantOfflineEarnings() {
     <div style="font-size:40px;">🌙</div>
     <h2>Hoş geldin, fenomen!</h2>
     <p>${timeStr} uzaktaydın. Menajerlerinin idare ettiği kanalların sen yokken kazanmaya devam etti.</p>
-    <div class="modal-big-num">+${fmt(total)}</div>
+    <div class="modal-big-num" id="offlineGainNum">+₺0</div>
     <button class="btn btn-primary" onclick="closeModal()">Harika!</button>
   `);
+  tweenNumber(document.getElementById("offlineGainNum"), 0, total, 1100, v => "+" + fmt(v));
 }
 
 function currentAutoIncomePerSec() {
@@ -523,6 +636,8 @@ function tick() {
   if (tickCounter % ACHIEVEMENT_CHECK_EVERY_TICKS === 0) {
     checkAchievements();
     maybeSpawnBonusOrb();
+    const shopPanel = document.getElementById("tab-shop");
+    if (shopPanel && !shopPanel.hidden) refreshShopBoostStatus();
   }
   if (tickCounter % AUTOSAVE_EVERY_TICKS === 0) {
     saveState();
@@ -692,6 +807,94 @@ function renderPerks() {
 }
 
 /* ==========================================================================
+   12b) ARAYÜZ – MAĞAZA
+   ========================================================================== */
+
+function renderShop() {
+  const badgeList = document.getElementById("badgeList");
+  if (badgeList) {
+    badgeList.innerHTML = "";
+    BADGES.forEach(badge => {
+      const owned = state.ownedBadges.includes(badge.id);
+      const equipped = state.equippedBadge === badge.id;
+      const row = document.createElement("div");
+      row.className = "shop-card";
+      row.innerHTML = `
+        <div class="shop-icon">${badge.icon}</div>
+        <div class="shop-main">
+          <div class="shop-name">${badge.name}</div>
+          <div class="shop-desc">${owned ? "Sahipsin" : fmt(badge.cost)}</div>
+        </div>
+        <button class="shop-buy ${equipped ? "equipped" : ""}" data-shop-action="badge" data-shop-id="${badge.id}"
+          ${equipped ? "disabled" : (!owned && state.cash < badge.cost ? "disabled" : "")}>
+          ${equipped ? "Takılı ✓" : owned ? "Kullan" : "Satın Al"}
+        </button>
+      `;
+      badgeList.appendChild(row);
+    });
+  }
+
+  const skinList = document.getElementById("skinList");
+  if (skinList) {
+    skinList.innerHTML = "";
+    SKINS.forEach(skin => {
+      const owned = state.ownedSkins.includes(skin.id);
+      const active = state.activeSkin === skin.id;
+      const row = document.createElement("div");
+      row.className = "shop-card";
+      row.innerHTML = `
+        <div class="shop-icon">${skin.icon}</div>
+        <div class="shop-main">
+          <div class="shop-name">${skin.name}</div>
+          <div class="shop-desc">${owned ? "Sahipsin" : fmt(skin.cost)}</div>
+        </div>
+        <button class="shop-buy ${active ? "equipped" : ""}" data-shop-action="skin" data-shop-id="${skin.id}"
+          ${active ? "disabled" : (!owned && state.cash < skin.cost ? "disabled" : "")}>
+          ${active ? "Seçili ✓" : owned ? "Uygula" : "Satın Al"}
+        </button>
+      `;
+      skinList.appendChild(row);
+    });
+  }
+
+  refreshShopBoostStatus();
+}
+
+// Sadece boost fiyatı/geri sayımını günceller — rozet ve tema listelerini
+// yeniden oluşturmaz. Mağaza sekmesi açıkken saniyede birkaç kez çağrılır;
+// tam renderShop() ise yalnızca gerçek bir satın alma sonrasında çalışır
+// (aksi halde her saniye liste yeniden kurulup dokunuşları böler).
+function refreshShopBoostStatus() {
+  const boostBtn = document.getElementById("sponsorBoostBtn");
+  if (!boostBtn) return;
+  const price = sponsorBoostPrice();
+  const active = state.tempBoostUntil && state.tempBoostUntil > Date.now();
+  boostBtn.innerHTML = `📈 Satın Al · ${fmt(price)}`;
+  boostBtn.disabled = state.cash < price;
+  const statusEl = document.getElementById("sponsorBoostStatus");
+  if (statusEl) {
+    if (active) {
+      const minsLeft = Math.max(0, Math.ceil((state.tempBoostUntil - Date.now()) / 60000));
+      statusEl.textContent = `🔥 Aktif — kalan süre ~${minsLeft} dk`;
+    } else {
+      statusEl.textContent = "Şu an aktif değil";
+    }
+  }
+  // Rozet/tema listelerini yeniden kurmadan sadece satın alma butonlarının
+  // "yetersiz bakiye" durumunu tazele (nakit arttıkça buton kendiliğinden açılsın).
+  document.querySelectorAll('button[data-shop-action="badge"]').forEach(btn => {
+    if (btn.classList.contains("equipped")) return;
+    const badge = BADGES.find(b => b.id === btn.dataset.shopId);
+    if (badge && !state.ownedBadges.includes(badge.id)) btn.disabled = state.cash < badge.cost;
+  });
+  document.querySelectorAll('button[data-shop-action="skin"]').forEach(btn => {
+    if (btn.classList.contains("equipped")) return;
+    const skin = SKINS.find(s => s.id === btn.dataset.shopId);
+    if (skin && !state.ownedSkins.includes(skin.id)) btn.disabled = state.cash < skin.cost;
+  });
+}
+
+/* ==========================================================================
    13) ARAYÜZ – BAŞARIMLAR
    ========================================================================== */
 
@@ -767,6 +970,59 @@ function closeModal() {
   document.getElementById("modalOverlay").classList.add("hidden");
 }
 
+// Konfeti/parçacık patlaması — başarım, prestij, milestone ve mağaza satın
+// alımlarında küçük bir kutlama efekti. Ayarlardan kapatılabilir.
+function particleBurst(x, y, opts) {
+  if (!state.settings.fx) return;
+  opts = opts || {};
+  const emojis = opts.emojis || ["✨", "⭐", "🔥"];
+  const count = opts.count || 14;
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement("div");
+    el.className = "particle";
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 40 + Math.random() * 90;
+    el.style.left = x + "px";
+    el.style.top = y + "px";
+    el.style.setProperty("--dx", (Math.cos(angle) * dist) + "px");
+    el.style.setProperty("--dy", (Math.sin(angle) * dist) + "px");
+    el.style.setProperty("--rot", (Math.random() * 360 - 180) + "deg");
+    el.style.fontSize = (14 + Math.random() * 12) + "px";
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 900);
+  }
+}
+
+// Bir sayının önceki değerden hedef değere doğru "sayarak" artmasını sağlar
+// (offline kazanç / prestij modallarındaki büyük rakamlar için).
+function tweenNumber(el, from, to, duration, formatFn) {
+  if (!el) return;
+  if (!state.settings.fx) {
+    el.textContent = formatFn(to);
+    return;
+  }
+  const start = performance.now();
+  function step(now) {
+    const t = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - t, 3);
+    el.textContent = formatFn(from + (to - from) * eased);
+    if (t < 1) requestAnimationFrame(step);
+    else el.textContent = formatFn(to);
+  }
+  requestAnimationFrame(step);
+}
+
+// Kasa rakamına küçük bir "nabız" efekti verir (elle tahsilat / bonus gibi
+// belirgin anlarda — sürekli tık sesindeki otomatik gelirde kullanılmaz).
+function pulseCashDisplay() {
+  if (!state.settings.fx) return;
+  const el = document.getElementById("cashValue");
+  el.classList.remove("cash-pulse");
+  void el.offsetWidth; // animasyonu yeniden tetiklemek için reflow zorla
+  el.classList.add("cash-pulse");
+}
+
 /* ==========================================================================
    16) SES (WebAudio ile basit efektler, harici dosya gerekmez)
    ========================================================================== */
@@ -810,6 +1066,8 @@ function renderAll() {
   renderPrestigeTab();
   renderPerks();
   renderAchievements();
+  renderShop();
+  updateCreatorBadge();
 }
 
 function wireEvents() {
@@ -836,10 +1094,17 @@ function wireEvents() {
     const rect = btn.getBoundingClientRect();
     if (action === "buy") buyBusiness(id);
     else if (action === "manager") buyManager(id);
-    else if (action === "milestone") buyMilestone(id);
+    else if (action === "milestone") {
+      if (buyMilestone(id)) {
+        particleBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, { emojis: ["🔥", "⭐", "✨"], count: 12 });
+      }
+    }
     else if (action === "collect") {
       const gained = collectBusiness(id);
-      if (gained > 0) floatGain(rect.left + rect.width / 2, rect.top, "+" + fmt(gained), "var(--green)");
+      if (gained > 0) {
+        floatGain(rect.left + rect.width / 2, rect.top, "+" + fmt(gained), "var(--green)");
+        pulseCashDisplay();
+      }
       renderBusinessList();
       updateHeader();
     }
@@ -851,6 +1116,28 @@ function wireEvents() {
     if (btn) buyPerk(btn.dataset.id);
   });
 
+  document.getElementById("badgeList").addEventListener("click", e => {
+    ensureAudio();
+    const btn = e.target.closest("button[data-shop-action='badge']");
+    if (!btn) return;
+    const rect = btn.getBoundingClientRect();
+    buyBadge(btn.dataset.shopId, rect.left + rect.width / 2, rect.top + rect.height / 2);
+  });
+
+  document.getElementById("skinList").addEventListener("click", e => {
+    ensureAudio();
+    const btn = e.target.closest("button[data-shop-action='skin']");
+    if (!btn) return;
+    const rect = btn.getBoundingClientRect();
+    buySkin(btn.dataset.shopId, rect.left + rect.width / 2, rect.top + rect.height / 2);
+  });
+
+  document.getElementById("sponsorBoostBtn").addEventListener("click", e => {
+    ensureAudio();
+    const rect = e.target.getBoundingClientRect();
+    buySponsorBoost(rect.left + rect.width / 2, rect.top + rect.height / 2);
+  });
+
   document.getElementById("prestigeBtn").addEventListener("click", () => {
     ensureAudio();
     const gain = prestigeGainPreview();
@@ -859,14 +1146,15 @@ function wireEvents() {
       return;
     }
     showModal(`
-      <div style="font-size:40px;">🚀</div>
+      <div class="modal-icon-launch" style="font-size:40px;">🚀</div>
       <h2>Yeniden Viral Ol!</h2>
       <p>Tüm kanalların ve kasandaki nakit sıfırlanacak. Karşılığında kalıcı olarak</p>
-      <div class="modal-big-num">+${fmtPlain(gain)} 💎</div>
+      <div class="modal-big-num" id="prestigeGainNum">+0 💎</div>
       <p>Etki Puanı kazanacaksın. Başarımların ve kalıcı avantajların korunur.</p>
       <button class="btn btn-primary" onclick="doPrestige()">Onayla ve Yeniden Viral Ol</button>
       <button class="btn btn-secondary" onclick="closeModal()">Vazgeç</button>
     `);
+    tweenNumber(document.getElementById("prestigeGainNum"), 0, gain, 700, v => "+" + fmtPlain(v) + " 💎");
   });
 
   document.getElementById("bonusOrb").addEventListener("click", e => {
@@ -971,6 +1259,7 @@ function registerServiceWorker() {
 
 function init() {
   loadState();
+  applySkin();
   grantOfflineEarnings();
   wireEvents();
   renderAll();

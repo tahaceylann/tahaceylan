@@ -46,6 +46,7 @@
     <div class="prestige-row" id="prestigeRow">
       <span class="prestige-badge">👑 <span id="prestigeMultLabel">+0%</span></span>
       <span class="prestige-points">💎 <span id="prestigePointsLabel">0</span> Etki Puanı</span>
+      <span class="creator-badge" id="creatorBadgeLabel">🌱 Çaylak İçerik Üretici</span>
     </div>
   </header>
 
@@ -96,6 +97,26 @@
       </div>
     </section>
 
+    <!-- Mağaza sekmesi -->
+    <section class="tab-panel" id="tab-shop" data-tab="shop" hidden>
+      <div class="panel-card">
+        <h2>📈 Sponsorlu İçerik Patlaması</h2>
+        <p class="panel-desc">Nakit karşılığında 1 saatliğine tüm gelirini 2 katına çıkar. Üst üste alırsan süresi birikir. Fiyat, o anki otomatik gelirine göre ölçeklenir.</p>
+        <p class="panel-desc" id="sponsorBoostStatus">Şu an aktif değil</p>
+        <button class="btn btn-primary" id="sponsorBoostBtn">📈 Satın Al</button>
+      </div>
+      <div class="panel-card">
+        <h2>✅ Hesap Rozetleri</h2>
+        <p class="panel-desc">Nakit ile kalıcı bir unvan/rozet satın al ve profilinde göster.</p>
+        <div id="badgeList" class="shop-list"></div>
+      </div>
+      <div class="panel-card">
+        <h2>🎨 Profil Temaları</h2>
+        <p class="panel-desc">Nakit ile kalıcı bir renk teması satın al ve dilediğin zaman uygula.</p>
+        <div id="skinList" class="shop-list"></div>
+      </div>
+    </section>
+
     <!-- Başarımlar sekmesi -->
     <section class="tab-panel" id="tab-achievements" data-tab="achievements" hidden>
       <div class="panel-card">
@@ -140,6 +161,9 @@
     </button>
     <button class="tab-btn" data-tab="prestige">
       <span class="tab-icon">🚀</span><span class="tab-label">Prestij</span>
+    </button>
+    <button class="tab-btn" data-tab="shop">
+      <span class="tab-icon">🛍️</span><span class="tab-label">Mağaza</span>
     </button>
     <button class="tab-btn" data-tab="achievements">
       <span class="tab-icon">🏆</span><span class="tab-label">Başarımlar</span>

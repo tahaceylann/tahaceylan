@@ -37,6 +37,20 @@ uygulama gibi kurulabilir; internetsiz de çalışır.
 - **20 başarım**, her biri tamamlandığında kalıcı %1 gelir bonusu katar.
 - **Rastgele trend anı**: ekranda beliren 🔥'i yakala, ya anlık nakit ya
   da 60 saniyelik 2x gelir kazan.
+- **Mağaza sekmesi** — nakit ile satın alınabilir üç özellik:
+  - 📈 **Sponsorlu İçerik Patlaması**: tekrar tekrar alınabilen, 1 saatliğine
+    geliri 2 katına çıkaran bir boost. Fiyatı o anki otomatik gelire göre
+    ölçeklenir, üst üste alınırsa süresi birikir.
+  - ✅ **Hesap rozetleri**: kalıcı, kozmetik unvanlar (Çaylak İçerik
+    Üretici → Doğrulanmış Hesap → Viral Fenomen → Efsane Yaratıcı), üst
+    bilgi çubuğunda gösterilir.
+  - 🎨 **Profil temaları**: 5 farklı kalıcı renk teması (Klasik, Altın Çağ,
+    Neon Gece, Okyanus, Ateş) — dilediğin an aralarında geçiş yapabilirsin.
+- **Zengin animasyonlar**: konfeti/parçacık patlamaları (başarım, prestij,
+  viral yükseltme, mağaza satın alımları), büyük rakamlarda "sayma" efekti
+  (offline kazanç ve prestij modalları), kasa nabız efekti, roket fırlatma
+  animasyonu — hepsi `prefers-reduced-motion` tercihine ve Ayarlar'daki
+  animasyon anahtarına saygılı.
 - **Offline kazanç**: uygulamayı kapatıp geri döndüğünde, menajerli
   kanalların sende yokken kazandırdığı parayı bir açılış ekranıyla
   gösterir ve hesaba yatırır.
