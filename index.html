@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+<title>Patron Ol! – İş İmparatorluğu Tycoon</title>
+<meta name="description" content="Küçük bir simit arabasından küresel bir imparatorluğa: iPhone için kapsamlı bir tycoon / idle oyun." />
+
+<!-- iOS PWA (Add to Home Screen) ayarları -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Patron Ol!" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="theme-color" content="#150c33" />
+<link rel="apple-touch-icon" href="icons/icon-180.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16.png" />
+<link rel="manifest" href="manifest.json" />
+
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ======================= AÇILIŞ EKRANI ======================= -->
+<div id="splash" class="splash">
+  <div class="splash-icon">🏙️</div>
+  <div class="splash-title">Patron Ol!</div>
+  <div class="splash-sub">İş İmparatorluğu Tycoon</div>
+  <div class="splash-bar"><div class="splash-bar-fill" id="splashBarFill"></div></div>
+</div>
+
+<!-- ======================= ANA UYGULAMA ======================= -->
+<div id="app" class="app hidden">
+
+  <!-- Üst bilgi çubuğu -->
+  <header class="topbar">
+    <div class="cash-row">
+      <div class="cash-main">
+        <span class="cash-label">Kasa</span>
+        <span class="cash-value" id="cashValue">₺0</span>
+      </div>
+      <div class="income-main">
+        <span class="income-value" id="incomeValue">₺0/sn</span>
+      </div>
+    </div>
+    <div class="prestige-row" id="prestigeRow">
+      <span class="prestige-badge">👑 <span id="prestigeMultLabel">+0%</span></span>
+      <span class="prestige-points">💎 <span id="prestigePointsLabel">0</span> İmparatorluk Puanı</span>
+    </div>
+  </header>
+
+  <!-- Sekme içerikleri -->
+  <main class="content" id="content">
+
+    <!-- İşletmeler sekmesi -->
+    <section class="tab-panel" id="tab-businesses" data-tab="businesses">
+      <div class="buy-mult-row" id="buyMultRow">
+        <button class="buy-mult-btn" data-mult="1">1x</button>
+        <button class="buy-mult-btn active" data-mult="10">10x</button>
+        <button class="buy-mult-btn" data-mult="100">100x</button>
+        <button class="buy-mult-btn" data-mult="max">Maks</button>
+      </div>
+      <div id="businessList" class="business-list"></div>
+    </section>
+
+    <!-- Prestij sekmesi -->
+    <section class="tab-panel" id="tab-prestige" data-tab="prestige" hidden>
+      <div class="panel-card">
+        <h2>👑 Yeniden Yapılanma</h2>
+        <p class="panel-desc">
+          Şirketini kapat, tüm işletmelerini sıfırla ve bunun karşılığında kalıcı
+          <b>İmparatorluk Puanı</b> kazan. Her puan, gelecekteki tüm gelirine
+          <b>kalıcı olarak %2</b> ekler. Ne kadar çok kazanırsan, o kadar çok puan alırsın!
+        </p>
+        <div class="prestige-preview">
+          <div class="prestige-preview-row">
+            <span>Şu an kazanılacak puan</span>
+            <b id="prestigeGainPreview">0</b>
+          </div>
+          <div class="prestige-preview-row">
+            <span>Mevcut kalıcı bonus</span>
+            <b id="prestigeCurrentBonus">+0%</b>
+          </div>
+          <div class="prestige-preview-row">
+            <span>Yeni kalıcı bonus</span>
+            <b id="prestigeNewBonus">+0%</b>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-big" id="prestigeBtn">Yeniden Yapılan (Prestij)</button>
+      </div>
+
+      <div class="panel-card">
+        <h2>🛠️ Kalıcı Yatırımlar</h2>
+        <p class="panel-desc">İmparatorluk Puanı harcayarak kalıcı avantajlar satın al. Bunlar prestij yapsan bile kaybolmaz.</p>
+        <div id="perkList" class="perk-list"></div>
+      </div>
+    </section>
+
+    <!-- Başarımlar sekmesi -->
+    <section class="tab-panel" id="tab-achievements" data-tab="achievements" hidden>
+      <div class="panel-card">
+        <h2>🏆 Başarımlar</h2>
+        <p class="panel-desc" id="achProgress">0 / 0 tamamlandı</p>
+      </div>
+      <div id="achievementList" class="achievement-list"></div>
+    </section>
+
+    <!-- Ayarlar sekmesi -->
+    <section class="tab-panel" id="tab-settings" data-tab="settings" hidden>
+      <div class="panel-card">
+        <h2>⚙️ Ayarlar</h2>
+        <div class="setting-row">
+          <span>🔊 Ses efektleri</span>
+          <label class="switch"><input type="checkbox" id="soundToggle" checked><span class="slider"></span></label>
+        </div>
+        <div class="setting-row">
+          <span>✨ Animasyonlar</span>
+          <label class="switch"><input type="checkbox" id="fxToggle" checked><span class="slider"></span></label>
+        </div>
+      </div>
+      <div class="panel-card">
+        <h2>💾 Kayıt Yönetimi</h2>
+        <p class="panel-desc">Oyun otomatik olarak cihazına kaydedilir. Yedek almak veya aktarmak için aşağıdakileri kullanabilirsin.</p>
+        <button class="btn btn-secondary" id="exportBtn">Kaydı Dışa Aktar (Kopyala)</button>
+        <button class="btn btn-secondary" id="importBtn">Kaydı İçe Aktar</button>
+        <button class="btn btn-danger" id="resetBtn">Oyunu Sıfırla</button>
+      </div>
+      <div class="panel-card">
+        <h2>ℹ️ Hakkında</h2>
+        <p class="panel-desc">Patron Ol! – İş İmparatorluğu Tycoon<br>v1.0.0 · Tamamen tarayıcında çalışır, veri hiçbir sunucuya gönderilmez.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Alt sekme çubuğu (iOS tarzı tab bar) -->
+  <nav class="tabbar" id="tabbar">
+    <button class="tab-btn active" data-tab="businesses">
+      <span class="tab-icon">🏢</span><span class="tab-label">İşletmeler</span>
+    </button>
+    <button class="tab-btn" data-tab="prestige">
+      <span class="tab-icon">👑</span><span class="tab-label">Prestij</span>
+    </button>
+    <button class="tab-btn" data-tab="achievements">
+      <span class="tab-icon">🏆</span><span class="tab-label">Başarımlar</span>
+      <span class="tab-dot hidden" id="achDot"></span>
+    </button>
+    <button class="tab-btn" data-tab="settings">
+      <span class="tab-icon">⚙️</span><span class="tab-label">Ayarlar</span>
+    </button>
+  </nav>
+
+  <!-- Uçan bonus rozeti (rastgele ödül) -->
+  <button id="bonusOrb" class="bonus-orb hidden">🎁</button>
+
+  <!-- Bildirim / toast alanı -->
+  <div id="toastArea" class="toast-area"></div>
+
+  <!-- Ana ekrana ekle önerisi -->
+  <div id="installHint" class="install-hint hidden">
+    <span>📲 Gerçek bir uygulama gibi kullanmak için: <b>Paylaş</b> → <b>Ana Ekrana Ekle</b></span>
+    <button id="installHintClose" class="install-hint-close">✕</button>
+  </div>
+</div>
+
+<!-- ======================= MODALLAR ======================= -->
+<div id="modalOverlay" class="modal-overlay hidden">
+  <div class="modal" id="modalBox"></div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

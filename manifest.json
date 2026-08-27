@@ -1,0 +1,16 @@
+{
+  "name": "Patron Ol! – İş İmparatorluğu Tycoon",
+  "short_name": "Patron Ol!",
+  "description": "Küçük bir simit arabasından küresel bir imparatorluğa: kapsamlı bir tycoon / idle oyun.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0718",
+  "theme_color": "#150c33",
+  "lang": "tr",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
