@@ -13,6 +13,11 @@
 const GROWTH = 1.15;              // her birim alımda maliyet artış oranı
 const MILESTONE_THRESHOLDS = [10, 25, 50, 100, 200, 300, 500, 750, 1000];
 const PRESTIGE_DIVISOR = 1e9;     // etki puanı = floor(sqrt(toplamKazanc / bu değer))
+// ÖNEMLİ: SAVE_KEY'i ve mevcut business/perk/badge/skin id'lerini SAKIN
+// değiştirme — oyuncuların localStorage'daki kayıtlı ilerlemesi bu isimlere
+// bağlıdır, değiştirmek onları sıfırlamış gibi görünmesine yol açar. Yeni
+// alanlar sadece freshState()'e eklenerek, geriye dönük uyumlu şekilde
+// eklenmeli (loadState() eksik alanları otomatik olarak varsayılanla doldurur).
 const SAVE_KEY = "fenomenOlTycoonSave_v1";
 const AUTOSAVE_EVERY_TICKS = 50;  // 50 * 100ms = 5 sn
 const ACHIEVEMENT_CHECK_EVERY_TICKS = 10; // 1 sn
@@ -115,6 +120,7 @@ function freshState() {
     equippedBadge: "caylak",
     ownedSkins: ["classic"],
     activeSkin: "classic",
+    trendRadarLevel: 0,
     settings: { sound: true, fx: true },
     lastSeen: Date.now(),
   };
@@ -480,6 +486,70 @@ function buySponsorBoost(x, y) {
   saveState();
 }
 
+const TREND_RADAR_MAX = 5;
+function trendRadarCost(level) {
+  return Math.ceil(50000 * Math.pow(3, level));
+}
+
+function buyTrendRadar(x, y) {
+  const level = state.trendRadarLevel || 0;
+  if (level >= TREND_RADAR_MAX) return;
+  const cost = trendRadarCost(level);
+  if (state.cash < cost) {
+    toast("Yetersiz bakiye 💸");
+    return;
+  }
+  state.cash -= cost;
+  state.trendRadarLevel = level + 1;
+  playSound("perk");
+  toast("🍀 Trend Radarı yükseltildi! Bonus anları artık daha sık beliriyor");
+  particleBurst(x, y, { emojis: ["🍀", "✨", "🔥"], count: 14 });
+  renderShop();
+  updateHeader();
+  saveState();
+}
+
+function instantPublishPrice() {
+  return Math.max(200, currentAutoIncomePerSec() * 30);
+}
+
+// Şu an "hazır" (menajersiz, üretimi tamamlanmış ama henüz dokunulmamış)
+// tüm kanalları tek seferde toplar. Zaten kazanılmış olan geliri elle tek
+// tek dokunmadan almanı sağlayan bir kolaylık — yeni para "yaratmaz".
+function buyInstantPublish(x, y) {
+  const readyBusinesses = BUSINESSES.filter(b => {
+    const bs = state.businesses[b.id];
+    return bs.owned > 0 && !bs.managers && bs.ready;
+  });
+  if (readyBusinesses.length === 0) {
+    toast("Şu an toplanacak hazır bir kanal yok");
+    return;
+  }
+  const price = instantPublishPrice();
+  if (state.cash < price) {
+    toast("Yetersiz bakiye 💸");
+    return;
+  }
+  state.cash -= price;
+  let total = 0;
+  readyBusinesses.forEach(bizDef => {
+    const bs = state.businesses[bizDef.id];
+    total += businessIncomePerCycle(bizDef, bs);
+    bs.progress = 0;
+    bs.ready = false;
+  });
+  addCash(total);
+  playSound("collect");
+  toast(`⚡ ${readyBusinesses.length} kanal anında yayınlandı! +${fmt(total)}`);
+  particleBurst(x, y, { emojis: ["⚡", "🎬", "✨"], count: 16 });
+  pulseCashDisplay();
+  checkAchievements();
+  renderBusinessList();
+  updateHeader();
+  renderShop();
+  saveState();
+}
+
 /* ==========================================================================
    6) BAŞARIMLAR
    ========================================================================== */
@@ -506,10 +576,23 @@ function checkAchievements() {
    7) BONUS ORB (rastgele ödül)
    ========================================================================== */
 
-let nextOrbAt = Date.now() + randRange(30, 70) * 1000;
+// Gerçek başlangıç değeri init()'te, kayıt yüklendikten sonra hesaplanır
+// (Trend Radarı seviyesi kayıttan gelir).
+let nextOrbAt = Date.now() + 30000;
 
 function randRange(min, max) {
   return min + Math.random() * (max - min);
+}
+
+// Mağazadan alınan "Trend Radarı" yükseltmesi, bonus anının ne sıklıkla
+// belirdiğini artırır (ödülün büyüklüğünü değil — o "Şanslı Hediyeler"
+// kalıcı avantajının işi). Maks seviyede bekleme süresi yarıya iner.
+function orbIntervalMultiplier() {
+  return Math.max(0.5, 1 - (state.trendRadarLevel || 0) * 0.1);
+}
+
+function scheduleNextOrb(min, max) {
+  nextOrbAt = Date.now() + randRange(min, max) * 1000 * orbIntervalMultiplier();
 }
 
 function maybeSpawnBonusOrb() {
@@ -527,7 +610,7 @@ function maybeSpawnBonusOrb() {
 function claimBonusOrb(e) {
   const orb = document.getElementById("bonusOrb");
   orb.classList.add("hidden");
-  nextOrbAt = Date.now() + randRange(45, 90) * 1000;
+  scheduleNextOrb(45, 90);
   state.orbsClaimed++;
   playSound("orb");
   const roll = Math.random();
@@ -865,6 +948,32 @@ function renderShop() {
 // tam renderShop() ise yalnızca gerçek bir satın alma sonrasında çalışır
 // (aksi halde her saniye liste yeniden kurulup dokunuşları böler).
 function refreshShopBoostStatus() {
+  const radarBtn = document.getElementById("trendRadarBtn");
+  if (radarBtn) {
+    const level = state.trendRadarLevel || 0;
+    const maxed = level >= TREND_RADAR_MAX;
+    radarBtn.textContent = maxed ? "MAKS ✓" : `🍀 ${fmt(trendRadarCost(level))}`;
+    radarBtn.disabled = maxed || state.cash < trendRadarCost(level);
+    radarBtn.classList.toggle("maxed", maxed);
+    const radarDesc = document.getElementById("trendRadarDesc");
+    if (radarDesc) radarDesc.textContent = `Lv.${level}/${TREND_RADAR_MAX} · Bonus anı bekleme süresi -%${level * 10}`;
+  }
+
+  const publishBtn = document.getElementById("instantPublishBtn");
+  if (publishBtn) {
+    const price2 = instantPublishPrice();
+    publishBtn.innerHTML = `⚡ Satın Al · ${fmt(price2)}`;
+    const readyCount = BUSINESSES.filter(b => {
+      const bs = state.businesses[b.id];
+      return bs.owned > 0 && !bs.managers && bs.ready;
+    }).length;
+    publishBtn.disabled = readyCount === 0 || state.cash < price2;
+    const publishDesc = document.getElementById("instantPublishDesc");
+    if (publishDesc) publishDesc.textContent = readyCount > 0
+      ? `${readyCount} kanal toplanmayı bekliyor`
+      : "Şu an hazır bekleyen kanal yok";
+  }
+
   const boostBtn = document.getElementById("sponsorBoostBtn");
   if (!boostBtn) return;
   const price = sponsorBoostPrice();
@@ -1138,6 +1247,18 @@ function wireEvents() {
     buySponsorBoost(rect.left + rect.width / 2, rect.top + rect.height / 2);
   });
 
+  document.getElementById("trendRadarBtn").addEventListener("click", e => {
+    ensureAudio();
+    const rect = e.target.getBoundingClientRect();
+    buyTrendRadar(rect.left + rect.width / 2, rect.top + rect.height / 2);
+  });
+
+  document.getElementById("instantPublishBtn").addEventListener("click", e => {
+    ensureAudio();
+    const rect = e.target.getBoundingClientRect();
+    buyInstantPublish(rect.left + rect.width / 2, rect.top + rect.height / 2);
+  });
+
   document.getElementById("prestigeBtn").addEventListener("click", () => {
     ensureAudio();
     const gain = prestigeGainPreview();
@@ -1260,6 +1381,7 @@ function registerServiceWorker() {
 function init() {
   loadState();
   applySkin();
+  scheduleNextOrb(30, 70);
   grantOfflineEarnings();
   wireEvents();
   renderAll();

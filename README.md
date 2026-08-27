@@ -37,10 +37,14 @@ uygulama gibi kurulabilir; internetsiz de çalışır.
 - **20 başarım**, her biri tamamlandığında kalıcı %1 gelir bonusu katar.
 - **Rastgele trend anı**: ekranda beliren 🔥'i yakala, ya anlık nakit ya
   da 60 saniyelik 2x gelir kazan.
-- **Mağaza sekmesi** — nakit ile satın alınabilir üç özellik:
+- **Mağaza sekmesi** — hepsi normal oyun içi nakit (₺) ile satın alınır:
   - 📈 **Sponsorlu İçerik Patlaması**: tekrar tekrar alınabilen, 1 saatliğine
     geliri 2 katına çıkaran bir boost. Fiyatı o anki otomatik gelire göre
     ölçeklenir, üst üste alınırsa süresi birikir.
+  - 🍀 **Trend Radarı**: 5 kademeli, bonus trend anının ekranda ne sıklıkla
+    belireceğini artıran kalıcı bir yükseltme.
+  - ⚡ **Anında Yayınla**: menajersiz kanallarından o an hazır (üretimi
+    tamamlanmış) olanların tümünü tek dokunuşla toplar.
   - ✅ **Hesap rozetleri**: kalıcı, kozmetik unvanlar (Çaylak İçerik
     Üretici → Doğrulanmış Hesap → Viral Fenomen → Efsane Yaratıcı), üst
     bilgi çubuğunda gösterilir.
@@ -104,6 +108,18 @@ VERİLERİ"** bölümünde tek yerde toplanmıştır: `BUSINESSES`, `PERKS`,
 `ACHIEVEMENTS`, `MILESTONE_THRESHOLDS`, `GROWTH`, `PRESTIGE_DIVISOR`. Yeni
 bir içerik platformu eklemek için `BUSINESSES` dizisine yeni bir satır
 eklemen yeterli — kilit açma sırası dizideki konuma göre otomatik işler.
+
+## Kayıt güvenliği — ilerleme asla sıfırlanmaz
+
+`app.js`'teki `SAVE_KEY` ve mevcut business/perk/rozet/tema id'leri kalıcı
+bir sözleşmedir: bunlar hiçbir güncellemede değiştirilmez. Yeni özellikler
+her zaman `freshState()`'e **eklenerek** tanıtılır; `loadState()` eski bir
+kayıtta bulunmayan alanları otomatik olarak güvenli varsayılanla doldurur,
+mevcut hiçbir veriyi silmez. Bu, oyunu güncellersen bile (yeni işletme,
+başarım, mağaza öğesi eklense dahi) oyuncunun nakit/kanal/prestij/başarım
+ilerlemesinin korunacağı anlamına gelir. Tek istisna, Ayarlar sekmesindeki
+**"Oyunu Sıfırla"** butonudur — bu tamamen kullanıcının kendi tercihiyle,
+iki onay adımından geçerek tetiklenir.
 
 ## Gizlilik
 

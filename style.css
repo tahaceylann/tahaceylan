@@ -275,7 +275,7 @@ body{
   font-size:11px; font-weight:700; padding:7px 10px; border-radius:10px; border:none;
   background: var(--accent-grad); color: var(--accent-ink); white-space:nowrap;
 }
-.shop-buy.equipped{ background: rgba(52,211,153,0.15); color: var(--green); }
+.shop-buy.equipped, .shop-buy.maxed{ background: rgba(52,211,153,0.15); color: var(--green); }
 .shop-buy:disabled{ opacity:0.5; }
 
 /* ----------------------------- Başarımlar ----------------------------- */
