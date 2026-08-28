@@ -89,6 +89,22 @@ const SKINS = [
   { id: "fire",    name: "Ateş",       icon: "🔥", cost: 500000000000 },
 ];
 
+// Yayıncı profili: her yeni içerik platformu açtıkça (BUSINESSES'ten sahip
+// olunan farklı platform sayısı arttıkça) yayıncının kendisi ve ekipmanı
+// görsel olarak gelişir. `minChannels`, kaç farklı platform türünden en az
+// 1 tane sahip olunması gerektiğini belirtir (14 üzerinden).
+const STREAMER_TIERS = [
+  { minChannels: 0,  avatar: "🧑",      title: "Çaylak Fenomen",   gear: "📱",             desc: "Elinde sadece telefonun var. Herkes bir yerden başlar!" },
+  { minChannels: 1,  avatar: "🧑‍💻",    title: "Vlogger",          gear: "📱💡",           desc: "İlk ring light'ını aldın, videoların artık daha net." },
+  { minChannels: 3,  avatar: "🧑‍🎤",    title: "İçerik Üreticisi", gear: "📷🎙️💡",         desc: "Gerçek bir kamera ve mikrofon edindin." },
+  { minChannels: 5,  avatar: "🧑‍🎨",    title: "Stüdyo Sahibi",    gear: "📷🎚️🖥️💡",       desc: "Küçük ama düzenli bir stüdyo kurulumun var." },
+  { minChannels: 7,  avatar: "🧑‍💼",    title: "Marka Ortağı",     gear: "📷🎚️🖥️🎧🟩",     desc: "Green screen ve profesyonel ekipmanla çekiyorsun." },
+  { minChannels: 9,  avatar: "🎬",      title: "Yapımcı",          gear: "📷🎬🖥️🎧🟩💡",    desc: "Kendi prodüksiyon setin var." },
+  { minChannels: 11, avatar: "📡",      title: "Medya Patronu",    gear: "📡🎬🖥️🎧🟩🛰️",   desc: "Stüdyon uydu bağlantılı yayın yapıyor." },
+  { minChannels: 13, avatar: "🌟",      title: "Küresel İkon",     gear: "🌟🛰️🎬🖥️🎧🟩",   desc: "Dünyanın her yerinden takip ediliyorsun." },
+  { minChannels: 14, avatar: "👑",      title: "İçerik İmparatoru", gear: "👑🌟🛰️🎬🎧",     desc: "İçerik imparatorluğun tamamlandı!" },
+];
+
 /* ==========================================================================
    2) DURUM (STATE) YÖNETİMİ
    ========================================================================== */
@@ -121,6 +137,7 @@ function freshState() {
     ownedSkins: ["classic"],
     activeSkin: "classic",
     trendRadarLevel: 0,
+    streamerTierAcknowledged: null, // null = henüz hesaplanmadı (bkz. renderStreamerProfile)
     settings: { sound: true, fx: true },
     lastSeen: Date.now(),
   };
@@ -230,6 +247,21 @@ function isUnlocked(bizIndex) {
   if (bizIndex === 0) return true;
   const prev = BUSINESSES[bizIndex - 1];
   return state.businesses[prev.id].owned > 0;
+}
+
+// Kaç farklı platform türünden en az 1 tane sahip olunduğunu sayar —
+// yayıncı profilinin seviyesini belirleyen tek ölçüt budur.
+function ownedChannelTypeCount() {
+  return BUSINESSES.reduce((n, b) => n + (state.businesses[b.id].owned > 0 ? 1 : 0), 0);
+}
+
+function currentStreamerTierIndex() {
+  const count = ownedChannelTypeCount();
+  let idx = 0;
+  for (let i = 0; i < STREAMER_TIERS.length; i++) {
+    if (count >= STREAMER_TIERS[i].minChannels) idx = i;
+  }
+  return idx;
 }
 
 function unitCost(bizDef, owned) {
@@ -808,6 +840,42 @@ function renderBusinessList() {
     };
   }
   refreshBuyButtonsText();
+  renderStreamerProfile();
+}
+
+// Yayıncı profil kartını (avatar, unvan, ekipman) günceller ve bir seviye
+// atlandıysa kutlama yapar. `streamerTierAcknowledged === null` ise (ilk
+// kez hesaplanıyor — ör. eski bir kayıt yüklendi) sessizce başlangıç
+// seviyesini kaydeder, geriye dönük kutlama patlatmaz.
+function renderStreamerProfile() {
+  const card = document.getElementById("streamerCard");
+  if (!card) return;
+  const tierIdx = currentStreamerTierIndex();
+  const tier = STREAMER_TIERS[tierIdx];
+  const count = ownedChannelTypeCount();
+  const next = STREAMER_TIERS[tierIdx + 1];
+
+  document.getElementById("streamerAvatar").textContent = tier.avatar;
+  document.getElementById("streamerTitle").textContent = tier.title;
+  document.getElementById("streamerGear").textContent = tier.gear;
+  document.getElementById("streamerDesc").textContent = tier.desc;
+  document.getElementById("streamerProgress").textContent = next
+    ? `${count}/14 platform · sıradaki seviye: ${next.minChannels} platform`
+    : `${count}/14 platform · maksimum seviyedesin!`;
+
+  if (state.streamerTierAcknowledged === null || state.streamerTierAcknowledged === undefined) {
+    state.streamerTierAcknowledged = tierIdx;
+  } else if (tierIdx > state.streamerTierAcknowledged) {
+    state.streamerTierAcknowledged = tierIdx;
+    toast(`${tier.avatar} Yayıncın gelişti: ${tier.title}!`);
+    playSound("achievement");
+    card.classList.remove("tier-up");
+    void card.offsetWidth; // animasyonu yeniden tetiklemek için reflow zorla
+    card.classList.add("tier-up");
+    const rect = card.getBoundingClientRect();
+    particleBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, { emojis: ["✨", "⭐", tier.avatar], count: 18 });
+    saveState();
+  }
 }
 
 function refreshBuyButtonsText() {

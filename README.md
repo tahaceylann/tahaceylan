@@ -17,6 +17,11 @@ uygulama gibi kurulabilir; internetsiz de çalışır.
 
 ## Özellikler
 
+- **Gelişen yayıncı profili**: Kanallar sekmesinin en üstünde, kaç farklı
+  platform türünden sahip olduğuna göre otomatik yükselen bir yayıncı
+  karakteri var (9 seviye: Çaylak Fenomen 📱 → ... → İçerik İmparatoru 👑).
+  Her yeni platform türü açtıkça avatarı, ekipmanı ve unvanı gelişir; yeni
+  bir seviyeye ulaşınca kutlama animasyonu oynar.
 - **14 içerik platformu**: Telefon Vlogları → Kısa Video Kanalı →
   Instagram Sayfası → Canlı Yayın Kanalı → YouTube Kanalı → Podcast
   Stüdyosu → Kendi Markan (Merch) → İçerik Ajansı (MCN) → Reklam Ajansı →
