@@ -34,7 +34,10 @@ function roomAccentHex() {
 
 let roomInited = false;
 let roomAnimating = false;
-let roomScene, roomCamera, roomRenderer, roomEquipmentGroup, roomAvatarSprite;
+let roomScene, roomCamera, roomRenderer, roomEquipmentGroup;
+let roomAvatarGroup = null;   // gerçek 3D karakter (kollar/bacaklar/gövde/kafa)
+let roomAvatarBadge = null;   // karakterin başı üstünde süzülen küçük emoji rozeti (seviye kimliği)
+let roomAvatarParts = null;   // { head, torso, armL, armR, legL, legR } — renk/animasyon erişimi için
 let roomBuiltForTier = -1;
 let roomAvatarTierIdx = -1;
 let roomDragState = null;
@@ -73,14 +76,37 @@ function initRoomIfNeeded() {
 
   roomRenderer = new THREE.WebGLRenderer({ antialias: true });
   roomRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  // Gerçekçilik geçişi: gölgeler + sinematik ton eşleme/renk uzayı. Bunlar
+  // olmadan sahne "düz" bir 3D render gibi görünüyordu — gölgeler nesnelere
+  // ağırlık kazandırıyor, ACES ton eşleme ise fazla parlak/yıkanmış emissive
+  // rengi daha filme benzer bir kontrasta çekiyor.
+  roomRenderer.shadowMap.enabled = true;
+  roomRenderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  roomRenderer.outputEncoding = THREE.sRGBEncoding;
+  roomRenderer.toneMapping = THREE.ACESFilmicToneMapping;
+  roomRenderer.toneMappingExposure = 1.15;
   container.innerHTML = "";
   container.appendChild(roomRenderer.domElement);
   resizeRoomRenderer();
 
-  const ambient = new THREE.AmbientLight(0xffffff, 0.55);
+  // Ambient azaltıldı, yerini büyük ölçüde HemisphereLight'ın daha doğal
+  // "gökyüzü/gölge zemin" dolgu ışığı aldı — düz/yassı görünümün ana
+  // nedenlerinden biri her yüzeyin aynı miktarda ambient almasıydı.
+  const ambient = new THREE.AmbientLight(0xffffff, 0.25);
   roomScene.add(ambient);
-  const key = new THREE.DirectionalLight(0xffffff, 0.85);
+  const hemi = new THREE.HemisphereLight(0x6a6ad6, 0x120a24, 0.55);
+  roomScene.add(hemi);
+  const key = new THREE.DirectionalLight(0xffffff, 0.95);
   key.position.set(3, 5, 4);
+  key.castShadow = true;
+  key.shadow.mapSize.set(1024, 1024);
+  key.shadow.camera.near = 0.5;
+  key.shadow.camera.far = 18;
+  key.shadow.camera.left = -6;
+  key.shadow.camera.right = 6;
+  key.shadow.camera.top = 6;
+  key.shadow.camera.bottom = -6;
+  key.shadow.bias = -0.002;
   roomScene.add(key);
   const rim = new THREE.PointLight(0xff2d78, 1.1, 14);
   rim.position.set(-2.5, 2.2, -1.5);
@@ -91,18 +117,21 @@ function initRoomIfNeeded() {
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(10, 10), floorMat);
   floor.rotation.x = -Math.PI / 2;
   floor.name = "roomFloor";
+  floor.receiveShadow = true;
   roomScene.add(floor);
 
   const wallMat = new THREE.MeshStandardMaterial({ color: 0x150c33, roughness: 1 });
   const backWall = new THREE.Mesh(new THREE.PlaneGeometry(10, 6), wallMat);
   backWall.position.set(0, 3, -4);
   backWall.name = "roomBackWall";
+  backWall.receiveShadow = true;
   roomScene.add(backWall);
 
   const sideWall = new THREE.Mesh(new THREE.PlaneGeometry(8, 6), wallMat.clone());
   sideWall.rotation.y = Math.PI / 2;
   sideWall.position.set(-4.99, 3, 0);
   sideWall.name = "roomSideWall";
+  sideWall.receiveShadow = true;
   roomScene.add(sideWall);
 
   roomEquipmentGroup = new THREE.Group();
@@ -182,9 +211,23 @@ function roomAnimate() {
   roomCamera.position.copy(roomCamPos);
   roomCamera.lookAt(0, 1.5, -1);
 
-  if (roomAvatarSprite) {
-    roomAvatarSprite.position.y = 1.7 + Math.sin(roomClock * 1.3) * 0.05;
-    roomAvatarSprite.material.rotation = Math.sin(roomClock * 0.6) * 0.05;
+  if (roomAvatarGroup) {
+    // Hafif nefes alma/ağırlık aktarma hissi: gövde biraz yukarı-aşağı,
+    // tüm karakter hafifçe yana döner — düz bir sprite yerine gerçek bir
+    // vücuda sahip olduğu için bu artık "yüzen çıkartma" değil, ayakta
+    // duran biri gibi görünüyor.
+    const bob = Math.sin(roomClock * 1.3) * 0.035;
+    roomAvatarGroup.position.y = bob;
+    roomAvatarGroup.rotation.y = Math.sin(roomClock * 0.5) * 0.12;
+    if (roomAvatarParts) {
+      roomAvatarParts.armL.rotation.x = Math.sin(roomClock * 1.1) * 0.08;
+      roomAvatarParts.armR.rotation.x = Math.sin(roomClock * 1.1 + Math.PI) * 0.08;
+      roomAvatarParts.head.rotation.y = Math.sin(roomClock * 0.4) * 0.15;
+    }
+  }
+  if (roomAvatarBadge) {
+    roomAvatarBadge.position.y = 2.05 + Math.sin(roomClock * 1.6) * 0.06;
+    roomAvatarBadge.material.rotation = Math.sin(roomClock * 0.7) * 0.08;
   }
 
   roomEquipmentGroup.children.forEach((obj, i) => animateEquipmentObject(obj, i));
@@ -384,13 +427,19 @@ function handleRoomTap(e) {
   );
   const raycaster = new THREE.Raycaster();
   raycaster.setFromCamera(ndc, roomCamera);
-  const targets = roomEquipmentGroup.children.concat(roomAvatarSprite ? [roomAvatarSprite] : []);
-  const hits = raycaster.intersectObjects(targets, false);
+  const targets = roomEquipmentGroup.children.concat(roomAvatarGroup ? [roomAvatarGroup] : []).concat(roomAvatarBadge ? [roomAvatarBadge] : []);
+  // recursive:true — karakter artık tek bir sprite değil, kafa/gövde/kol/bacak
+  // gibi alt parçalardan oluşan bir grup; dokunuşun hangi parçaya isabet
+  // ettiğinden bağımsız olarak en yakın atadaki tapReaction'ı çalıştırıyoruz.
+  const hits = raycaster.intersectObjects(targets, true);
   for (const hit of hits) {
-    const obj = hit.object;
-    if (obj.userData.tapReaction) {
-      obj.userData.tapReaction(obj, hit.point);
-      return;
+    let obj = hit.object;
+    while (obj) {
+      if (obj.userData.tapReaction) {
+        obj.userData.tapReaction(obj, hit.point);
+        return;
+      }
+      obj = obj.parent;
     }
   }
 }
@@ -404,6 +453,10 @@ function tapToast(msg) {
 function spawnEquipment(mesh) {
   mesh.userData.spawnAt = roomClock;
   mesh.scale.setScalar(0.001);
+  if (mesh.isMesh) {
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+  }
   roomEquipmentGroup.add(mesh);
   return mesh;
 }
@@ -624,25 +677,121 @@ function recolorRoomSurfaces(tierIdx) {
   sideWall.material.color.copy(backWall.material.color);
 }
 
-function updateAvatarForTier(tierIdx) {
-  if (roomAvatarTierIdx === tierIdx && roomAvatarSprite) return;
-  roomAvatarTierIdx = tierIdx;
+// Gerçek bir 3D karakter: kafa/gövde/kol/bacak/ayakkabıdan oluşan, gölge
+// düşüren düşük-poligonlu bir insan figürü — düz bir emoji çıkartması yerine.
+// three.js r140'ta CapsuleGeometry olmadığından gövde/kollar için esnetilmiş
+// SphereGeometry/CylinderGeometry kullanılıyor. Sadece bir kez kurulur; sonraki
+// seviye atlamalarında yalnızca kıyafet rengi ve baştaki rozet güncellenir.
+function buildAvatarCharacter() {
+  const group = new THREE.Group();
+  group.position.set(0.05, 0, -0.55);
+
+  const skinMat = new THREE.MeshStandardMaterial({ color: 0xffcf9e, roughness: 0.65 });
+  const outfitMat = new THREE.MeshStandardMaterial({ color: 0x241a3d, roughness: 0.55 });
+  const shoeMat = new THREE.MeshStandardMaterial({ color: 0x171018, roughness: 0.6 });
+  const eyeMat = new THREE.MeshStandardMaterial({ color: 0x141018, roughness: 0.3 });
+  const hairMat = new THREE.MeshStandardMaterial({ color: 0x2a1f3d, roughness: 0.7 });
+
+  const legGeo = new THREE.CylinderGeometry(0.09, 0.11, 0.72, 12);
+  const legL = new THREE.Mesh(legGeo, outfitMat);
+  legL.position.set(-0.13, 0.36, 0);
+  const legR = new THREE.Mesh(legGeo, outfitMat);
+  legR.position.set(0.13, 0.36, 0);
+
+  const shoeGeo = new THREE.BoxGeometry(0.14, 0.09, 0.22);
+  const shoeL = new THREE.Mesh(shoeGeo, shoeMat);
+  shoeL.position.set(-0.13, 0.045, 0.04);
+  const shoeR = new THREE.Mesh(shoeGeo, shoeMat);
+  shoeR.position.set(0.13, 0.045, 0.04);
+
+  // Gövde: kapsül yerine gerince sıkıştırılmış küre
+  const torso = new THREE.Mesh(new THREE.SphereGeometry(0.3, 16, 16), outfitMat);
+  torso.scale.set(1, 1.15, 0.78);
+  torso.position.set(0, 1.05, 0);
+
+  // Kollar — omuzdan sarkan birer grup, hafif sallanma animasyonu bu grubun
+  // rotation.x'i üzerinden uygulanıyor (roomAnimate içinde).
+  const armGeo = new THREE.CylinderGeometry(0.055, 0.065, 0.55, 10);
+  const handGeo = new THREE.SphereGeometry(0.06, 10, 10);
+  const armL = new THREE.Group();
+  const armLMesh = new THREE.Mesh(armGeo, outfitMat);
+  armLMesh.position.y = -0.275;
+  const handL = new THREE.Mesh(handGeo, skinMat);
+  handL.position.y = -0.55;
+  armL.add(armLMesh, handL);
+  armL.position.set(-0.36, 1.28, 0);
+  armL.rotation.z = 0.12;
+
+  const armR = new THREE.Group();
+  const armRMesh = new THREE.Mesh(armGeo, outfitMat);
+  armRMesh.position.y = -0.275;
+  const handR = new THREE.Mesh(handGeo, skinMat);
+  handR.position.y = -0.55;
+  armR.add(armRMesh, handR);
+  armR.position.set(0.36, 1.28, 0);
+  armR.rotation.z = -0.12;
+
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.24, 18, 18), skinMat);
+  head.position.set(0, 1.62, 0);
+
+  const eyeGeo = new THREE.SphereGeometry(0.028, 8, 8);
+  const eyeL = new THREE.Mesh(eyeGeo, eyeMat);
+  eyeL.position.set(-0.09, 0.02, 0.205);
+  const eyeR = new THREE.Mesh(eyeGeo, eyeMat);
+  eyeR.position.set(0.09, 0.02, 0.205);
+  head.add(eyeL, eyeR);
+
+  const hair = new THREE.Mesh(new THREE.SphereGeometry(0.245, 16, 16, 0, Math.PI * 2, 0, Math.PI / 2), hairMat);
+  hair.position.set(0, 0.04, 0);
+  head.add(hair);
+
+  group.add(legL, legR, shoeL, shoeR, torso, armL, armR, head);
+
+  [legL, legR, shoeL, shoeR, torso, armLMesh, handL, armRMesh, handR, head, eyeL, eyeR, hair].forEach(m => {
+    m.castShadow = true;
+    m.receiveShadow = true;
+  });
+
+  group.userData.tapReaction = (obj, point) => {
+    spawn3DSparkles(point || group.position, 16, roomAccentHex());
+    tapToast(`${STREAMER_TIERS[roomAvatarTierIdx].avatar} Selam! Yayına devam!`);
+  };
+
+  roomScene.add(group);
+  roomAvatarGroup = group;
+  roomAvatarParts = { head, torso, armL, armR, legL, legR, outfitMat, skinMat };
+}
+
+// Seviye atladıkça kıyafet rengi aktif profil temasına doğru kayar, baştaki
+// küçük emoji rozeti (tier kimliği için, makeEmojiTexture ile) güncellenir.
+function applyAvatarTierLook(tierIdx) {
   const tier = STREAMER_TIERS[tierIdx];
-  if (!roomAvatarSprite) {
-    const mat = new THREE.SpriteMaterial({ map: makeEmojiTexture(tier.avatar), transparent: true });
-    roomAvatarSprite = new THREE.Sprite(mat);
-    roomAvatarSprite.scale.set(1.8, 1.8, 1);
-    roomAvatarSprite.position.set(0.05, 1.7, -0.55);
-    roomAvatarSprite.userData.tapReaction = (obj) => {
-      spawn3DSparkles(obj.position, 16, roomAccentHex());
-      tapToast(`${STREAMER_TIERS[roomAvatarTierIdx].avatar} Selam! Yayına devam!`);
-    };
-    roomScene.add(roomAvatarSprite);
+  const t = tierIdx / (STREAMER_TIERS.length - 1);
+  const accent = new THREE.Color(roomAccentHex());
+  const baseOutfit = new THREE.Color(0x241a3d);
+  roomAvatarParts.outfitMat.color.copy(baseOutfit).lerp(accent, 0.2 + t * 0.5);
+  if (!roomAvatarParts.outfitMat.emissive) roomAvatarParts.outfitMat.emissive = new THREE.Color(0x000000);
+  roomAvatarParts.outfitMat.emissive.copy(accent).multiplyScalar(0.1 * t);
+
+  if (!roomAvatarBadge) {
+    const mat = new THREE.SpriteMaterial({ map: makeEmojiTexture(tier.avatar, 128), transparent: true });
+    roomAvatarBadge = new THREE.Sprite(mat);
+    roomAvatarBadge.scale.set(0.55, 0.55, 1);
+    roomAvatarBadge.position.set(0.05, 2.05, -0.55);
+    roomAvatarBadge.userData.tapReaction = roomAvatarGroup.userData.tapReaction;
+    roomScene.add(roomAvatarBadge);
   } else {
-    roomAvatarSprite.material.map.dispose();
-    roomAvatarSprite.material.map = makeEmojiTexture(tier.avatar);
-    roomAvatarSprite.material.needsUpdate = true;
+    roomAvatarBadge.material.map.dispose();
+    roomAvatarBadge.material.map = makeEmojiTexture(tier.avatar, 128);
+    roomAvatarBadge.material.needsUpdate = true;
   }
+}
+
+function updateAvatarForTier(tierIdx) {
+  if (roomAvatarTierIdx === tierIdx && roomAvatarGroup) return;
+  roomAvatarTierIdx = tierIdx;
+  if (!roomAvatarGroup) buildAvatarCharacter();
+  applyAvatarTierLook(tierIdx);
 }
 
 const ROOM_TIER_BUILDERS = [

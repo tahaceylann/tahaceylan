@@ -23,14 +23,22 @@ uygulama gibi kurulabilir; internetsiz de çalışır.
   screen, stüdyo ışıkları, uydu çanağı, parıldayan küreler ve nihayet
   altın bir taç eklenir — hiçbir ekipman bir öncekini kaybettirmez, oda
   gerçekten dolar; yeni her parça sekerek (elastic) büyüyerek belirir.
-  Sahneyi parmağınla/fareyle sürükleyerek döndürebilir ya da 🔄 butonuyla
-  otomatik döndürme moduna geçebilirsin; kamera her zaman hedefine yumuşakça
-  akar ve sekmeye her girişte sinematik bir kaymayla açılır. Ekipmana
+  Yayıncı artık düz bir emoji çıkartması değil, **gerçek gölge düşüren 3D
+  bir karakter** (kafa/gövde/kol/bacak/ayakkabı) — kıyafet rengi aktif
+  profil temana göre boyanır, üzerinde tepki verdiğinde konuşan küçük bir
+  emoji rozeti süzülür. Sahne, **gerçek gölgeler** (yumuşak gölge haritası),
+  **hemisfer + yönlü + nokta ışık** kombinasyonu ve **sinematik ACES ton
+  eşleme/sRGB renk uzayı** ile çok daha "gerçek" bir stüdyoya benziyor —
+  önceki düz/yassı görünümün yerini derinlik ve kontrast aldı. Sahneyi
+  parmağınla/fareyle sürükleyerek döndürebilir ya da 🔄 butonuyla otomatik
+  döndürme moduna geçebilirsin; kamera her zaman hedefine yumuşakça akar ve
+  sekmeye her girişte sinematik bir kaymayla açılır. Ekipmana ve karaktere
   **dokunarak etkileşime girebilirsin** — ring light parlar, kamera flaş
-  patlatır, uydu çanağı hızlanır, taç parıldar — her biri kendi tepkisini ve
-  mesajını verir. Oda ayrıca sürekli hareket eden ortam detaylarına sahip
-  (nabız atan ışıklar, titreyen ekranlar, dönen uydu çanağı, süzülen toz
-  zerrecikleri) ve aktif profil temanın rengiyle boyanır. Sekme kapalıyken
+  patlatır, uydu çanağı hızlanır, taç parıldar, yayıncı selam verir — her
+  biri kendi tepkisini ve mesajını verir. Oda ayrıca sürekli hareket eden
+  ortam detaylarına sahip (nabız atan ışıklar, titreyen ekranlar, dönen
+  uydu çanağı, süzülen toz zerrecikleri, hafifçe nefes alan/sallanan
+  karakter) ve aktif profil temanın rengiyle boyanır. Sekme kapalıyken
   render döngüsü durur (pil/performans tasarrufu); `prefers-reduced-motion`
   açık olan cihazlarda ortam animasyonları ve kamera kayması sadeleşir.
 - **Gelişen yayıncı profili**: Kanallar sekmesinin en üstünde, kaç farklı
