@@ -70,7 +70,10 @@ uygulama gibi kurulabilir; internetsiz de çalışır.
   animasyon anahtarına saygılı.
 - **Offline kazanç**: uygulamayı kapatıp geri döndüğünde, menajerli
   kanalların sende yokken kazandırdığı parayı bir açılış ekranıyla
-  gösterir ve hesaba yatırır.
+  gösterir ve hesaba yatırır. Varsayılan olarak en fazla **5 saat**
+  kazanmaya devam eder (bu sınırın ötesinde ne kadar uzakta kalırsan kal
+  kazanç artmaz); İçerik Planlayıcı kalıcı yatırımıyla bu süre ve verim
+  kademeli olarak artırılabilir.
 - **Kayıt**: `localStorage` ile otomatik kayıt (5 saniyede bir + sekme
   kapanışında). Ayarlar sekmesinden yedek dışa/içe aktarma ve sıfırlama.
 - **Ses & animasyon**: WebAudio ile üretilen efektler (harici ses dosyası

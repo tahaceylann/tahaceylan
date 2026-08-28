@@ -45,7 +45,7 @@ const PERKS = [
   { id: "speed",            name: "Hızlı Kurgu",         icon: "⚡", baseCost: 8,  maxLevel: 5,  per: 0.05, unit: "%",  desc: lvl => `Üretim süresi -%${Math.round(lvl * 5)}` },
   { id: "managerDiscount",  name: "Menajer Ağı",         icon: "🤝", baseCost: 10, maxLevel: 5,  per: 0.10, unit: "%",  desc: lvl => `Menajer maliyeti -%${Math.round(lvl * 10)}` },
   { id: "orbLuck",          name: "Trend Şansı",         icon: "🔥", baseCost: 6,  maxLevel: 5,  per: 0.20, unit: "%",  desc: lvl => `Trend ödülleri +%${Math.round(lvl * 20)}` },
-  { id: "offline",          name: "İçerik Planlayıcı",   icon: "🌙", baseCost: 10, maxLevel: 5,  per: 1,    unit: "",   desc: lvl => `Offline süre sınırı ${2 + lvl * 2} saat, verim %${Math.min(100, 50 + lvl * 10)}` },
+  { id: "offline",          name: "İçerik Planlayıcı",   icon: "🌙", baseCost: 10, maxLevel: 5,  per: 1,    unit: "",   desc: lvl => `Offline süre sınırı ${5 + lvl * 2} saat, verim %${Math.min(100, 50 + lvl * 10)}` },
 ];
 
 const ACHIEVEMENTS = [
@@ -231,7 +231,7 @@ function perkOrbMultiplier() {
   return 1 + perkLevel("orbLuck") * PERKS.find(p => p.id === "orbLuck").per;
 }
 function offlineCapHours() {
-  return 2 + perkLevel("offline") * 2;
+  return 5 + perkLevel("offline") * 2;
 }
 function offlineEfficiency() {
   return Math.min(1, 0.5 + perkLevel("offline") * 0.10);
@@ -692,10 +692,14 @@ function grantOfflineEarnings() {
   const hours = Math.floor(elapsedSec / 3600);
   const mins = Math.floor((elapsedSec % 3600) / 60);
   const timeStr = hours > 0 ? `${hours} saat ${mins} dk` : `${mins} dk`;
+  const wasCapped = elapsedSec > capSec;
+  const capNote = wasCapped
+    ? ` Kanalların en fazla ${offlineCapHours()} saat kazanmaya devam eder, sonrasında durur.`
+    : "";
   showModal(`
     <div style="font-size:40px;">🌙</div>
     <h2>Hoş geldin, fenomen!</h2>
-    <p>${timeStr} uzaktaydın. Menajerlerinin idare ettiği kanalların sen yokken kazanmaya devam etti.</p>
+    <p>${timeStr} uzaktaydın. Menajerlerinin idare ettiği kanalların sen yokken kazanmaya devam etti.${capNote}</p>
     <div class="modal-big-num" id="offlineGainNum">+₺0</div>
     <button class="btn btn-primary" onclick="closeModal()">Harika!</button>
   `);
