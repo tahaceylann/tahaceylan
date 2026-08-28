@@ -22,9 +22,17 @@ uygulama gibi kurulabilir; internetsiz de çalışır.
   kademeli olarak ring light, kamera, mikrofon, monitör/mikser, green
   screen, stüdyo ışıkları, uydu çanağı, parıldayan küreler ve nihayet
   altın bir taç eklenir — hiçbir ekipman bir öncekini kaybettirmez, oda
-  gerçekten dolar. Sahneyi parmağınla/fareyle sürükleyerek döndürebilir,
-  aktif profil temanın rengiyle boyanan ortam ışığını görebilirsin.
-  Sekme kapalıyken render döngüsü durur (pil/performans tasarrufu).
+  gerçekten dolar; yeni her parça sekerek (elastic) büyüyerek belirir.
+  Sahneyi parmağınla/fareyle sürükleyerek döndürebilir ya da 🔄 butonuyla
+  otomatik döndürme moduna geçebilirsin; kamera her zaman hedefine yumuşakça
+  akar ve sekmeye her girişte sinematik bir kaymayla açılır. Ekipmana
+  **dokunarak etkileşime girebilirsin** — ring light parlar, kamera flaş
+  patlatır, uydu çanağı hızlanır, taç parıldar — her biri kendi tepkisini ve
+  mesajını verir. Oda ayrıca sürekli hareket eden ortam detaylarına sahip
+  (nabız atan ışıklar, titreyen ekranlar, dönen uydu çanağı, süzülen toz
+  zerrecikleri) ve aktif profil temanın rengiyle boyanır. Sekme kapalıyken
+  render döngüsü durur (pil/performans tasarrufu); `prefers-reduced-motion`
+  açık olan cihazlarda ortam animasyonları ve kamera kayması sadeleşir.
 - **Gelişen yayıncı profili**: Kanallar sekmesinin en üstünde, kaç farklı
   platform türünden sahip olduğuna göre otomatik yükselen bir yayıncı
   karakteri var (9 seviye: Çaylak Fenomen 📱 → ... → İçerik İmparatoru 👑).
