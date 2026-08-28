@@ -17,6 +17,14 @@ uygulama gibi kurulabilir; internetsiz de çalışır.
 
 ## Özellikler
 
+- **3D Yayıncının Odası** (Oda sekmesi): Three.js ile çizilen gerçek bir 3D
+  stüdyo sahnesi. Aynı 9 seviyeli ilerlemeye göre (bkz. aşağı) odaya
+  kademeli olarak ring light, kamera, mikrofon, monitör/mikser, green
+  screen, stüdyo ışıkları, uydu çanağı, parıldayan küreler ve nihayet
+  altın bir taç eklenir — hiçbir ekipman bir öncekini kaybettirmez, oda
+  gerçekten dolar. Sahneyi parmağınla/fareyle sürükleyerek döndürebilir,
+  aktif profil temanın rengiyle boyanan ortam ışığını görebilirsin.
+  Sekme kapalıyken render döngüsü durur (pil/performans tasarrufu).
 - **Gelişen yayıncı profili**: Kanallar sekmesinin en üstünde, kaç farklı
   platform türünden sahip olduğuna göre otomatik yükselen bir yayıncı
   karakteri var (9 seviye: Çaylak Fenomen 📱 → ... → İçerik İmparatoru 👑).
@@ -77,6 +85,8 @@ uygulama gibi kurulabilir; internetsiz de çalışır.
 index.html        Uygulama iskeleti (sekmeler, üst bar, modallar)
 style.css         Tüm görünüm (iOS tarzı, açık/koyu tema)
 app.js            Tüm oyun mantığı: veri, durum, kayıt, oyun döngüsü, arayüz
+room.js           3D Yayıncının Odası sahnesi (Three.js, app.js ile aynı global kapsamı paylaşır)
+vendor/three.min.js  Three.js kütüphanesi (yerelde barındırılır, CDN'e bağımlı değil)
 manifest.json     PWA manifesti (isim, ikonlar, tema rengi)
 sw.js             Service worker (offline çalışma için önbellekleme)
 icons/            Uygulama ikonları (512/192/180/32/16 px, script ile üretildi)

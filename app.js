@@ -876,6 +876,7 @@ function renderStreamerProfile() {
     particleBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, { emojis: ["✨", "⭐", tier.avatar], count: 18 });
     saveState();
   }
+  if (typeof syncRoomToState === "function") syncRoomToState();
 }
 
 function refreshBuyButtonsText() {
@@ -1110,6 +1111,12 @@ function switchTab(tabName) {
   });
   if (tabName === "achievements") {
     document.getElementById("achDot").classList.add("hidden");
+  }
+  // room.js: 3D oda sadece görünürken render edilir (pil/performans tasarrufu)
+  if (tabName === "room") {
+    if (typeof onRoomTabShown === "function") onRoomTabShown();
+  } else if (typeof onRoomTabHidden === "function") {
+    onRoomTabHidden();
   }
   document.getElementById("content").scrollTop = 0;
 }

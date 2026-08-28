@@ -1,12 +1,14 @@
 /* Fenomen Ol! – basit önbellek-öncelikli (cache-first) service worker.
    Oyun tamamen istemci tarafında çalıştığı için offline'da da açılabilir. */
 
-const CACHE_NAME = "fenomen-ol-tycoon-v1";
+const CACHE_NAME = "fenomen-ol-tycoon-v2";
 const CORE_ASSETS = [
   "./",
   "./index.html",
   "./style.css",
   "./app.js",
+  "./room.js",
+  "./vendor/three.min.js",
   "./manifest.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png",

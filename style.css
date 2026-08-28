@@ -315,6 +315,22 @@ body{
 .ach-desc{ font-size:11px; color: var(--text-faint); }
 .ach-check{ font-size:16px; color: var(--green); }
 
+/* --------------------------------- Oda (3D) --------------------------------- */
+.tab-panel-room{ display:flex; flex-direction:column; gap:10px; height:100%; }
+.room-header{
+  padding: 12px 14px; border-radius: var(--radius); background: var(--card-bg);
+  border:1px solid var(--card-border); box-shadow: var(--shadow); flex:0 0 auto;
+}
+.room-title{ font-weight:800; font-size:15px; }
+.room-desc{ font-size:12px; color: var(--text-dim); margin-top:2px; }
+.room-canvas-wrap{
+  position:relative; width:100%; height: min(58vh, 460px); min-height: 300px;
+  border-radius: var(--radius); overflow:hidden; border:1px solid var(--card-border);
+  box-shadow: var(--shadow); background: #0a0718; flex: 0 0 auto; touch-action: none;
+}
+.room-canvas-wrap canvas{ display:block; width:100%; height:100%; }
+.room-hint{ text-align:center; font-size:11px; color: var(--text-faint); flex:0 0 auto; }
+
 /* ------------------------------- Ayarlar ------------------------------- */
 .setting-row{
   display:flex; align-items:center; justify-content:space-between; font-size:14px;
@@ -338,17 +354,19 @@ body{
 /* -------------------------------- Tab bar -------------------------------- */
 .tabbar{
   position: fixed; left:0; right:0; bottom:0; z-index: 30;
-  display:flex; justify-content:space-around;
+  display:flex; justify-content: space-around;
   padding: 8px 4px calc(8px + var(--safe-bottom));
   background: var(--nav-bg);
   backdrop-filter: blur(18px) saturate(160%);
   -webkit-backdrop-filter: blur(18px) saturate(160%);
   border-top: 1px solid var(--card-border);
+  overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
 }
+.tabbar::-webkit-scrollbar{ display:none; }
 .tab-btn{
   position:relative; background:none; border:none; display:flex; flex-direction:column;
   align-items:center; gap:2px; color: var(--text-faint); font-size:9.5px; font-weight:600;
-  padding: 4px 3px; flex:1; max-width: 92px; white-space:nowrap;
+  padding: 4px 3px; flex: 1 0 auto; min-width: 66px; max-width: 92px; white-space:nowrap;
 }
 .tab-btn.active{ color: var(--accent); }
 .tab-icon{ font-size: 20px; }

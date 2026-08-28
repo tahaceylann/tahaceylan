@@ -159,6 +159,16 @@
       <div id="achievementList" class="achievement-list"></div>
     </section>
 
+    <!-- Oda sekmesi (3D) -->
+    <section class="tab-panel tab-panel-room" id="tab-room" data-tab="room" hidden>
+      <div class="room-header">
+        <div id="roomTierTitle" class="room-title">🧑 Çaylak Fenomen</div>
+        <div id="roomTierDesc" class="room-desc">Elinde sadece telefonun var. Herkes bir yerden başlar!</div>
+      </div>
+      <div id="roomCanvasWrap" class="room-canvas-wrap"></div>
+      <div class="room-hint">👆 Odayı döndürmek için sürükle</div>
+    </section>
+
     <!-- Ayarlar sekmesi -->
     <section class="tab-panel" id="tab-settings" data-tab="settings" hidden>
       <div class="panel-card">
@@ -198,6 +208,9 @@
     <button class="tab-btn" data-tab="shop">
       <span class="tab-icon">🛍️</span><span class="tab-label">Mağaza</span>
     </button>
+    <button class="tab-btn" data-tab="room">
+      <span class="tab-icon">🛋️</span><span class="tab-label">Oda</span>
+    </button>
     <button class="tab-btn" data-tab="achievements">
       <span class="tab-icon">🏆</span><span class="tab-label">Başarımlar</span>
       <span class="tab-dot hidden" id="achDot"></span>
@@ -225,6 +238,8 @@
   <div class="modal" id="modalBox"></div>
 </div>
 
+<script src="vendor/three.min.js"></script>
 <script src="app.js"></script>
+<script src="room.js"></script>
 </body>
 </html>
