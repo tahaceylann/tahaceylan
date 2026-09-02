@@ -1,0 +1,416 @@
+{
+    "ios_app_store_link": "",
+    "android_play_store_link": "",
+    "sticker_packs": [
+        {
+            "identifier": "trendGunlukSozlerID",
+            "name": "Günlük Sözler",
+            "publisher": "Trend Sticker",
+            "tray_image_file": "tray_Cuppy.png",
+            "publisher_website": "",
+            "privacy_policy_website": "",
+            "license_agreement_website": "",
+            "stickers": [
+                {
+                    "image_file": "01_Cuppy_smile.png",
+                    "emojis": [
+                        "👍",
+                        "😊",
+                        "✨"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"SÜPERSİN\" yazan renkli, yuvarlak köşeli bir rozet."
+                },
+                {
+                    "image_file": "02_Cuppy_lol.png",
+                    "emojis": [
+                        "😂",
+                        "🤣",
+                        "😆"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"YOK ARTIK\" yazan renkli, yuvarlak köşeli bir rozet."
+                },
+                {
+                    "image_file": "03_Cuppy_rofl.png",
+                    "emojis": [
+                        "🤣",
+                        "😂",
+                        "💀"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"ÖLDÜM RESMEN\" yazan renkli, yuvarlak köşeli bir rozet."
+                },
+                {
+                    "image_file": "04_Cuppy_sad.png",
+                    "emojis": [
+                        "😢",
+                        "😔",
+                        "🥺"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"YAA\" yazan renkli, yuvarlak köşeli bir rozet."
+                },
+                {
+                    "image_file": "05_Cuppy_cry.png",
+                    "emojis": [
+                        "😭",
+                        "💔",
+                        "😢"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"ÇOK ÜZÜLDÜM\" yazan renkli, yuvarlak köşeli bir rozet."
+                },
+                {
+                    "image_file": "06_Cuppy_love.png",
+                    "emojis": [
+                        "😍",
+                        "❤️",
+                        "💕"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"AŞKIM\" yazan renkli, yuvarlak köşeli bir rozet."
+                },
+                {
+                    "image_file": "07_Cuppy_hate.png",
+                    "emojis": [
+                        "😤",
+                        "💔",
+                        "🙄"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"BIKTIM ARTIK\" yazan renkli, yuvarlak köşeli bir rozet."
+                },
+                {
+                    "image_file": "08_Cuppy_lovewithmug.png",
+                    "emojis": [
+                        "🥰",
+                        "❤️",
+                        "💗"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"CANIM BENİM\" yazan renkli, yuvarlak köşeli bir rozet."
+                },
+                {
+                    "image_file": "09_Cuppy_lovewithcookie.png",
+                    "emojis": [
+                        "❤️",
+                        "😘",
+                        "💕"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"SENİ SEVİYORUM\" yazan renkli, yuvarlak köşeli bir rozet."
+                },
+                {
+                    "image_file": "10_Cuppy_hmm.png",
+                    "emojis": [
+                        "🤔",
+                        "🧐",
+                        "💭"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"DÜŞÜNEYİM\" yazan renkli, yuvarlak köşeli bir rozet."
+                },
+                {
+                    "image_file": "11_Cuppy_upset.png",
+                    "emojis": [
+                        "😱",
+                        "😳",
+                        "‼️"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"CİDDİ MİSİN\" yazan renkli, yuvarlak köşeli bir rozet."
+                },
+                {
+                    "image_file": "12_Cuppy_angry.png",
+                    "emojis": [
+                        "😡",
+                        "😠",
+                        "💢"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"SİNİR OLDUM\" yazan renkli, yuvarlak köşeli bir rozet."
+                },
+                {
+                    "image_file": "13_Cuppy_curious.png",
+                    "emojis": [
+                        "🤨",
+                        "❓",
+                        "🙄"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"EMİN MİSİN\" yazan renkli, yuvarlak köşeli bir rozet."
+                },
+                {
+                    "image_file": "14_Cuppy_weird.png",
+                    "emojis": [
+                        "😅",
+                        "🙃",
+                        "😬"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"TUHAF YA\" yazan renkli, yuvarlak köşeli bir rozet."
+                },
+                {
+                    "image_file": "15_Cuppy_bluescreen.png",
+                    "emojis": [
+                        "🤯",
+                        "😵",
+                        "💥"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"BEYNİM ATTI\" yazan renkli, yuvarlak köşeli bir rozet."
+                },
+                {
+                    "image_file": "16_Cuppy_angry.png",
+                    "emojis": [
+                        "😤",
+                        "🛑",
+                        "😩"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"YETER ARTIK\" yazan renkli, yuvarlak köşeli bir rozet."
+                },
+                {
+                    "image_file": "17_Cuppy_tired.png",
+                    "emojis": [
+                        "😩",
+                        "🥱",
+                        "😪"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"BİTTİM RESMEN\" yazan renkli, yuvarlak köşeli bir rozet."
+                },
+                {
+                    "image_file": "18_Cuppy_workhard.png",
+                    "emojis": [
+                        "😪",
+                        "😴",
+                        "🥱"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"ÇOK YORULDUM\" yazan renkli, yuvarlak köşeli bir rozet."
+                },
+                {
+                    "image_file": "19_Cuppy_shine.png",
+                    "emojis": [
+                        "✨",
+                        "🎉",
+                        "👏"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"HARİKASIN\" yazan renkli, yuvarlak köşeli bir rozet."
+                },
+                {
+                    "image_file": "20_Cuppy_disgusting.png",
+                    "emojis": [
+                        "🤢",
+                        "🤮",
+                        "😖"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"İĞRENÇ YA\" yazan renkli, yuvarlak köşeli bir rozet."
+                },
+                {
+                    "image_file": "21_Cuppy_hi.png",
+                    "emojis": [
+                        "👋",
+                        "🙋",
+                        "😄"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"SELAM\" yazan renkli, yuvarlak köşeli bir rozet."
+                },
+                {
+                    "image_file": "22_Cuppy_bye.png",
+                    "emojis": [
+                        "👋",
+                        "😊",
+                        "🚶"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"GÖRÜŞÜRÜZ\" yazan renkli, yuvarlak köşeli bir rozet."
+                }
+            ]
+        },
+        {
+            "identifier": "trendHareketliStickerID",
+            "name": "Hareketli Sticker'lar",
+            "publisher": "Trend Sticker",
+            "tray_image_file": "tray_TogetherAtHome.png",
+            "publisher_website": "",
+            "privacy_policy_website": "",
+            "license_agreement_website": "",
+            "animated_sticker_pack": true,
+            "stickers": [
+                {
+                    "image_file": "01_SendingLove.webp",
+                    "emojis": [
+                        "🏃",
+                        "💨",
+                        "😄"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"SANA GELİYORUM\" yazan renkli bir rozet, hafifçe zıplayarak büyüyüp küçülür."
+                },
+                {
+                    "image_file": "02_WellDoThisTogether.webp",
+                    "emojis": [
+                        "💪",
+                        "🤝",
+                        "✊"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"BİRLİKTE BAŞARIRIZ\" yazan renkli bir rozet, hafifçe zıplayarak büyüyüp küçülür."
+                },
+                {
+                    "image_file": "03_Heart.webp",
+                    "emojis": [
+                        "❤️",
+                        "💓",
+                        "😍"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"KALBİM SENİN\" yazan renkli bir rozet, hafifçe zıplayarak büyüyüp küçülür."
+                },
+                {
+                    "image_file": "04_AirHighFive.webp",
+                    "emojis": [
+                        "🖐️",
+                        "🙌",
+                        "✋"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"HAYDİ BEŞLİK ÇAK\" yazan renkli bir rozet, hafifçe zıplayarak büyüyüp küçülür."
+                },
+                {
+                    "image_file": "05_GroupVideoCalling.webp",
+                    "emojis": [
+                        "📱",
+                        "🎥",
+                        "👋"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"GÖRÜŞELİM Mİ\" yazan renkli bir rozet, hafifçe zıplayarak büyüyüp küçülür."
+                },
+                {
+                    "image_file": "06_StayConnected.webp",
+                    "emojis": [
+                        "🤗",
+                        "💙",
+                        "🙋"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"HER ZAMAN YANINDAYIM\" yazan renkli bir rozet, hafifçe zıplayarak büyüyüp küçülür."
+                },
+                {
+                    "image_file": "07_OK.webp",
+                    "emojis": [
+                        "👍",
+                        "😎",
+                        "🤙"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"TAMAMDIR KANKA\" yazan renkli bir rozet, hafifçe zıplayarak büyüyüp küçülür."
+                },
+                {
+                    "image_file": "08_AreYouOK.webp",
+                    "emojis": [
+                        "❓",
+                        "🤔",
+                        "💬"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"İYİ MİSİN\" yazan renkli bir rozet, hafifçe zıplayarak büyüyüp küçülür."
+                },
+                {
+                    "image_file": "09_StayingHomeMug.webp",
+                    "emojis": [
+                        "🏠",
+                        "☕",
+                        "😌"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"EVDEYİM ŞU AN\" yazan renkli bir rozet, hafifçe zıplayarak büyüyüp küçülür."
+                },
+                {
+                    "image_file": "10_WorkingFromBed.webp",
+                    "emojis": [
+                        "⏳",
+                        "💻",
+                        "🔥"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"AZ KALDI BİTİYOR\" yazan renkli bir rozet, hafifçe zıplayarak büyüyüp küçülür."
+                },
+                {
+                    "image_file": "11_StayCalm.webp",
+                    "emojis": [
+                        "🧘",
+                        "🙏",
+                        "☺️"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"SAKİN OL DOSTUM\" yazan renkli bir rozet, hafifçe zıplayarak büyüyüp küçülür."
+                },
+                {
+                    "image_file": "12_Gymnastics.webp",
+                    "emojis": [
+                        "⚡",
+                        "💪",
+                        "🔥"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"ENERJİM TAM\" yazan renkli bir rozet, hafifçe zıplayarak büyüyüp küçülür."
+                },
+                {
+                    "image_file": "13_DoubleChecking.webp",
+                    "emojis": [
+                        "🔍",
+                        "👀",
+                        "🧐"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"BİR BAKAYIM\" yazan renkli bir rozet, hafifçe zıplayarak büyüyüp küçülür."
+                },
+                {
+                    "image_file": "14_CatOnTheLaptop.webp",
+                    "emojis": [
+                        "🐱",
+                        "😽",
+                        "💻"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"KEDİ MODU AÇIK\" yazan renkli bir rozet, hafifçe zıplayarak büyüyüp küçülür."
+                },
+                {
+                    "image_file": "15_WorkingFromHomeF.webp",
+                    "emojis": [
+                        "💻",
+                        "🏠",
+                        "👩"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"EVDEN ÇALIŞIYORUM\" yazan renkli bir rozet, hafifçe zıplayarak büyüyüp küçülür."
+                },
+                {
+                    "image_file": "16_WorkingFromHomeM.webp",
+                    "emojis": [
+                        "💼",
+                        "☕",
+                        "🚀"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"MESAİYE BAŞLADIK\" yazan renkli bir rozet, hafifçe zıplayarak büyüyüp küçülür."
+                },
+                {
+                    "image_file": "17_WashingHands.webp",
+                    "emojis": [
+                        "🧼",
+                        "✋",
+                        "✨"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"TEMİZ ELLER İYİDİR\" yazan renkli bir rozet, hafifçe zıplayarak büyüyüp küçülür."
+                },
+                {
+                    "image_file": "18_DontTouchYourFace.webp",
+                    "emojis": [
+                        "⚠️",
+                        "🙏",
+                        "😊"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"AMAN DİKKATLİ OL\" yazan renkli bir rozet, hafifçe zıplayarak büyüyüp küçülür."
+                },
+                {
+                    "image_file": "19_SocialDistancing.webp",
+                    "emojis": [
+                        "👍",
+                        "🙌",
+                        "😊"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"HER ŞEY YOLUNDA\" yazan renkli bir rozet, hafifçe zıplayarak büyüyüp küçülür."
+                },
+                {
+                    "image_file": "20_SuperheroNurse.webp",
+                    "emojis": [
+                        "🦸",
+                        "💪",
+                        "✨"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"SÜPER KAHRAMANSIN\" yazan renkli bir rozet, hafifçe zıplayarak büyüyüp küçülür."
+                },
+                {
+                    "image_file": "21_YouAreMyHero.webp",
+                    "emojis": [
+                        "🦸",
+                        "🙏",
+                        "❤️"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"SEN BENİM KAHRAMANIMSIN\" yazan renkli bir rozet, hafifçe zıplayarak büyüyüp küçülür."
+                }
+            ]
+        }
+    ]
+}
