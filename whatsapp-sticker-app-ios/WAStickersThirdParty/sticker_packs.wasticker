@@ -208,6 +208,33 @@
                         "🚶"
                     ],
                     "accessibility_text": "Kalın beyaz harflerle \"GÖRÜŞÜRÜZ\" yazan renkli, yuvarlak köşeli bir rozet."
+                },
+                {
+                    "image_file": "23_Cuppy_greentea.png",
+                    "emojis": [
+                        "👏",
+                        "🎉",
+                        "😊"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"AFERİN SANA\" yazan renkli, yuvarlak köşeli bir rozet."
+                },
+                {
+                    "image_file": "24_Cuppy_phone.png",
+                    "emojis": [
+                        "💪",
+                        "🙏",
+                        "😊"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"KOLAY GELSİN\" yazan renkli, yuvarlak köşeli bir rozet."
+                },
+                {
+                    "image_file": "25_Cuppy_battery.png",
+                    "emojis": [
+                        "🙏",
+                        "💐",
+                        "😊"
+                    ],
+                    "accessibility_text": "Kalın beyaz harflerle \"GEÇMİŞ OLSUN\" yazan renkli, yuvarlak köşeli bir rozet."
                 }
             ]
         },

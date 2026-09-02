@@ -4,7 +4,7 @@ Bu klasör, kullanıcıların **WhatsApp**'ta kullanabileceği, "trend" Türkçe
 sohbet ifadelerinden oluşan **iki sticker paketini** doğrudan WhatsApp'ın
 sticker tepsisine ekleyen, bağımsız bir **iOS** uygulamasıdır.
 
-> 43 sticker'ın tamamı bu proje için **özgün olarak üretildi** (Python/Pillow
+> 46 sticker'ın tamamı bu proje için **özgün olarak üretildi** (Python/Pillow
 > ile programatik olarak çizildi). İnternette dolaşan telifli meme/karakter
 > görselleri kopyalanmadı — bunun yerine, popüler Türkçe sohbet kalıplarını
 > ("Yok Artık", "Süpersin", "Tamamdır Kanka" vb.) renkli, okunaklı rozet
@@ -13,8 +13,8 @@ sticker tepsisine ekleyen, bağımsız bir **iOS** uygulamasıdır.
 
 ## Uygulama neler yapar?
 
-- **Günlük Sözler** paketi: 22 statik (PNG) sticker — "Süpersin", "Yok Artık",
-  "Aşkım", "Selam" gibi günlük tepki ifadeleri.
+- **Günlük Sözler** paketi: 25 statik (PNG) sticker — "Süpersin", "Yok Artık",
+  "Aşkım", "Selam", "Geçmiş Olsun" gibi günlük tepki ifadeleri.
 - **Hareketli Sticker'lar** paketi: 21 hafifçe zıplayan/animasyonlu (WebP)
   sticker — "Tamamdır Kanka", "Sana Geliyorum", "Sen Benim Kahramanımsın" gibi
   daha "trend"/enerjik ifadeler.
