@@ -114,6 +114,18 @@ python main.py
 # gerçek API anahtarlarınızla çalıştırın (küçük miktarla başlayın!)
 ```
 
+## Coinler Arası Karşılaştırma (hangi coin geçmişte daha iyi çalışmış?)
+
+```bash
+python compare_symbols.py --quote TRY --interval 15m --limit 1000
+```
+
+Borsadaki tüm TRY paritelerinde (veya `--symbols BTC_TRY,ETH_TRY,SOL_TRY`
+ile verdiğiniz listede) botun stratejisini geçmiş veriyle çalıştırıp
+getiriye göre sıralar. ⚠️ **Geçmişte iyi sonuç vermiş olması gelecekte de
+aynı olacağı anlamına gelmez** — bu bir yatırım tavsiyesi değil, sadece
+stratejinin farklı coinlerdeki geçmiş davranışını karşılaştırma aracıdır.
+
 ## Testler
 
 ```bash
