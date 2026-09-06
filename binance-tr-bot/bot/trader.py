@@ -18,8 +18,10 @@ logger = logging.getLogger(__name__)
 
 
 def split_symbol_assets(symbol: str, quote_hints: tuple[str, ...] = ("TRY", "USDT", "BTC", "ETH")) -> tuple[str, str]:
-    """Best-effort split of e.g. BTCTRY -> (BTC, TRY) without needing
-    exchangeInfo (falls back to it being unavailable in dry-run/tests)."""
+    """Best-effort split of e.g. BTC_TRY / BTCTRY -> (BTC, TRY)."""
+    if "_" in symbol:
+        base, _, quote = symbol.partition("_")
+        return base, quote
     for quote in quote_hints:
         if symbol.endswith(quote) and len(symbol) > len(quote):
             return symbol[: -len(quote)], quote
@@ -31,7 +33,9 @@ class Trader:
     def __init__(self, config: Config):
         config.validate()
         self.config = config
-        self.client = BinanceClient(config.api_key, config.api_secret, config.base_url)
+        self.client = BinanceClient(
+            config.api_key, config.api_secret, config.trade_base_url, config.market_base_url
+        )
         self.notifier = TelegramNotifier(config.telegram_bot_token, config.telegram_chat_id)
         self.strategy_params = StrategyParams(
             fast_ma=config.fast_ma,
@@ -94,6 +98,23 @@ class Trader:
     def current_price(self, df) -> float:
         return float(df.iloc[-1]["close"])
 
+    def _fetch_fill(self, order_id, fallback_price: float, fallback_qty: float) -> tuple[float, float]:
+        """Binance TR's order-placement response carries no fill info
+        (just orderId/createTime) - query the order to find out how it
+        actually filled. Falls back to the estimate if the query fails."""
+        for _ in range(3):
+            time.sleep(1)
+            try:
+                detail = self.client.get_order(self.config.symbol, order_id)
+                qty = float(detail.get("executedQty") or 0)
+                px = float(detail.get("executedPrice") or 0)
+                if qty > 0 and px > 0:
+                    return px, qty
+            except ExchangeError as exc:
+                logger.warning("Emir detayi sorgulanamadi: %s", exc)
+                break
+        return fallback_price, fallback_qty
+
     def place_buy(self, price: float) -> None:
         quantity = self.config.quote_order_size / price
         if self.config.dry_run:
@@ -104,11 +125,7 @@ class Trader:
                 order = self.client.create_market_order(
                     self.config.symbol, "BUY", quote_order_qty=self.config.quote_order_size
                 )
-                fill_qty = float(order.get("executedQty", quantity))
-                fill_price = float(order.get("price") or price)
-                cumm_quote = float(order.get("cummulativeQuoteQty", 0) or 0)
-                if fill_qty > 0 and cumm_quote > 0:
-                    fill_price = cumm_quote / fill_qty
+                fill_price, fill_qty = self._fetch_fill(order.get("orderId"), price, quantity)
                 self.position = Position(
                     symbol=self.config.symbol, entry_price=fill_price, quantity=fill_qty
                 )

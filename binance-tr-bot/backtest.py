@@ -6,7 +6,7 @@ key required) and simulates the strategy + risk management rules
 bar-by-bar, printing a summary of trades and overall return.
 
 Usage:
-    python backtest.py --symbol BTCTRY --interval 15m --limit 1000
+    python backtest.py --symbol BTC_TRY --interval 15m --limit 1000
 """
 from __future__ import annotations
 
@@ -24,7 +24,7 @@ logger = logging.getLogger("backtest")
 
 
 def run_backtest(symbol: str, interval: str, limit: int, config: Config) -> None:
-    client = BinanceClient("", "", config.base_url)
+    client = BinanceClient("", "", config.trade_base_url, config.market_base_url)
     klines = client.get_klines(symbol, interval, limit=limit)
     df = klines_to_dataframe(klines)
 

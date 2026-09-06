@@ -34,13 +34,20 @@ def _int(name: str, default: int) -> int:
 class Config:
     api_key: str = field(default_factory=lambda: os.getenv("BINANCE_API_KEY", ""))
     api_secret: str = field(default_factory=lambda: os.getenv("BINANCE_API_SECRET", ""))
-    base_url: str = field(
-        default_factory=lambda: os.getenv(
-            "BINANCE_BASE_URL", "https://api.binance.com/api/v3"
-        )
+    # Binance TR splits its API across two hosts (see bot/exchange.py):
+    #   - trading/account endpoints:  https://www.binance.tr/open/v1/...
+    #   - public market data:         https://api.binance.me/api/v1/...
+    trade_base_url: str = field(
+        default_factory=lambda: os.getenv("BINANCE_TRADE_BASE_URL", "https://www.binance.tr")
+    )
+    market_base_url: str = field(
+        default_factory=lambda: os.getenv("BINANCE_MARKET_BASE_URL", "https://api.binance.me")
     )
 
-    symbol: str = field(default_factory=lambda: os.getenv("SYMBOL", "BTCUSDT"))
+    # Symbol in Binance TR's native underscore format, e.g. BTC_TRY,
+    # BTC_USDT. The exchange client converts it automatically for the
+    # market-data endpoints, which expect no underscore (BTCUSDT).
+    symbol: str = field(default_factory=lambda: os.getenv("SYMBOL", "BTC_TRY"))
     interval: str = field(default_factory=lambda: os.getenv("INTERVAL", "15m"))
 
     fast_ma: int = field(default_factory=lambda: _int("FAST_MA", 9))
