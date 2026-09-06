@@ -171,6 +171,30 @@ class BotApp(tk.Tk):
             fill="x", pady=(2, 0), ipady=4
         )
 
+        # telegram bildirimleri (opsiyonel)
+        tg_header = tk.Frame(form, bg=PANEL)
+        tg_header.pack(fill="x", pady=(10, 0))
+        ttk.Label(
+            tg_header, text="Telegram Bildirimleri (opsiyonel)", style="Muted.TLabel",
+            font=("Segoe UI", 9, "bold"),
+        ).pack(anchor="w")
+
+        tg_token_row = tk.Frame(form, bg=PANEL)
+        tg_token_row.pack(fill="x", pady=5)
+        ttk.Label(tg_token_row, text="Bot Token", style="Muted.TLabel").pack(anchor="w")
+        self.vars["TELEGRAM_BOT_TOKEN"] = tk.StringVar(value=os.getenv("TELEGRAM_BOT_TOKEN", ""))
+        ttk.Entry(tg_token_row, textvariable=self.vars["TELEGRAM_BOT_TOKEN"], style="TEntry", show="•").pack(
+            fill="x", pady=(2, 0), ipady=4
+        )
+
+        tg_chat_row = tk.Frame(form, bg=PANEL)
+        tg_chat_row.pack(fill="x", pady=5)
+        ttk.Label(tg_chat_row, text="Chat ID", style="Muted.TLabel").pack(anchor="w")
+        self.vars["TELEGRAM_CHAT_ID"] = tk.StringVar(value=os.getenv("TELEGRAM_CHAT_ID", ""))
+        ttk.Entry(tg_chat_row, textvariable=self.vars["TELEGRAM_CHAT_ID"], style="TEntry").pack(
+            fill="x", pady=(2, 0), ipady=4
+        )
+
         # dry run toggle
         toggle_row = tk.Frame(form, bg=PANEL)
         toggle_row.pack(fill="x", pady=(10, 4))
