@@ -68,6 +68,7 @@ class BotApp(tk.Tk):
         self.trader: Trader | None = None
         self.bot_thread: threading.Thread | None = None
         self.running = False
+        self._log_handler: "QueueLogHandler | None" = None
 
         self._ensure_env_file()
         self._build_style()
@@ -287,11 +288,15 @@ class BotApp(tk.Tk):
             messagebox.showerror("Yapılandırma Hatası", str(exc))
             return
 
-        handler = QueueLogHandler(self.log_queue)
-        handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s", "%H:%M:%S"))
         root_logger = logging.getLogger()
         root_logger.setLevel(logging.INFO)
-        root_logger.addHandler(handler)
+        if self._log_handler is not None:
+            root_logger.removeHandler(self._log_handler)
+        self._log_handler = QueueLogHandler(self.log_queue)
+        self._log_handler.setFormatter(
+            logging.Formatter("%(asctime)s [%(levelname)s] %(message)s", "%H:%M:%S")
+        )
+        root_logger.addHandler(self._log_handler)
 
         self.running = True
         self.bot_thread = threading.Thread(target=self._run_loop, daemon=True)
