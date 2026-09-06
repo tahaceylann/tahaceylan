@@ -137,6 +137,7 @@ class BotApp(tk.Tk):
         cfg = Config()
 
         fields = [
+            ("BINANCE_BASE_URL", "Borsa API adresi", cfg.base_url),
             ("SYMBOL", "İşlem çifti", cfg.symbol),
             ("INTERVAL", "Mum periyodu", cfg.interval),
             ("QUOTE_ORDER_SIZE", "Emir başı miktar", str(cfg.quote_order_size)),

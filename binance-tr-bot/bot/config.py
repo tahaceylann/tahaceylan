@@ -36,11 +36,11 @@ class Config:
     api_secret: str = field(default_factory=lambda: os.getenv("BINANCE_API_SECRET", ""))
     base_url: str = field(
         default_factory=lambda: os.getenv(
-            "BINANCE_BASE_URL", "https://www.binance.tr/apiproxy/v3/api"
+            "BINANCE_BASE_URL", "https://api.binance.com/api/v3"
         )
     )
 
-    symbol: str = field(default_factory=lambda: os.getenv("SYMBOL", "BTCTRY"))
+    symbol: str = field(default_factory=lambda: os.getenv("SYMBOL", "BTCUSDT"))
     interval: str = field(default_factory=lambda: os.getenv("INTERVAL", "15m"))
 
     fast_ma: int = field(default_factory=lambda: _int("FAST_MA", 9))

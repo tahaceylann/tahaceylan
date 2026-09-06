@@ -60,11 +60,14 @@ class BinanceClient:
             raise ExchangeError(f"Network error calling {path}: {exc}") from exc
 
         if resp.status_code >= 400:
-            raise ExchangeError(f"{resp.status_code} {path}: {resp.text}")
+            raise ExchangeError(f"{resp.status_code} {path}: {resp.text[:300]}")
         try:
             return resp.json()
         except ValueError as exc:
-            raise ExchangeError(f"Invalid JSON from {path}: {resp.text}") from exc
+            raise ExchangeError(
+                f"{path} JSON dondurmedi (muhtemelen yanlis BINANCE_BASE_URL - HTML sayfasi "
+                f"gelmis olabilir): {resp.text[:300]}"
+            ) from exc
 
     # -- public market data -----------------------------------------
     def get_klines(self, symbol: str, interval: str, limit: int = 200) -> list[list[Any]]:

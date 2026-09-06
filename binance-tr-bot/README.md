@@ -4,6 +4,14 @@ Binance TR (veya herhangi bir Binance API uyumlu borsa) üzerinde otomatik
 alım-satım yapan, risk yönetimi ve kağıt üzerinde test (dry-run) modu
 içeren profesyonel bir Python trading botu.
 
+⚠️ **Binance TR notu:** Binance TR 2025'te perakende işlem hizmetini
+sonlandırdı; eski API adresi artık JSON yerine web sitesinin HTML'ini
+döndürüyor ve çalışmıyor. Bot varsayılan olarak **Binance'in global API'sine**
+(`api.binance.com`) bağlanacak şekilde ayarlandı — kod tamamen uyumlu,
+sadece `BINANCE_BASE_URL` ve `SYMBOL` değerleri güncellendi. Kendi
+kullandığınız borsa farklıysa (BTCTurk, Paribu vb.) `bot/exchange.py`
+dosyasındaki istemcinin o borsanın API formatına uyarlanması gerekir.
+
 ⚠️ **Uyarı:** Kripto para ticareti yüksek risk içerir. Bu bot bir yatırım
 tavsiyesi değildir. Gerçek parayla (`DRY_RUN=false`) çalıştırmadan önce
 mutlaka backtest yapın, küçük miktarlarla test edin ve kaybetmeyi göze
