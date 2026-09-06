@@ -22,7 +22,45 @@ alabileceğinizden fazlasını riske atmayın.
 - **Telegram bildirimleri** (opsiyonel): her alım/satımda mesaj gönderir
 - **Kapsamlı loglama** ve otomatik yeniden deneme mantığı
 
-## Kurulum
+## 🖥️ Masaüstü Uygulaması (GUI) — Tek Tuşla Başlatma
+
+Botu terminal yerine görsel bir kontrol panelinden çalıştırmak isterseniz:
+
+### A) Kaynaktan çalıştırma (en hızlı yol)
+
+- **Windows**: `run_gui.bat` dosyasına çift tıklayın.
+- **Linux/macOS**: `./run_gui.sh` çalıştırın.
+
+Bağımlılıkları otomatik kurar, `.env` yoksa oluşturur ve pencereyi açar.
+
+### B) Gerçek bir `.exe` oluşturma (Windows)
+
+`.exe` yalnızca Windows üzerinde derlenebilir (Linux'tan çapraz derleme
+güvenilir değildir), bu yüzden aşağıdaki adımı **kendi Windows
+bilgisayarınızda** yapmanız gerekir:
+
+1. [Python 3.10+](https://www.python.org/downloads/) kurun ("Add python.exe
+   to PATH" kutusunu işaretleyin).
+2. Bu klasörü (`binance-tr-bot`) Windows bilgisayarınıza kopyalayın.
+3. `build_windows_exe.bat` dosyasına **çift tıklayın**.
+4. Birkaç dakika sonra `dist\BinanceTRBot.exe` oluşur.
+5. Bundan sonra botu açmak için sadece bu `.exe` dosyasına çift tıklamanız
+   yeterli — kurulum, Python vs. gerekmez.
+
+> `.exe`'yi çalıştırdığınız klasörde bir `.env` dosyası bulunmalı (ayarlar
+> oradan okunur). GUI içinden "Ayarları Kaydet" butonuyla da düzenleyip
+> kaydedebilirsiniz.
+
+### GUI'de neler var?
+
+- Sembol, periyot, emir miktarı, stop-loss/take-profit/günlük zarar limiti
+  gibi ayarları formdan düzenleyip **Ayarları Kaydet** ile `.env`'e yazma
+  - Dry-Run / Canlı mod anahtarı (canlı moda geçerken onay istenir)
+- **BAŞLAT / DURDUR** butonlarıyla tek tıkla kontrol
+- Açık pozisyon, son fiyat ve günlük kâr/zarar kartları
+- Canlı log akışı (hata/uyarı satırları renkli gösterilir)
+
+## Kurulum (komut satırından)
 
 ```bash
 cd binance-tr-bot
@@ -74,7 +112,10 @@ pytest tests/ -v
 
 ```
 binance-tr-bot/
-├── main.py            # giriş noktası, ana döngüyü başlatır
+├── main.py            # giriş noktası (komut satırı), ana döngüyü başlatır
+├── gui.py              # masaüstü kontrol paneli (Tkinter)
+├── build_windows_exe.bat  # Windows'ta .exe olusturucu (PyInstaller)
+├── run_gui.bat / run_gui.sh  # tek tikla/tek komutla GUI baslatici
 ├── backtest.py         # geçmiş veri üzerinde strateji testi
 ├── bot/
 │   ├── config.py       # .env tabanlı yapılandırma
