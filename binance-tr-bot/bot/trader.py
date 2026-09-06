@@ -51,6 +51,8 @@ class Trader:
             max_daily_loss_pct=config.max_daily_loss_pct,
         )
         self.base_asset, self.quote_asset = split_symbol_assets(config.symbol)
+        self.last_price: float | None = None
+        self.last_signal: str = "-"
 
         state = load_state(config.state_file)
         self.position: Position | None = (
@@ -92,6 +94,11 @@ class Trader:
     def fetch_dataframe(self):
         limit = max(200, self.strategy_params.slow_ma + 50)
         klines = self.client.get_klines(self.config.symbol, self.config.interval, limit=limit)
+        if not klines:
+            raise ExchangeError(
+                f"{self.config.symbol}/{self.config.interval} icin mum verisi bos dondu "
+                "(sembol veya periyot borsada desteklenmiyor olabilir)."
+            )
         df = klines_to_dataframe(klines)
         return compute_indicators(df, self.strategy_params)
 
@@ -167,6 +174,7 @@ class Trader:
             return
 
         price = self.current_price(df)
+        self.last_price = price
 
         if self.position:
             exit_flag, reason = self.risk.should_exit(self.position, price)
@@ -175,11 +183,18 @@ class Trader:
                 self.place_sell(price, reason)
                 return
             signal = generate_signal(df, self.strategy_params, in_position=True)
+            self.last_signal = signal.value
+            logger.info(
+                "%s | fiyat=%.8g | pozisyon=%.8g@%.8g | sinyal=%s",
+                self.config.symbol, price, self.position.quantity, self.position.entry_price, signal.value,
+            )
             if signal == Signal.SELL:
                 self.place_sell(price, "signal")
             return
 
         signal = generate_signal(df, self.strategy_params, in_position=False)
+        self.last_signal = signal.value
+        logger.info("%s | fiyat=%.8g | pozisyon=yok | sinyal=%s", self.config.symbol, price, signal.value)
         if signal == Signal.BUY:
             self.place_buy(price)
 

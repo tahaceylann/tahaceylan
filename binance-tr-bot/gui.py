@@ -342,6 +342,8 @@ class BotApp(tk.Tk):
         if self.trader is not None:
             pos = self.trader.position
             self.card_position[1].configure(text=f"{pos.quantity:.6f} @ {pos.entry_price:.2f}" if pos else "Yok")
+            if self.trader.last_price is not None:
+                self.card_price[1].configure(text=f"{self.trader.last_price:.8g}")
             self.card_pnl[1].configure(text=f"%{self.trader.risk.daily_pnl_pct * 100:.2f}")
         self.after(2000, self._refresh_status)
 
