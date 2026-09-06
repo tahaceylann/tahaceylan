@@ -1,0 +1,100 @@
+# Binance TR Trading Bot
+
+Binance TR (veya herhangi bir Binance API uyumlu borsa) üzerinde otomatik
+alım-satım yapan, risk yönetimi ve kağıt üzerinde test (dry-run) modu
+içeren profesyonel bir Python trading botu.
+
+⚠️ **Uyarı:** Kripto para ticareti yüksek risk içerir. Bu bot bir yatırım
+tavsiyesi değildir. Gerçek parayla (`DRY_RUN=false`) çalıştırmadan önce
+mutlaka backtest yapın, küçük miktarlarla test edin ve kaybetmeyi göze
+alabileceğinizden fazlasını riske atmayın.
+
+## Özellikler
+
+- **Strateji**: EMA (hızlı/yavaş) kesişimi + RSI filtresi ile alım/satım sinyali
+- **Risk yönetimi**: stop-loss, take-profit, trailing stop ve günlük zarar
+  limitine ulaşınca otomatik duran "kill-switch"
+- **Dry-run (kağıt üzerinde işlem) modu**: gerçek emir göndermeden stratejiyi
+  canlı piyasa verisiyle test edebilirsiniz
+- **Durum kalıcılığı**: bot yeniden başlatılsa bile açık pozisyon ve günlük
+  zarar sayaçları `state.json` dosyasından geri yüklenir
+- **Backtest scripti**: geçmiş mum verileriyle stratejiyi hızlıca test edin
+- **Telegram bildirimleri** (opsiyonel): her alım/satımda mesaj gönderir
+- **Kapsamlı loglama** ve otomatik yeniden deneme mantığı
+
+## Kurulum
+
+```bash
+cd binance-tr-bot
+pip install -r requirements.txt
+cp .env.example .env
+# .env dosyasını kendi API anahtarlarınız ve tercihlerinizle düzenleyin
+```
+
+## Yapılandırma
+
+Tüm ayarlar `.env` dosyasından okunur (bkz. `.env.example`):
+
+| Değişken | Açıklama |
+|---|---|
+| `BINANCE_API_KEY` / `BINANCE_API_SECRET` | API kimlik bilgileri (sadece `DRY_RUN=false` iken gerekli) |
+| `BINANCE_BASE_URL` | Borsanın REST API adresi |
+| `SYMBOL` | İşlem çifti, örn. `BTCTRY` |
+| `INTERVAL` | Mum periyodu: `1m,5m,15m,1h,4h,1d...` |
+| `FAST_MA` / `SLOW_MA` | EMA periyotları |
+| `RSI_PERIOD`, `RSI_OVERBOUGHT`, `RSI_OVERSOLD` | RSI filtre ayarları |
+| `QUOTE_ORDER_SIZE` | Her alımda harcanacak kotasyon para miktarı (örn. TRY) |
+| `STOP_LOSS_PCT`, `TAKE_PROFIT_PCT`, `TRAILING_STOP_PCT` | Pozisyon risk yönetimi |
+| `MAX_DAILY_LOSS_PCT` | Günlük zarar limiti aşılınca bot işlem yapmayı durdurur |
+| `DRY_RUN` | `true` ise gerçek emir gönderilmez (varsayılan ve önerilen başlangıç) |
+| `POLL_SECONDS` | Her döngü arası bekleme süresi |
+| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | Opsiyonel bildirimler |
+
+## Çalıştırma
+
+```bash
+# Önce backtest ile stratejiyi geçmiş veriyle test edin
+python backtest.py --symbol BTCTRY --interval 15m --limit 1000
+
+# Ardından dry-run modunda canlı piyasada (gerçek emir göndermeden) izleyin
+python main.py
+
+# Stratejiden memnun kalınca .env içinde DRY_RUN=false yapıp
+# gerçek API anahtarlarınızla çalıştırın (küçük miktarla başlayın!)
+```
+
+## Testler
+
+```bash
+pip install pytest
+pytest tests/ -v
+```
+
+## Mimari
+
+```
+binance-tr-bot/
+├── main.py            # giriş noktası, ana döngüyü başlatır
+├── backtest.py         # geçmiş veri üzerinde strateji testi
+├── bot/
+│   ├── config.py       # .env tabanlı yapılandırma
+│   ├── exchange.py     # Binance API uyumlu imzalı REST istemcisi
+│   ├── indicators.py   # SMA/EMA/RSI hesaplamaları
+│   ├── strategy.py     # alım/satım sinyali üretimi
+│   ├── risk.py         # stop-loss/take-profit/trailing/kill-switch
+│   ├── state.py        # JSON durum kalıcılığı (atomik yazım)
+│   └── notifier.py     # Telegram bildirimleri
+└── tests/
+    └── test_strategy.py
+```
+
+## Önemli Notlar
+
+- Binance TR'nin API adresini ve sembol formatlarını kendi hesabınızdan
+  doğrulayın; `BINANCE_BASE_URL` bu yüzden yapılandırılabilir bırakıldı.
+- API anahtarlarınıza yalnızca **spot trading** izni verin, **para çekme
+  izni vermeyin**.
+- `.env` dosyanızı asla commit etmeyin (`.gitignore` içinde zaten hariç
+  tutulmuştur).
+- Strateji basit ve okunabilir tutulmuştur (`bot/strategy.py`); daha
+  gelişmiş bir modelle kolayca değiştirilebilir.
