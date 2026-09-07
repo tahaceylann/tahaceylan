@@ -1,5 +1,32 @@
 # Sunucuya Kurulum (PC Kapalıyken de Çalışsın)
 
+## ⚡ Hızlı Kurulum (Tek Komut)
+
+Ubuntu/Debian tabanlı bir VPS'iniz (Hostinger dahil) varsa, terminale
+**root olarak** şu tek satırı yapıştırıp Enter'a basın — geri kalan
+her şeyi otomatik yapar:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/tahaceylann/tahaceylan/claude/binance-tr-trading-bot-qtshtz/binance-tr-bot/deploy/install.sh | bash
+```
+
+Bu, Python/git kurar, botu indirir, bağımlılıkları yükler, rastgele
+güçlü bir web paneli şifresi üretir ve `systemd` servisi olarak
+başlatır (sunucu yeniden başlasa bile bot otomatik açılır). İşlem
+bitince ekranda panel adresi (`http://SUNUCU_IP:8000`) ve şifreniz
+yazılı olarak çıkar — **not alın**.
+
+Kurulumdan sonra o adrese girip **API anahtarınızı, sembolü, risk
+ayarlarını ve Telegram bilgilerinizi** panelden girmeniz gerekiyor —
+script bunları sizin adınıza dolduramaz.
+
+Aşağıdaki adımlar bu tek komutun **ne yaptığını** manuel olarak
+gösterir — script sorunsuz çalıştıysa okumanıza gerek yok.
+
+---
+
+## Manuel Kurulum (Adım Adım)
+
 Bot, bir Linux sunucusunda (VPS) `main.py` ile GUI olmadan, arka planda
 sürekli çalışabilir. Bilgisayarınızı kapatsanız bile sunucu 7/24 açık
 kaldığı sürece bot çalışmaya devam eder. Durumu **Telegram bildirimleri**
