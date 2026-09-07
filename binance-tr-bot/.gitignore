@@ -1,0 +1,10 @@
+.env
+state.json
+dist/
+build/
+*.spec
+__pycache__/
+*.pyc
+.pytest_cache/
+venv/
+.venv/

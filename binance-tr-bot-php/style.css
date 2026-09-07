@@ -1,0 +1,35 @@
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background:#0f1420; color:#e6ebf5; font-family:-apple-system,Segoe UI,sans-serif; margin:0; }
+a { color:#3ecf8e; }
+header { padding:16px 20px; display:flex; justify-content:space-between; align-items:center; }
+h1 { font-size:18px; margin:0; }
+.muted { color:#8b93a7; font-size:12px; }
+.dot { width:10px; height:10px; border-radius:50%; display:inline-block; margin-right:6px; }
+.dot.on { background:#3ecf8e; } .dot.off { background:#8b93a7; }
+.logout { margin-left:16px; }
+main { display:grid; grid-template-columns: 320px 1fr; gap:16px; padding:0 20px 20px; }
+@media (max-width:800px) { main { grid-template-columns: 1fr; } }
+.panel { background:#161d2e; border:1px solid #28304a; border-radius:12px; padding:16px; margin-bottom:16px; }
+label { display:block; color:#8b93a7; font-size:12px; margin:10px 0 4px; }
+input[type=text], input[type=number], input[type=password] {
+  width:100%; padding:8px; background:#1e2740; border:1px solid #28304a; color:#e6ebf5;
+  border-radius:6px; font-size:14px;
+}
+button { cursor:pointer; border:none; border-radius:6px; padding:12px; font-weight:bold;
+  font-size:14px; width:100%; margin-top:10px; }
+.btn-save { background:#1e2740; color:#e6ebf5; }
+.btn-start { background:#3ecf8e; color:#062018; }
+.btn-stop { background:#e5484d; color:#2a0a0b; }
+.cards { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+.card { background:#161d2e; border:1px solid #28304a; border-radius:12px; padding:12px 16px; flex:1; min-width:120px; }
+.card .label { color:#8b93a7; font-size:12px; }
+.card .value { color:#3ecf8e; font-size:20px; font-weight:bold; margin-top:4px; }
+#logs { background:#0a0e17; border-radius:8px; padding:12px; max-height:50vh; overflow-y:auto;
+  font-family:Consolas,monospace; font-size:12px; white-space:pre-wrap; }
+.checkbox-row { display:flex; align-items:center; gap:8px; margin-top:10px; }
+.cronbox { display:block; background:#0a0e17; padding:10px; border-radius:6px; margin:8px 0;
+  word-break:break-all; font-size:12px; }
+.login-wrap { display:flex; align-items:center; justify-content:center; height:100vh; }
+.login-box { background:#161d2e; padding:32px; border-radius:12px; min-width:300px; }
+.error { color:#e5484d; }

@@ -1,0 +1,26 @@
+[Unit]
+Description=Binance TR Trading Bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Botun kopyalandigi klasoru gosterin (asagidaki DEPLOY.md ile ayni olmali)
+WorkingDirectory=/opt/binance-tr-bot
+# Web panelli surum (onerilen - tarayicidan kontrol):
+ExecStart=/opt/binance-tr-bot/venv/bin/python /opt/binance-tr-bot/web_app.py
+# Sadece komut satiri, panelsiz calistirmak isterseniz yukaridaki satiri
+# yorumlayip bunu acin:
+# ExecStart=/opt/binance-tr-bot/venv/bin/python /opt/binance-tr-bot/main.py
+Restart=always
+RestartSec=10
+# Cok sik crash/restart donguleri sunucuyu yormasin diye bir ust sinir:
+StartLimitIntervalSec=600
+StartLimitBurst=10
+
+# Botu ayri, dusuk yetkili bir kullanici olarak calistirmak icin (onerilir):
+# User=botuser
+# Group=botuser
+
+[Install]
+WantedBy=multi-user.target
