@@ -40,6 +40,7 @@ function default_config(): array {
         'max_daily_loss_pct' => 0.05,
         'telegram_bot_token' => '',
         'telegram_chat_id' => '',
+        'cron_secret' => bin2hex(random_bytes(16)),
     ];
 }
 
