@@ -35,7 +35,32 @@ alabileceğinizden fazlasını riske atmayın.
 - **Telegram bildirimleri** (opsiyonel): her alım/satımda mesaj gönderir
 - **Kapsamlı loglama** ve otomatik yeniden deneme mantığı
 
-## 🖥️ Masaüstü Uygulaması (GUI) — Tek Tuşla Başlatma
+## 🌐 Web Paneli (Sunucuda 7/24 Çalıştırma)
+
+Botu bilgisayarınız kapalıyken de çalıştırmak isterseniz (bir VPS/sunucuda),
+masaüstü GUI yerine **web panelini** kullanın — tarayıcıdan (bilgisayar
+veya telefondan) kontrol edilir, ekran gerektirmez.
+
+```bash
+pip install -r requirements.txt
+cp .env.example .env
+# .env icine guclu bir WEB_PASSWORD girin!
+python web_app.py
+```
+
+Sonra tarayıcıdan `http://SUNUCU_IP:8000` adresine gidin. Aynı ayarlar
+formu, BAŞLAT/DURDUR, canlı loglar ve pozisyon kartları masaüstü GUI'yle
+birebir aynı, sadece tarayıcı üzerinden.
+
+**Sunucuya adım adım kurulum için `DEPLOY.md` dosyasına bakın** — VPS
+kiralama, systemd servisi (sunucu yeniden başlasa bile bot otomatik
+açılır) ve güvenlik notları dahil.
+
+⚠️ `WEB_PASSWORD` ayarlamadan interneti açık bir sunucuda çalıştırmayın —
+aksi halde panelinizi (ve API anahtarlarınızı görüntüleme/değiştirme
+imkanını) herkes kullanabilir.
+
+## 🖥️ Masaüstü Uygulaması (GUI) — Tek Tuşla Başlatma (Windows'ta Yerel Kullanım)
 
 Botu terminal yerine görsel bir kontrol panelinden çalıştırmak isterseniz:
 
