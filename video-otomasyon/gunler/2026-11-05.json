@@ -1,0 +1,34 @@
+{
+  "baslik": "Fenomen Ol!",
+  "konu": "Örnek: repodaki 'Fenomen Ol!' oyununun tanıtım kısa videosu",
+  "ses": {
+    "model_id": "eleven_multilingual_v2",
+    "dil": "tr",
+    "stability": 0.45,
+    "similarity_boost": 0.8,
+    "style": 0.25
+  },
+  "sahneler": [
+    {
+      "ekran": "Telefonla başla 📱",
+      "anlatim": "Elinde sadece bir telefon var. Ama hayalin büyük: bir içerik imparatorluğu kurmak."
+    },
+    {
+      "ekran": "14 platform",
+      "anlatim": "Vloglarla başla, kısa videolara, canlı yayınlara ve podcastlere geç. Tam on dört platform seni bekliyor."
+    },
+    {
+      "ekran": "Menajer tut, otomatiğe bağla",
+      "anlatim": "Menajer tut, kanalların sen yokken de kazansın. Uygulamayı kapatsan bile para akmaya devam etsin."
+    },
+    {
+      "ekran": "Odan seninle büyüsün",
+      "anlatim": "Ring light, kamera, mikrofon, green screen... Her yeni platformla üç boyutlu stüdyon gerçekten dolar."
+    },
+    {
+      "ekran": "Sen de fenomen ol!",
+      "anlatim": "Ücretsiz, kurulum yok. Safari'den aç, ana ekrana ekle ve viral olmaya başla."
+    }
+  ],
+  "aciklama": "Telefonla başlayıp içerik imparatoru olabilir misin? 📱👑 #fenomenol #idlegame #tycoon"
+}
