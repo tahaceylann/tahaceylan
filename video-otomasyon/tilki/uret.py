@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tilki Haber: oyun haberi senaryosu -> ElevenLabs seslendirme -> tilki animasyonu -> 1080x1920 Shorts MP4.
+"""Fox Bülten (tilki spiker): oyun haberi senaryosu -> ElevenLabs seslendirme -> tilki animasyonu -> 1080x1920 Shorts MP4.
 
 Kullanım (repo kökünden):
   python3 video-otomasyon/tilki/uret.py <bolum>/senaryo.json              # ElevenLabs ile yayına hazır video
@@ -693,7 +693,7 @@ def srt_zaman(s: float) -> str:
     return f"{ms // 3600000:02d}:{ms // 60000 % 60:02d}:{ms // 1000 % 60:02d},{ms % 1000:03d}"
 
 
-def youtube_metni(senaryo: dict, kaynaklar: dict, kullanilan: list[str]) -> str:
+def youtube_metni(senaryo: dict, kaynaklar: dict, kullanilan: list[str], marka_ad: str = "Fox Bülten") -> str:
     yt, haber = senaryo.get("youtube", {}), senaryo.get("haber", {})
     satir = [yt.get("baslik", senaryo.get("baslik", "")), ""]
     if yt.get("aciklama"):
@@ -711,7 +711,7 @@ def youtube_metni(senaryo: dict, kaynaklar: dict, kullanilan: list[str]) -> str:
                      m.get("sayfa", "")]
             satir.append(" – ".join(p for p in parca if p))
     if not kullanilan:
-        satir += ["", "🖼️ Görseller: Bu bölümde yalnızca Tilki Haber bilgi grafikleri kullanıldı (üçüncü taraf görsel yok)."]
+        satir += ["", f"🖼️ Görseller: Bu bölümde yalnızca {marka_ad} bilgi grafikleri kullanıldı (üçüncü taraf görsel yok)."]
     satir += ["", "🎙️ Seslendirme: ElevenLabs ile yapay zekâ seslendirmesi. Tilki animasyonu bu kanal için üretilmiştir."]
     if kullanilan:
         satir.append("Görseller haber/bilgilendirme amacıyla, hak sahiplerinin resmî tanıtım materyallerinden kullanılmıştır.")
@@ -749,7 +749,7 @@ def kontrol_paftasi(video: Path, anlar: list[tuple[float, str]], hedef: Path, ca
 # ------------------------------------------------------------------ ana akış
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Tilki Haber Shorts üreticisi")
+    ap = argparse.ArgumentParser(description="Fox Bülten Shorts üreticisi")
     ap.add_argument("senaryo", type=Path)
     ap.add_argument("--onizleme", action="store_true", help="ElevenLabs yerine espeak-ng ile taslak üret")
     ap.add_argument("--metin", action="store_true", help="seslendirme metinlerini ve süre tahminini yazdır")
@@ -992,7 +992,7 @@ def main() -> None:
         w.writeframes(pcm)
 
     zaman = {
-        "fps": FPS, "sure": round(toplam, 3), "kareler": n_kare, "marka": ayar.get("marka", "TİLKİ HABER"),
+        "fps": FPS, "sure": round(toplam, 3), "kareler": n_kare, "marka": ayar.get("marka", "FOX BÜLTEN"), "marka_ad": ayar.get("marka_ad", "Fox Bülten"),
         "oyun": senaryo.get("oyun", ""), "onizleme": arg.onizleme,
         "manset": senaryo.get("manset") or senaryo.get("haber", {}).get("baslik", ""),
         "kayan": senaryo.get("kayan", []), "tarih": senaryo.get("tarih", ""),
@@ -1050,7 +1050,7 @@ def main() -> None:
     for o in gorsel_olaylari:
         if not o.get("grafik") and o["anahtar"] not in kullanilan:
             kullanilan.append(o["anahtar"])
-    (cikti / "youtube.txt").write_text(youtube_metni(senaryo, kaynaklar, kullanilan), encoding="utf-8")
+    (cikti / "youtube.txt").write_text(youtube_metni(senaryo, kaynaklar, kullanilan, ayar.get("marka_ad", "Fox Bülten")), encoding="utf-8")
 
     anlar = [(0.6, "kanca")]
     for o in gorsel_olaylari:

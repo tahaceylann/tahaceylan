@@ -1,4 +1,4 @@
-/* Tilki Haber — TV haber kanalı teması, insansı "gamer" spiker tilki.
+/* Fox Bülten — TV haber kanalı teması, insansı "gamer" spiker tilki.
  * hazirla(zaman) bir kez, kare(k) her kare için çağrılır ve JPEG data URL döndürür.
  * Her kare yalnızca zamana bağlıdır (durumsuz), bu yüzden kareler paralel işçilerde çizilebilir.
  */
@@ -676,7 +676,7 @@ function kunye(t, g, sc) {
   const lh = f.boyut * 1.1, y0 = K.y + 22 + (K.h - 66) / 2 - (f.satir.length - 1) * lh / 2;
   f.satir.forEach((l, i) => { ac.fillStyle = i === 0 ? R.altin : '#fff'; ac.fillText(l, K.x + 24, y0 + i * lh); });
   const meta = o.grafik ? null : T.gorseller[o.anahtar];
-  const alt = meta && meta.sahip ? 'Görsel: ' + meta.sahip : (o.grafik ? 'Grafik: Tilki Haber' + (T.kaynak_adi ? ' · Kaynak: ' + T.kaynak_adi : '') : '');
+  const alt = meta && meta.sahip ? 'Görsel: ' + meta.sahip : (o.grafik ? 'Grafik: ' + (T.marka_ad || 'Fox Bülten') + (T.kaynak_adi ? ' · Kaynak: ' + T.kaynak_adi : '') : '');
   ac.font = `700 21px ${YAZI}`; ac.fillStyle = 'rgba(255,255,255,0.75)'; ac.fillText(alt, K.x + 24, K.y + K.h - 24);
   ac.restore();
 }

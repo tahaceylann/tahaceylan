@@ -29,7 +29,7 @@ from pathlib import Path
 
 from PIL import Image
 
-UA = "Mozilla/5.0 (X11; Linux x86_64) TilkiHaber/1.0"
+UA = "Mozilla/5.0 (X11; Linux x86_64) FoxBulten/1.0"
 
 
 def hata(m: str) -> None:

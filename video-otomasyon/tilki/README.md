@@ -1,4 +1,4 @@
-# 🦊 Tilki Haber — günlük oyun haberi → YouTube Shorts
+# 🦊 Fox Bülten — günlük oyun haberi → YouTube Shorts
 
 Her sabah oyun haberlerini tarayan, seçtiğin haberi TV haber kanalı temalı, 1080×1920 Türkçe bir Shorts
 videosuna çeviren hat. Sunucu, haber masasında oturan insansı, erkeksi "gamer" bir spiker tilki: kızıl kürk, geniş çene ve yanak tüyleri,

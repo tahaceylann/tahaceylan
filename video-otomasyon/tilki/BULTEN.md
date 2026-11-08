@@ -29,7 +29,7 @@ Kullanıcı "oyun haberleri", "bülteni hazırla" gibi bir şey yazdığında da
 ## 3. Biçim (mesaj ve dosya aynı)
 
 ```
-**🦊 Tilki Haber · 8 Kasım 2026 bülteni**
+**🦊 Fox Bülten · 8 Kasım 2026 bülteni**
 
 1. **Kısa başlık**
    Oyuncu için ne anlama geldiğini anlatan en fazla iki cümle.
