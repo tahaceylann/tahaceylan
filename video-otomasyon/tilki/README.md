@@ -16,7 +16,7 @@ Claude     haberi doğrular → 3–4 görsel bulur/doğrular → senaryo → El
 |---|---|---|
 | Zamanlama | ✅ Her gün 08:41 (Europe/Istanbul), Claude bildirimi | Değiştirmek için Claude'a "bülten saatini 10:00 yap" yazman yeterli. |
 | Video üretimi | ✅ Container'da hazır (ffmpeg + Chromium/Playwright + Python) | Ek hizmet gerekmez. |
-| ElevenLabs sesi | ⚠ Anahtar veya ağ izni gerekli | Aşağıdaki **A** (önerilen) veya **B**. |
+| ElevenLabs sesi | ✅ Anahtar Default ortamına kaydedildi · ⚠ ücretli plan + STT izni bekleniyor | Aşağıdaki **A**. |
 | Google Görseller | ⚠ Arama API anahtarı gerekli | Aşağıdaki **C**. |
 | Haber/görsel sitelerine erişim | ⚠ Ortamın ağı kısıtlı | Aşağıdaki **D**. |
 
@@ -27,6 +27,9 @@ kısmına `api.elevenlabs.io` / `xi-api-key` olarak kaydedilir. Anahtar sohbete 
 Tilkinin sesi `ayarlar.json` içinde sabittir: **Hasan – Energetic, Expressive, Playful**
 (`TA7RCSTD5b2z14h1TDTX`, `eleven_multilingual_v2`, seed 1907). API ses kütüphanesi sesini kabul etmezse
 ElevenLabs'te Voice Library → Hasan → "Add to my voices" yap.
+- **Plan:** Ücretsiz plan API'de kütüphane seslerini (Hasan) kullandırmaz (402), ticari lisans vermez ve ayda
+  ~10 videoluk kredi verir. En düşük ücretli plan (Starter) yeterlidir. Hazır sesler (ör. Liam) ücretsiz planda da çalışır.
+- **Anahtar izinleri:** Text to Speech (zorunlu), Speech to Text (telaffuz kontrolü için), Voices Read (isteğe bağlı).
 
 **B. ElevenLabs bağlayıcısı (hesabında bağlı).** Claude sesi bağlayıcıyla üretebilir, ama dosyayı montaja
 almak için ortamın `elevenlabsusercontent.com` adresine erişebilmesi gerekir (bkz. D). Bu yolda zaman

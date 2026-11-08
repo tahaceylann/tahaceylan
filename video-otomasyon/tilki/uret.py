@@ -153,6 +153,12 @@ def eleven_istek(yol: str, govde: bytes, basliklar: dict, zaman_asimi: int = 180
             if e.code in (429, 500, 502, 503) and deneme < 3:
                 time.sleep(2 ** (deneme + 1))
                 continue
+            if e.code == 401 and "missing_permissions" in ayrinti:
+                hata("ElevenLabs anahtarında bu işlem için izin yok. elevenlabs.io → API Keys → anahtarı düzenle → "
+                     "'Text to Speech' ve 'Speech to Text' izinlerini aç. " + ayrinti)
+            if e.code == 402:
+                hata("ElevenLabs planı bu sesi API'de kullanmaya izin vermiyor (ücretsiz plan kütüphane seslerini "
+                     "kapatır). Planı yükseltin ya da ayarlar.json'da hazır bir ses seçin. " + ayrinti)
             if e.code == 401:
                 hata("ElevenLabs anahtarı yok/geçersiz (401). Ortamın 'network secrets' kısmına "
                      "api.elevenlabs.io için xi-api-key ekleyin ya da ELEVENLABS_API_KEY tanımlayın. " + ayrinti)
