@@ -67,7 +67,9 @@ gelebildiği için listede olmayan bir kaynak gerektiğinde Claude onay ister.
    ekran görüntüleri. Örnek dağılım: genel görünüm, ayrıntının yakın planı, oyun içi kullanım. Seçilenleri kaydet:
    `python3 gorsel.py indir <bolum> <anahtar> <url> --sayfa <özgün sayfa> --sahip "<hak sahibi>" --lisans "<koşul>" --aciklama "<ne gösteriyor>" --resmi`.
    İndirdikten sonra görseli Read ile **gözle kontrol et** ve vurgulanacak ayrıntının kutusunu (0–1 oranlarıyla) belirle.
-3. **Senaryo** (`senaryo.json`, biçim aşağıda). Hedef 40–55 sn (≈ 95–125 kelime), 5–7 sahne. İlk sahne
+3. **Senaryo** (`senaryo.json`, biçim aşağıda). Hedef 40–55 sn (seslendirilen metin ≈ 560–780 karakter;
+   `--metin` tahmini gösterir), 5–7 sahne. İngilizce adları seste Türkçe okunuşuyla ver (`telaffuz.json`),
+   harf harf okunuşlardan kaçın: "Ge Te A" duraklatıyordu, artık **GTA → "Geta"**. İlk sahne
    ilk iki saniyede en çarpıcı somut ayrıntıyı söylesin. Her görsel, tilki tam o ayrıntıdan söz ederken açılsın
    (`tetik`). Son sahne `"duzen": "kapanis"`: habere özgü, kolay yanıtlanır tek soru. Yeni oyun/karakter adlarını
    `telaffuz` alanına ekle (ör. `"Lucia": "Luçiya"`).
@@ -86,6 +88,9 @@ gelebildiği için listede olmayan bir kaynak gerektiğinde Claude onay ister.
 9. **Teslim.** MP4'ü SendUserFile ile gönder. Mesaja kısa Shorts başlığını ve `youtube.txt` içeriğini (haber kaynağı,
    görsellerin özgün sayfaları ve hak sahipleri) yaz. `senaryo.json` + `kaynaklar.json` dosyalarını commit'le
    (görsel, ses ve video dosyaları commit'lenmez). **YouTube'a yükleme yapma.**
+
+Seslendirme ayarı (`ayarlar.json`): hız 1,10, stability 0,5, style 0,25. `ses_kirpma` her sahnenin baş/son
+sessizliğini kırpar ve cümle içi duraklamaları en fazla 0,3 sn'ye indirir (hizalama da kaydırılır).
 
 `--onizleme` yerel espeak-ng sesiyle taslak üretir (robotik ses, sağ üstte "ÖNİZLEME" etiketi). Yalnızca
 animasyon ve zamanlamayı denemek içindir, yayına uygun değildir.

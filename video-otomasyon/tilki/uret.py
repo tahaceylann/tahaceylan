@@ -43,7 +43,7 @@ RENDER = KOK / "render"
 FPS = 30
 SR = 44100
 PAY_BAS = 0.12      # video başladıktan sonra ilk kelimeye kadar (kanca hemen gelsin)
-ARA = 0.22          # sahneler arası nefes
+ARA = 0.12          # sahneler arası nefes (sahne sesleri ayrıca kırpılır)
 KAPANIS_EK = 1.2    # son cümleden sonra tilkinin el salladığı kapanış
 UNLU = set("aeıioöuüâîû")
 NOKTALAMA = ",.!?;:…"
@@ -282,6 +282,51 @@ def konusma_maskesi(rms: np.ndarray) -> np.ndarray:
             else:
                 i += 1
     return m
+
+
+def sessizlik_kirp(x: np.ndarray, hiz: dict | None, en_uzun: float = 0.3, bas_pay: float = 0.03,
+                   son_pay: float = 0.1) -> tuple[np.ndarray, dict | None]:
+    """Baştaki/sondaki sessizliği atar, cümle içi duraklamaları en_uzun saniyeyle sınırlar; hizalamayı kaydırır."""
+    adim = 0.01
+    m = konusma_maskesi(zarf(x, adim))
+    if not m.any():
+        return x, hiz
+    ilk, son = int(np.argmax(m)), len(m) - int(np.argmax(m[::-1]))
+    sure = len(x) / SR
+    kesik = [(0.0, max(0.0, ilk * adim - bas_pay))]
+    i = ilk
+    while i < son:
+        if m[i]:
+            i += 1
+            continue
+        j = i
+        while j < son and not m[j]:
+            j += 1
+        if (j - i) * adim > en_uzun:
+            r0 = i * adim + en_uzun / 2
+            kesik.append((r0, r0 + (j - i) * adim - en_uzun))
+        i = j
+    kesik.append((min(sure, son * adim + son_pay), sure))
+    kesik = [(a, b) for a, b in kesik if b - a > 0.005]
+    parcalar, onceki = [], 0.0
+    for a, b in kesik:
+        parcalar.append(x[int(onceki * SR):int(a * SR)])
+        onceki = b
+    parcalar.append(x[int(onceki * SR):])
+    y = np.concatenate(parcalar) if parcalar else x
+
+    def esle(t: float) -> float:
+        cikan = 0.0
+        for a, b in kesik:
+            if t >= b:
+                cikan += b - a
+            elif t > a:
+                return a - cikan
+        return t - cikan
+
+    if hiz:
+        hiz = {"c": hiz["c"], "b": [max(0.0, esle(t)) for t in hiz["b"]], "s": [max(0.0, esle(t)) for t in hiz["s"]]}
+    return y, hiz
 
 
 def harf_agirligi(ch: str) -> float:
@@ -724,7 +769,12 @@ def main() -> None:
         sonraki = ttsler[i][0] if i < len(ttsler) else ""
         yol, hiz, tur = sahne_sesi(bolum, i, tts, ses, onceki, sonraki, arg.onizleme, calisma)
         x = ses_oku(yol)
-        if hiz is None or len(hiz.get("c", [])) != len(tts):
+        if hiz is not None and len(hiz.get("c", [])) != len(tts):
+            hiz = None
+        kirp = ayar.get("ses_kirpma", {})
+        x, hiz = sessizlik_kirp(x, hiz, kirp.get("en_uzun_duraklama", 0.3), kirp.get("bas_pay", 0.03),
+                                kirp.get("son_pay", 0.1))
+        if hiz is None:
             hiz = hizala_tahmin(tts, x)
             tur += " + tahmini hizalama"
         sesler.append(x)

@@ -4,18 +4,23 @@
     "voice_id": "TA7RCSTD5b2z14h1TDTX",
     "ad": "Hasan – Energetic, Expressive, Playful (ElevenLabs ses kütüphanesi)",
     "model_id": "eleven_multilingual_v2",
-    "stability": 0.4,
+    "stability": 0.5,
     "similarity_boost": 0.8,
-    "style": 0.45,
-    "speed": 1.04,
+    "style": 0.25,
+    "speed": 1.1,
     "seed": 1907
   },
   "sure": {
     "hedef_min": 40,
     "hedef_max": 55,
     "sinir": 60,
-    "karakter_hizi": 11.8
+    "karakter_hizi": 14.5
   },
   "efektler": true,
-  "isci": 3
+  "isci": 3,
+  "ses_kirpma": {
+    "en_uzun_duraklama": 0.3,
+    "bas_pay": 0.03,
+    "son_pay": 0.1
+  }
 }
