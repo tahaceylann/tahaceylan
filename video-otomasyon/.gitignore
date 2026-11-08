@@ -1,2 +1,6 @@
 cikti/
 .onbellek/
+tilki/bolumler/*/cikti/
+tilki/bolumler/*/gorseller/
+tilki/bolumler/*/ses/
+__pycache__/

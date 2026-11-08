@@ -1,0 +1,133 @@
+# 🦊 Tilki Haber — günlük oyun haberi → YouTube Shorts
+
+Her sabah oyun haberlerini tarayan, seçtiğin haberi turuncu kürklü, kulaklıklı bir tilkinin sunduğu
+1080×1920 Türkçe Shorts videosuna çeviren hat. YouTube'a yükleme kararı her zaman sende.
+
+```
+08:41 TSİ  zamanlanmış görev → yeni Claude oturumu → bülten (5–10 haber) → telefonuna bildirim
+sen        "3" yazarsın
+Claude     haberi doğrular → 3–4 görsel bulur/doğrular → senaryo → ElevenLabs sesi → animasyon → kontrol
+           → MP4 + Shorts başlığı + YouTube açıklaması (kaynaklarla) gönderir
+```
+
+## Kurulum
+
+| Ne | Durum | Ne yapmalı |
+|---|---|---|
+| Zamanlama | ✅ Her gün 08:41 (Europe/Istanbul), Claude bildirimi | Değiştirmek için Claude'a "bülten saatini 10:00 yap" yazman yeterli. |
+| Video üretimi | ✅ Container'da hazır (ffmpeg + Chromium/Playwright + Python) | Ek hizmet gerekmez. |
+| ElevenLabs sesi | ⚠ Anahtar veya ağ izni gerekli | Aşağıdaki **A** (önerilen) veya **B**. |
+| Google Görseller | ⚠ Arama API anahtarı gerekli | Aşağıdaki **C**. |
+| Haber/görsel sitelerine erişim | ⚠ Ortamın ağı kısıtlı | Aşağıdaki **D**. |
+
+**A. ElevenLabs API anahtarı (önerilen, tam otomatik ve kelime düzeyinde zaman damgalı).**
+elevenlabs.io → Profile → API Keys → yeni anahtar (Text to Speech + Speech to Text izinli).
+Claude'a "ElevenLabs anahtarını ekleyelim" yaz. Güvenli bir form açılır ve anahtar ortamın *network secrets*
+kısmına `api.elevenlabs.io` / `xi-api-key` olarak kaydedilir. Anahtar sohbete yazılmaz.
+Tilkinin sesi `ayarlar.json` içinde sabittir: **Hasan – Energetic, Expressive, Playful**
+(`TA7RCSTD5b2z14h1TDTX`, `eleven_multilingual_v2`, seed 1907). API ses kütüphanesi sesini kabul etmezse
+ElevenLabs'te Voice Library → Hasan → "Add to my voices" yap.
+
+**B. ElevenLabs bağlayıcısı (hesabında bağlı).** Claude sesi bağlayıcıyla üretebilir, ama dosyayı montaja
+almak için ortamın `elevenlabsusercontent.com` adresine erişebilmesi gerekir (bkz. D). Bu yolda zaman
+damgası yoktur. Kelime zamanlaması ses dalgasından tahmin edilir (Türkçede her hecede bir ünlü olduğundan
+oldukça iyi sonuç verir).
+
+**C. Google Görseller (Serper.dev).** Google'ın kendi Custom Search JSON API'si yeni müşterilere kapalı ve
+1 Ocak 2027'de kapanıyor. Bu yüzden Google Görseller sonuçlarını döndüren Serper kullanılır
+(serper.dev, ücretsiz 2.500 sorgu). Anahtarı Claude'a "Serper anahtarını ekleyelim" diyerek
+`google.serper.dev` / `X-API-KEY` olarak kaydet. Anahtar yoksa Claude yine resmî basın kitleri ve Steam
+mağaza ekran görüntüleriyle çalışır, ama arama "Google Görseller" üzerinden yapılmamış olur.
+
+**D. Ağ izni.** Bulut ortamı varsayılan olarak yalnızca paket depolarına çıkabilir. Görselin özgün sayfasını
+açıp doğrulamak ve görseli indirmek için şu hostlara izin gerekir: ortam menüsü → **Edit → Network access →
+Allowed domains** (adımlar: https://code.claude.com/docs/en/cloud-environments#network-access) ya da
+Claude'a "ağ izinlerini ekle" yaz, onay kartı çıkar.
+Önerilen başlangıç listesi: `elevenlabsusercontent.com`, `store.steampowered.com`, `api.steampowered.com`,
+`shared.akamai.steamstatic.com`, `clan.akamai.steamstatic.com`, `www.rockstargames.com`,
+`media-rockstargames-com.akamaized.net`, `blog.playstation.com`, `news.xbox.com`, `www.nintendo.com`,
+`assets.nintendo.com`, `playvalorant.com`, `www.leagueoflegends.com`, `cmsassets.rgpub.io`,
+`www.pathofexile.com`, `www.ea.com`, `www.callofduty.com`. Görseller her gün farklı sitelerden
+gelebildiği için listede olmayan bir kaynak gerektiğinde Claude onay ister.
+
+## Video üretimi (kullanıcı numara yazınca)
+
+1. **Doğrula.** Seçilen haberi kaynağından (tercihen geliştirici duyurusu/resmî yama notu) aç; tarih, sürüm,
+   sayı ve adları kontrol et. Bölüm klasörü: `bolumler/YYYY-MM-DD-kisa-ad/`.
+2. **Görseller (3–4 adet).** Oyunun adı + habere özgü terimlerle ara:
+   `python3 gorsel.py ara "GTA 6 Grotti Cheetah screenshot"` (Google Görseller), `python3 gorsel.py steam "<oyun>"`
+   (resmî Steam ekran görüntüleri). Her aday için özgün sayfayı aç: doğru oyun/sürüm mü, haberdeki içeriği mi
+   gösteriyor, kullanım koşulları videoda yayımlamaya izin veriyor mu? Öncelik: geliştiricinin basın kiti ve resmî
+   ekran görüntüleri. Örnek dağılım: genel görünüm, ayrıntının yakın planı, oyun içi kullanım. Seçilenleri kaydet:
+   `python3 gorsel.py indir <bolum> <anahtar> <url> --sayfa <özgün sayfa> --sahip "<hak sahibi>" --lisans "<koşul>" --aciklama "<ne gösteriyor>" --resmi`.
+   İndirdikten sonra görseli Read ile **gözle kontrol et** ve vurgulanacak ayrıntının kutusunu (0–1 oranlarıyla) belirle.
+3. **Senaryo** (`senaryo.json`, biçim aşağıda). Hedef 40–55 sn (≈ 95–125 kelime), 5–7 sahne. İlk sahne
+   ilk iki saniyede en çarpıcı somut ayrıntıyı söylesin. Her görsel, tilki tam o ayrıntıdan söz ederken açılsın
+   (`tetik`). Son sahne `"duzen": "kapanis"`: habere özgü, kolay yanıtlanır tek soru. Yeni oyun/karakter adlarını
+   `telaffuz` alanına ekle (ör. `"Lucia": "Luçiya"`).
+4. **Süre tahmini ve metin:** `python3 uret.py <bolum>/senaryo.json --metin`.
+5. **Ses.** API anahtarı varsa doğrudan 6. adım (sesler `ses/` altında önbelleğe alınır). Bağlayıcı yolunda her
+   sahne için `ses/metinler.json`'daki metni `creative_generate_speech` ile (ses: Hasan, model `eleven_multilingual_v2`)
+   üret, `content_url`'i indir ve `python3 uret.py <bolum>/senaryo.json --ses-ekle <sahne> <dosya.mp3>` ile kaydet.
+6. **Telaffuz kontrolü:** `python3 uret.py <bolum>/senaryo.json --telaffuz` (ElevenLabs Speech-to-Text). ✗ çıkan adı
+   `telaffuz` sözlüğünde yeniden yaz ve yalnızca o sahneyi yeniden seslendir (dosyayı sil, 7. adım yeniden üretir).
+   Bağlayıcı yolunda `creative_transcribe_audio` ile aynı kontrolü yap.
+7. **Üret:** `python3 uret.py <bolum>/senaryo.json` → `cikti/tilki-<bolum>.mp4`, `.srt`, `youtube.txt`,
+   `kontrol.jpg`, `rapor.json`.
+8. **Kontrol et.** Çıktıdaki **ölçülen süre** 60 sn'yi geçerse betik 3 koduyla çıkar: metni kısalt, 5–7'yi tekrarla
+   (değişmeyen sahnelerin sesi önbellekten gelir). `kontrol.jpg`'yi Read ile aç: görsel doğru anda mı, vurgulanan
+   ayrıntı kadrajda mı, altyazı görselin üstüne biniyor mu? `rapor.json`'daki uyarıları gider.
+9. **Teslim.** MP4'ü SendUserFile ile gönder. Mesaja kısa Shorts başlığını ve `youtube.txt` içeriğini (haber kaynağı,
+   görsellerin özgün sayfaları ve hak sahipleri) yaz. `senaryo.json` + `kaynaklar.json` dosyalarını commit'le
+   (görsel, ses ve video dosyaları commit'lenmez). **YouTube'a yükleme yapma.**
+
+`--onizleme` yerel espeak-ng sesiyle taslak üretir (robotik ses, sağ üstte "ÖNİZLEME" etiketi). Yalnızca
+animasyon ve zamanlamayı denemek içindir, yayına uygun değildir.
+
+## Senaryo biçimi
+
+```json
+{
+  "baslik": "GTA VI ön yükleme 10 Kasım",
+  "oyun": "GTA VI",
+  "haber": {"baslik": "…", "kaynak": "https://resmi-duyuru", "kaynak_adi": "Rockstar Newswire", "tarih": "7 Kasım 2026",
+            "ek_kaynaklar": ["https://…"]},
+  "telaffuz": {"Lucia": "Luçiya"},
+  "sahneler": [
+    {"metin": "GTA 6 için diskinde iki yüz on iki gigabayt yer aç!", "ekran": "212 GB!", "ifade": "saskin",
+     "espri": {"tip": "emoji", "emoji": "💾", "metin": "212 GB?!"}},
+    {"metin": "Rockstar ön yüklemeyi iki gün öne çekti…", "gorsel": "duyuru", "tetik": "ön yüklemeyi",
+     "ekran": "10 Kasım", "etiket": "RESMİ DUYURU"},
+    {"metin": "… Grotti Cheetah'a bakın …", "gorsel": "cheetah", "tetik": "Grotti", "odak": [0.6, 0.5],
+     "vurgu": {"kutu": [0.55, 0.40, 0.30, 0.25], "tetik": "farlar", "yakinlik": 1.4, "yazi": "Gerçek araç!"}},
+    {"metin": "Sen ilk gece mi indireceksin? Yorumlara yaz!", "duzen": "kapanis", "ifade": "heyecan", "espri": "soru"}
+  ],
+  "youtube": {"baslik": "GTA 6 kaç GB? 🦊 #shorts", "aciklama": "…", "etiketler": ["gta6", "oyunhaberleri", "shorts"]}
+}
+```
+
+- `metin`: hem seslendirilir hem altyazı olur (1–2 kısa cümle). Sayıları ekranda rakamla göstermek istiyorsan
+  `ekran`a rakam yaz, `metin`de okunuşunu yaz.
+- `gorsel` + `tetik`: görsel, tetik kelimesi söylendiği anda açılır. Tilki köşe kamerasına geçer.
+  `odak`: dikey kırpmada merkezde tutulacak nokta. `vurgu.kutu` [x, y, g, y] görselin 0–1 oranlarıyla verilir.
+  Kutu yakınlaştırılır, çevresi karartılır ve sarı çerçeveyle işaretlenir. Kutu her zaman kadrajda kalır.
+- `ifade`: normal · heyecan · saskin · supheli · uzgun · gulme · dusunme.
+  `jest`: salla · yumruk · omuz · dusun · isaret.
+  `espri`: emoji (`emoji`, `metin`) · unlem · soru · ter · yildiz · kalp · konfeti · gozluk · patlama (`metin`).
+  İsteğe bağlı `tetik` alır.
+- `duzen`: studyo (varsayılan) · gorsel (gorsel verilince) · kapanis (son sahne, kameraya yakın plan + soru balonu).
+
+## Ekran yerleşimi (1080×1920)
+
+Üst bant 60–130 (marka + oyun etiketi) · görsel kartı 215–985 · köşe kamera ve bilgi paneli 1004–1344 ·
+altyazı merkezi 1478 (x 90–950: Shorts'un sağdaki düğmelerinden ve alttaki başlık alanından uzak).
+
+## Dosyalar
+
+- `uret.py`: seslendirme (ElevenLabs API, bağlayıcı dosyası veya önizleme), hizalama, ağız senkronu (Türkçe ünlü
+  tabanlı visemler + ses genliği), altyazı, efekt sesleri, render, montaj (-14 LUFS), süre/kalite kontrolü.
+- `render/tilki.js`: tilki karakteri, stüdyo, görsel kartı, vurgu, espriler, altyazı. Kareler durumsuz çizilir,
+  Chromium'da paralel render edilir (`render/kaydet.mjs`).
+- `gorsel.py`: Google Görseller (Serper) araması, Steam resmî ekran görüntüleri, indirme ve kaynak kaydı.
+- `ayarlar.json`: tilkinin sesi, süre hedefleri. `telaffuz.json`: tüm bölümlerde ortak telaffuz sözlüğü.
+- `BULTEN.md`: günlük bülten talimatı. `bultenler/`: gönderilen bültenler. `bolumler/`: bölüm senaryoları.
