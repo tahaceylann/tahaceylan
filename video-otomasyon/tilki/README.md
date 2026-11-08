@@ -1,7 +1,10 @@
 # 🦊 Tilki Haber — günlük oyun haberi → YouTube Shorts
 
-Her sabah oyun haberlerini tarayan, seçtiğin haberi turuncu kürklü, kulaklıklı bir tilkinin sunduğu
-1080×1920 Türkçe Shorts videosuna çeviren hat. YouTube'a yükleme kararı her zaman sende.
+Her sabah oyun haberlerini tarayan, seçtiğin haberi TV haber kanalı temalı, 1080×1920 Türkçe bir Shorts
+videosuna çeviren hat. Sunucu, haber masasında oturan insansı "gamer" bir spiker tilki: kızıl kürk, lacivert
+blazer altında e-spor forması, RGB'li mikrofonlu oyuncu kulaklığı, camgöbeği boyalı perçem, parmaksız eldivenler.
+Sahnede alt bant (SON DAKİKA + manşet), kayan haber bandı, görüntü ekranı ve spiker penceresi, bilgi grafikleri ve
+"SİZE SORUYORUZ" kapanışı var. YouTube'a yükleme kararı her zaman sende.
 
 ```
 08:41 TSİ  zamanlanmış görev → yeni Claude oturumu → bülten (5–10 haber) → telefonuna bildirim
@@ -93,6 +96,9 @@ animasyon ve zamanlamayı denemek içindir, yayına uygun değildir.
 {
   "baslik": "GTA VI ön yükleme 10 Kasım",
   "oyun": "GTA VI",
+  "tarih": "8 KASIM 2026",
+  "manset": "GTA VI ön yükleme 10 Kasım'da",
+  "kayan": ["Bültendeki diğer başlıklar", "…"],
   "haber": {"baslik": "…", "kaynak": "https://resmi-duyuru", "kaynak_adi": "Rockstar Newswire", "tarih": "7 Kasım 2026",
             "ek_kaynaklar": ["https://…"]},
   "telaffuz": {"Lucia": "Luçiya"},
@@ -103,6 +109,9 @@ animasyon ve zamanlamayı denemek içindir, yayına uygun değildir.
      "ekran": "10 Kasım", "etiket": "RESMİ DUYURU"},
     {"metin": "… Grotti Cheetah'a bakın …", "gorsel": "cheetah", "tetik": "Grotti", "odak": [0.6, 0.5],
      "vurgu": {"kutu": [0.55, 0.40, 0.30, 0.25], "tetik": "farlar", "yakinlik": 1.4, "yazi": "Gerçek araç!"}},
+    {"metin": "PS5'te 10 Kasım gece yarısı…", "tetik": "PS5'te", "ekran": "Ön yükleme 10 Kasım'da",
+     "grafik": {"tip": "liste", "etiket": "Ön yükleme", "baslik": "10 Kasım · Türkiye saatiyle",
+                "satirlar": [["PS5", "10 Kasım · 00:00"], ["Xbox Series X|S", "10 Kasım · 03:00"]], "not": "Kaynak: …"}},
     {"metin": "Sen ilk gece mi indireceksin? Yorumlara yaz!", "duzen": "kapanis", "ifade": "heyecan", "espri": "soru"}
   ],
   "youtube": {"baslik": "GTA 6 kaç GB? 🦊 #shorts", "aciklama": "…", "etiketler": ["gta6", "oyunhaberleri", "shorts"]}
@@ -114,22 +123,29 @@ animasyon ve zamanlamayı denemek içindir, yayına uygun değildir.
 - `gorsel` + `tetik`: görsel, tetik kelimesi söylendiği anda açılır. Tilki köşe kamerasına geçer.
   `odak`: dikey kırpmada merkezde tutulacak nokta. `vurgu.kutu` [x, y, g, y] görselin 0–1 oranlarıyla verilir.
   Kutu yakınlaştırılır, çevresi karartılır ve sarı çerçeveyle işaretlenir. Kutu her zaman kadrajda kalır.
-- `ifade`: normal · heyecan · saskin · supheli · uzgun · gulme · dusunme.
-  `jest`: salla · yumruk · omuz · dusun · isaret.
+- `grafik`: fotoğraf yerine (ya da yanında) yayın tarzı bilgi grafiği. `tip: "liste"` satırları (ilk sütun altın
+  renkli), `tip: "sayi"` büyük sayı (sayacı sayarak gelir) + `alt` + isteğe bağlı satırlar. `etiket`, `baslik`, `not`.
+  Rakamları yalnızca doğrulanmış kaynaktan yaz; görselin yerine sahte bir fotoğraf koyma.
+- `manset`: alt banttaki kalıcı başlık (kısa tut). `kayan`: alttaki kayan bantta dönen başlıklar (bültenin diğer
+  maddeleri). `tarih`: üst köşedeki tarih. `ust_etiket`: varsayılan "SON DAKİKA".
+- `ifade`: normal · heyecan · saskin · supheli · uzgun · gulme · dusunme · ciddi.
+  `jest`: anlat (stüdyo sahnelerinde varsayılan) · basparmak · isaret · omuz · salla.
   `espri`: emoji (`emoji`, `metin`) · unlem · soru · ter · yildiz · kalp · konfeti · gozluk · patlama (`metin`).
   İsteğe bağlı `tetik` alır.
 - `duzen`: studyo (varsayılan) · gorsel (gorsel verilince) · kapanis (son sahne, kameraya yakın plan + soru balonu).
 
 ## Ekran yerleşimi (1080×1920)
 
-Üst bant 60–130 (marka + oyun etiketi) · görsel kartı 215–985 · köşe kamera ve bilgi paneli 1004–1344 ·
-altyazı merkezi 1478 (x 90–950: Shorts'un sağdaki düğmelerinden ve alttaki başlık alanından uzak).
+Kanal logosu + CANLI + tarih 48–132 · görüntü/grafik ekranı 150–930 · spiker penceresi ve künye 944–1166 ·
+alt bant 1188–1316 · altyazı merkezi 1420 (x 80–900) · kayan bant 1522–1574. Hepsi Shorts'un sağdaki
+düğmelerinden ve alttaki başlık alanından uzak tutulur.
 
 ## Dosyalar
 
 - `uret.py`: seslendirme (ElevenLabs API, bağlayıcı dosyası veya önizleme), hizalama, ağız senkronu (Türkçe ünlü
   tabanlı visemler + ses genliği), altyazı, efekt sesleri, render, montaj (-14 LUFS), süre/kalite kontrolü.
-- `render/tilki.js`: tilki karakteri, stüdyo, görsel kartı, vurgu, espriler, altyazı. Kareler durumsuz çizilir,
+- `render/tilki.js`: spiker tilki, haber stüdyosu, yayın grafikleri, görüntü ekranı + vurgu, bilgi grafikleri,
+  espriler, altyazı. Kareler durumsuz çizilir,
   Chromium'da paralel render edilir (`render/kaydet.mjs`).
 - `gorsel.py`: Google Görseller (Serper) araması, Steam resmî ekran görüntüleri, indirme ve kaynak kaydı.
 - `ayarlar.json`: tilkinin sesi, süre hedefleri. `telaffuz.json`: tüm bölümlerde ortak telaffuz sözlüğü.

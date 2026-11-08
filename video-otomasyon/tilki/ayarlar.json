@@ -10,7 +10,12 @@
     "speed": 1.04,
     "seed": 1907
   },
-  "sure": { "hedef_min": 40, "hedef_max": 55, "sinir": 60 },
+  "sure": {
+    "hedef_min": 40,
+    "hedef_max": 55,
+    "sinir": 60,
+    "karakter_hizi": 11.8
+  },
   "efektler": true,
   "isci": 3
 }

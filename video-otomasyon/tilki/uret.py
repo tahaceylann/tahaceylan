@@ -595,8 +595,11 @@ def youtube_metni(senaryo: dict, kaynaklar: dict, kullanilan: list[str]) -> str:
             parca = [f"{i}. {m.get('aciklama', a)}", f"© {m['sahip']}" if m.get("sahip") else "",
                      m.get("sayfa", "")]
             satir.append(" – ".join(p for p in parca if p))
-    satir += ["", "🎙️ Seslendirme: ElevenLabs ile yapay zekâ seslendirmesi. Tilki animasyonu bu kanal için üretilmiştir.",
-              "Görseller haber/bilgilendirme amacıyla, hak sahiplerinin resmî tanıtım materyallerinden kullanılmıştır."]
+    if not kullanilan:
+        satir += ["", "🖼️ Görseller: Bu bölümde yalnızca Tilki Haber bilgi grafikleri kullanıldı (üçüncü taraf görsel yok)."]
+    satir += ["", "🎙️ Seslendirme: ElevenLabs ile yapay zekâ seslendirmesi. Tilki animasyonu bu kanal için üretilmiştir."]
+    if kullanilan:
+        satir.append("Görseller haber/bilgilendirme amacıyla, hak sahiplerinin resmî tanıtım materyallerinden kullanılmıştır.")
     if yt.get("etiketler"):
         satir += ["", " ".join(e if e.startswith("#") else "#" + e for e in yt["etiketler"])]
     return "\n".join(satir).strip() + "\n"
@@ -652,8 +655,8 @@ def main() -> None:
     sinir = ayar["sure"]["sinir"]
 
     # --- metin modu / tahmin
-    kelime_sayisi = sum(len(s["metin"].split()) for s in sahneler)
-    tahmin = PAY_BAS + kelime_sayisi / 2.55 + ARA * (len(sahneler) - 1) + KAPANIS_EK
+    karakter = sum(len(t) for t, _ in ttsler)  # seslendirilen metin (sayılar okunuşlarıyla) uzunluğu
+    tahmin = PAY_BAS + karakter / ayar["sure"].get("karakter_hizi", 11.8) + ARA * (len(sahneler) - 1) + KAPANIS_EK
     if arg.metin:
         print(f"Ses: {ses.get('ad', ses['voice_id'])} · model {ses.get('model_id')}")
         for i, (tts, _) in enumerate(ttsler, 1):
@@ -771,7 +774,7 @@ def main() -> None:
 
     # sahne olayları
     tl_sahneler, gorsel_olaylari, efektler = [], [], []
-    duzenler = [s.get("duzen") or ("gorsel" if s.get("gorsel") else "studyo") for s in sahneler]
+    duzenler = [s.get("duzen") or ("gorsel" if (s.get("gorsel") or s.get("grafik")) else "studyo") for s in sahneler]
     if duzenler[-1] != "kapanis":
         uyar(uyarilar, "son sahne 'kapanis' değil; tilki kapanış sorusunu kameraya yakın planda sormayacak")
     zoomlar = [1.0, 1.07]
@@ -789,14 +792,16 @@ def main() -> None:
                 uyar(uyarilar, f"sahne {i + 1}: espri tetiği '{e['tetik']}' metinde bulunamadı")
             oge["espri"] = e
             efektler.append(("pop", e["bas"]))
-        if s.get("gorsel"):
+        if s.get("gorsel") or s.get("grafik"):
             tz = ifade_zamani(kel, s.get("tetik"))
             if s.get("tetik") and tz is None:
                 uyar(uyarilar, f"sahne {i + 1}: görsel tetiği '{s['tetik']}' metinde bulunamadı; sahne başında açılacak")
             gb = st["bas"] if tz is None else max(st["bas"], tz - 0.08)
-            olay = {"anahtar": s["gorsel"], "bas": round(gb, 3), "son": round(st["son"], 3),
+            olay = {"anahtar": s.get("gorsel") or f"grafik{i + 1}", "bas": round(gb, 3), "son": round(st["son"], 3),
                     "odak": s.get("odak", [0.5, 0.5]), "sahne": i, "tetik_zamani": tz,
                     "tetik": s.get("tetik", ""), "etiket": s.get("etiket", "")}
+            if s.get("grafik"):
+                olay["grafik"] = s["grafik"]
             if s.get("vurgu"):
                 v = dict(s["vurgu"])
                 vz = ifade_zamani(kel, v.get("tetik"))
@@ -860,6 +865,10 @@ def main() -> None:
     zaman = {
         "fps": FPS, "sure": round(toplam, 3), "kareler": n_kare, "marka": ayar.get("marka", "TİLKİ HABER"),
         "oyun": senaryo.get("oyun", ""), "onizleme": arg.onizleme,
+        "manset": senaryo.get("manset") or senaryo.get("haber", {}).get("baslik", ""),
+        "kayan": senaryo.get("kayan", []), "tarih": senaryo.get("tarih", ""),
+        "ust_etiket": senaryo.get("ust_etiket", "SON DAKİKA"),
+        "kaynak_adi": senaryo.get("haber", {}).get("kaynak_adi", ""),
         "sahneler": tl_sahneler, "gorsel_olaylari": gorsel_olaylari, "pencereler": pencereler,
         "kelimeler": [{"w": k["w"], "bas": round(k["bas"], 3), "son": round(k["son"], 3), "s": k["sahne"]}
                       for k in kelimeler_g],
@@ -910,7 +919,7 @@ def main() -> None:
     (cikti / f"tilki-{ad}.srt").write_text("\n".join(srt), encoding="utf-8")
     kullanilan = []
     for o in gorsel_olaylari:
-        if o["anahtar"] not in kullanilan:
+        if not o.get("grafik") and o["anahtar"] not in kullanilan:
             kullanilan.append(o["anahtar"])
     (cikti / "youtube.txt").write_text(youtube_metni(senaryo, kaynaklar, kullanilan), encoding="utf-8")
 

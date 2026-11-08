@@ -1,0 +1,155 @@
+{
+  "baslik": "GTA VI ön yükleme 10 Kasım'da",
+  "oyun": "GTA VI",
+  "tarih": "8 KASIM 2026",
+  "manset": "GTA VI ön yükleme 10 Kasım'da",
+  "kayan": [
+    "GTA VI çıkış tarihi: 19 Kasım",
+    "Path of Exile 2 · 11 Aralık'ta 1.0 ve ücretsiz",
+    "Fortnite · Kaptan Günü'nde 13 yeni Sprite",
+    "NieR: Automata · Steam'de 366 GB kurulum hatası"
+  ],
+  "haber": {
+    "baslik": "Grand Theft Auto VI Pre-Load Begins on November 10",
+    "kaynak": "https://www.rockstargames.com/newswire/article/k4ak9okk485712/grand-theft-auto-vi-pre-load-begins-on-november-10",
+    "kaynak_adi": "Rockstar Games",
+    "tarih": "Rockstar Newswire ve destek sayfaları, 3–4 Kasım 2026",
+    "ek_kaynaklar": [
+      "Ön yükleme SSS (212 GB, otomatik indirme koşulları): https://support.rockstargames.com/articles/7nPqOA2uCbpEQHXx7KVrYd/grand-theft-auto-vi-pre-load-faq",
+      "Bölgesel ön yükleme ve çıkış saatleri: https://support.rockstargames.com/articles/29jV3Cv2cCgvwM1XgtMO5o/grand-theft-auto-vi-regional-pre-load-and-release-times-on-playstation-5-and-xbox-series-x-or-s",
+      "Kutulu kopya (indirme kodu, 12 Kasım): https://store.rockstargames.com/game/buy-gta-vi",
+      "Xbox paket boyutu (Microsoft verisi, 7 Kasım): https://www.merlininkazani.com/gta-6-xbox-ta-daha-fazla-yer-kaplayacak-haber-264181",
+      "209,9 GiB = 225,3 GB birim farkı: https://windowsforum.com/news/gta-6-xbox-download-size-why-209-gb-and-225-gb-may-mean-the-same-thing.451357/"
+    ]
+  },
+  "telaffuz": {
+    "212": "iki yüz on iki",
+    "225": "iki yüz yirmi beş",
+    "210": "iki yüz on"
+  },
+  "sahneler": [
+    {
+      "metin": "Son dakika! GTA 6 için diskinde 212 GB'a kadar yer açman gerekiyor!",
+      "ekran": "212 GB'A KADAR YER LAZIM",
+      "ifade": "saskin",
+      "espri": {
+        "tip": "emoji",
+        "emoji": "💾",
+        "metin": "212 GB?!",
+        "tetik": "212"
+      }
+    },
+    {
+      "metin": "Rockstar ön yüklemeyi iki gün öne çekti: PS5'te 10 Kasım gece yarısı, Xbox'ta saat üçte başlıyor.",
+      "tetik": "ön yüklemeyi",
+      "ekran": "Ön yükleme 10 Kasım'da",
+      "grafik": {
+        "tip": "liste",
+        "etiket": "Ön yükleme",
+        "baslik": "10 Kasım · Türkiye saatiyle",
+        "satirlar": [
+          [
+            "PS5",
+            "10 Kasım · 00:00"
+          ],
+          [
+            "Xbox Series X|S",
+            "10 Kasım · 03:00"
+          ],
+          [
+            "Eski tarih",
+            "12 Kasım (iki gün öne alındı)"
+          ]
+        ],
+        "not": "Kaynak: Rockstar Games destek sayfası"
+      }
+    },
+    {
+      "metin": "Resmî boyut cihaza göre 212 GB'a kadar. Xbox'taki 225 rakamı ise sadece birim farkı.",
+      "tetik": "Resmî",
+      "ekran": "212 GB'a kadar",
+      "espri": {
+        "tip": "ter",
+        "tetik": "Xbox'taki"
+      },
+      "grafik": {
+        "tip": "sayi",
+        "etiket": "İndirme boyutu",
+        "baslik": "Ne kadar yer lazım?",
+        "buyuk": "212 GB",
+        "alt": "Rockstar: cihaza göre en fazla",
+        "satirlar": [
+          [
+            "Xbox verisi",
+            "225,3 GB = 209,9 GiB"
+          ],
+          [
+            "Konsolda görünen",
+            "≈ 210 GB"
+          ]
+        ],
+        "not": "Fark birimden geliyor: 1 GiB = 1,074 GB"
+      }
+    },
+    {
+      "metin": "Kutulu kopyalarda disk yok, indirme kodu var. Oyun 19 Kasım'da çıkıyor; PC için hâlâ tarih yok.",
+      "tetik": "Kutulu",
+      "ekran": "Çıkış 19 Kasım",
+      "grafik": {
+        "tip": "liste",
+        "etiket": "Takvim",
+        "baslik": "GTA VI takvimi",
+        "satirlar": [
+          [
+            "10 Kasım",
+            "Dijital ön yükleme"
+          ],
+          [
+            "12 Kasım",
+            "Kutulu kopya: disk yok, kod var"
+          ],
+          [
+            "19 Kasım",
+            "Çıkış · PS5 ve Xbox Series X|S"
+          ],
+          [
+            "PC",
+            "Henüz tarih yok"
+          ]
+        ]
+      }
+    },
+    {
+      "metin": "Otomatik indirme için konsolunu dinlenme ya da uyku modunda bırak. Salıdan önce eski oyunlarına veda et!",
+      "ekran": "Diskini şimdiden boşalt",
+      "ifade": "gulme",
+      "jest": "basparmak",
+      "espri": {
+        "tip": "emoji",
+        "emoji": "🧹",
+        "metin": "Disk temizliği!",
+        "tetik": "Salıdan"
+      }
+    },
+    {
+      "metin": "Sen GTA 6'ya yer açmak için hangi oyunu sileceksin? Yorumlara yaz!",
+      "duzen": "kapanis",
+      "ifade": "heyecan",
+      "espri": "soru"
+    }
+  ],
+  "youtube": {
+    "baslik": "GTA 6 için kaç GB yer lazım? Ön yükleme 10 Kasım'da 🦊 #shorts",
+    "aciklama": "Rockstar, GTA VI'nın dijital ön yüklemesini 10 Kasım'a çekti: PS5'te 00:00, Xbox Series X|S'te 03:00 (TSİ). Resmî boyut cihaza göre en fazla 212 GB; Xbox'taki 225 GB rakamı birim farkından geliyor. Oyun 19 Kasım'da çıkıyor.",
+    "etiketler": [
+      "gta6",
+      "gtavi",
+      "rockstar",
+      "ps5",
+      "xbox",
+      "oyunhaberleri",
+      "tilkihaber",
+      "shorts"
+    ]
+  }
+}
