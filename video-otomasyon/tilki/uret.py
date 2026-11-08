@@ -285,9 +285,23 @@ def konusma_maskesi(rms: np.ndarray) -> np.ndarray:
 
 
 def sessizlik_kirp(x: np.ndarray, hiz: dict | None, en_uzun: float = 0.3, bas_pay: float = 0.03,
-                   son_pay: float = 0.1) -> tuple[np.ndarray, dict | None]:
-    """Baştaki/sondaki sessizliği atar, cümle içi duraklamaları en_uzun saniyeyle sınırlar; hizalamayı kaydırır."""
+                   son_pay: float = 0.1, kelime_arasi: float = 0.08) -> tuple[np.ndarray, dict | None]:
+    """Baştaki/sondaki sessizliği atar, duraklamaları sınırlar ve hizalamayı kaydırır.
+
+    Noktalamalı yerlerde en_uzun, noktalamasız kelime aralarında kelime_arasi saniye kalır
+    (ör. "Geta … Altı" arasındaki gereksiz bekleme). Kelime içi sessizliklere dokunulmaz.
+    """
     adim = 0.01
+    araliklar = []  # (başlangıç, bitiş, noktalamalı mı) — hizalamaya göre iki kelime arası
+    if hiz:
+        c, b, s_ = hiz["c"], hiz["b"], hiz["s"]
+        for k in range(1, len(c) - 1):
+            if c[k].isspace() and not c[k + 1].isspace():
+                j = k - 1
+                while j >= 0 and c[j].isspace():
+                    j -= 1
+                if j >= 0:
+                    araliklar.append((s_[j] - 0.06, b[k + 1] + 0.06, c[j] in NOKTALAMA + "-—"))
     m = konusma_maskesi(zarf(x, adim))
     if not m.any():
         return x, hiz
@@ -302,9 +316,14 @@ def sessizlik_kirp(x: np.ndarray, hiz: dict | None, en_uzun: float = 0.3, bas_pa
         j = i
         while j < son and not m[j]:
             j += 1
-        if (j - i) * adim > en_uzun:
-            r0 = i * adim + en_uzun / 2
-            kesik.append((r0, r0 + (j - i) * adim - en_uzun))
+        orta, sinir = (i + j) / 2 * adim, en_uzun
+        for g0, g1, noktalamali in araliklar:
+            if g0 <= orta <= g1:
+                sinir = en_uzun if noktalamali else kelime_arasi
+                break
+        if (j - i) * adim > sinir:
+            r0 = i * adim + sinir / 2
+            kesik.append((r0, r0 + (j - i) * adim - sinir))
         i = j
     kesik.append((min(sure, son * adim + son_pay), sure))
     kesik = [(a, b) for a, b in kesik if b - a > 0.005]
@@ -789,7 +808,7 @@ def main() -> None:
             hiz = None
         kirp = ayar.get("ses_kirpma", {})
         x, hiz = sessizlik_kirp(x, hiz, kirp.get("en_uzun_duraklama", 0.3), kirp.get("bas_pay", 0.03),
-                                kirp.get("son_pay", 0.1))
+                                kirp.get("son_pay", 0.1), kirp.get("kelime_arasi", 0.08))
         if not arg.onizleme and ayar.get("tempo"):
             x, hiz, oran = tempo_ayarla(x, tts, hiz, ayar["tempo"].get("hedef_hece_hizi", 6.0),
                                         ayar["tempo"].get("en_fazla", 1.3))

@@ -75,7 +75,9 @@ gelebildiği için listede olmayan bir kaynak gerektiğinde Claude onay ister.
 3. **Senaryo** (`senaryo.json`, biçim aşağıda). Hedef 40–55 sn (seslendirilen metin ≈ 560–780 karakter;
    `--metin` tahmini gösterir), 5–7 sahne. İngilizce oyun/şirket adlarını **yazıldığı gibi** bırak; ses modeli
    (eleven_v4) onları doğru okur. Türkçe harflerle yeniden yazma ("Ekboks" yanlış okunuyordu).
-   `telaffuz.json` yalnızca özel istekler içindir: **GTA → "Geta"**, GB → gigabayt, PS5 → PlayStation 5. İlk sahne
+   `telaffuz.json` yalnızca özel istekler içindir: **GTA → "Geta"**, GTA 6 → **"Geta Altı"** (büyük A ile tek ad gibi
+   okunur; "Geta altı" arada 0,2 sn duruyordu), GB → gigabayt, PS5 → PlayStation 5. Bir adda bekleme duyulursa
+   yazım varyantlarını zaman damgalı TTS ile deneyip en kısa boşluklu olanı seç. İlk sahne
    ilk iki saniyede en çarpıcı somut ayrıntıyı söylesin. Her görsel, tilki tam o ayrıntıdan söz ederken açılsın
    (`tetik`). Son sahne `"duzen": "kapanis"`: habere özgü, kolay yanıtlanır tek soru. Yeni oyun/karakter adlarını
    `telaffuz` alanına ekle (ör. `"Lucia": "Luçiya"`).
@@ -97,7 +99,8 @@ gelebildiği için listede olmayan bir kaynak gerektiğinde Claude onay ister.
 
 Seslendirme ayarı (`ayarlar.json`): model `eleven_v4` (İngilizce kelimeleri en doğal okuyan model; kullanıcı
 4 örnek arasından seçti), hız 1,2 (API üst sınırı), stability 0,5, style 0,25. `ses_kirpma` her sahnenin baş/son
-sessizliğini kırpar ve cümle içi duraklamaları en fazla 0,18 sn'ye indirir. `tempo` her sahneyi ses perdesini
+sessizliğini kırpar, noktalamalı yerlerdeki duraklamaları en fazla 0,18 sn'ye, noktalamasız kelime aralarını
+en fazla 0,08 sn'ye indirir (yalnızca zaman damgasına göre iki kelimenin arasına düşen sessizlikler kesilir). `tempo` her sahneyi ses perdesini
 koruyarak saniyede ~6 heceye hızlandırır (en fazla ×1,3). Model tek başına saniyede 3–4,5 hecede kalıp kelimeleri
 uzatıyordu. Hizalama ve dudak senkronu birlikte kaydırılır.
 

@@ -21,7 +21,8 @@
   "ses_kirpma": {
     "en_uzun_duraklama": 0.18,
     "bas_pay": 0.03,
-    "son_pay": 0.1
+    "son_pay": 0.1,
+    "kelime_arasi": 0.08
   },
   "tempo": {
     "hedef_hece_hizi": 6.0,
