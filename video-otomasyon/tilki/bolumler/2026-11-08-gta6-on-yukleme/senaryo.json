@@ -135,6 +135,18 @@
       }
     },
     {
+      "metin": "Bir ipucu: konsolunu dinlenme ya da uyku modunda bırak, otomatik indirmeyi aç. Sen uyurken Vice City iner!",
+      "ekran": "Uyku modu + otomatik indirme",
+      "ifade": "gulme",
+      "jest": "basparmak",
+      "espri": {
+        "tip": "emoji",
+        "emoji": "😴",
+        "metin": "Zzz… indiriliyor",
+        "tetik": "uyurken"
+      }
+    },
+    {
       "metin": "Jason ve Lucia 19 Kasım'da geliyor. PC'ciler mi? Onlar hâlâ bekliyor.",
       "gorsel": "jason_lucia",
       "tetik": "Jason",

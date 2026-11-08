@@ -329,6 +329,22 @@ def sessizlik_kirp(x: np.ndarray, hiz: dict | None, en_uzun: float = 0.3, bas_pa
     return y, hiz
 
 
+def tempo_ayarla(x: np.ndarray, tts: str, hiz: dict | None, hedef: float, en_fazla: float) -> tuple[np.ndarray, dict | None, float]:
+    """Sahneyi saniyede `hedef` heceye yaklaştırır (yalnızca hızlandırır, ses perdesi korunur)."""
+    hece = sum(1 for ch in kucuk(tts) if ch in UNLU) or 1
+    oran = min(en_fazla, max(1.0, hedef / (hece / max(0.3, len(x) / SR))))
+    if oran < 1.02:
+        return x, hiz, 1.0
+    pcm = (np.clip(x, -1, 1) * 32767).astype("<i2").tobytes()
+    cikis = subprocess.run(["ffmpeg", "-v", "error", "-f", "s16le", "-ar", str(SR), "-ac", "1", "-i", "-",
+                            "-filter:a", f"atempo={oran:.4f}", "-f", "s16le", "-ar", str(SR), "-ac", "1", "-"],
+                           input=pcm, capture_output=True, check=True).stdout
+    y = np.frombuffer(cikis, dtype=np.int16).astype(np.float32) / 32768.0
+    if hiz:
+        hiz = {"c": hiz["c"], "b": [t / oran for t in hiz["b"]], "s": [t / oran for t in hiz["s"]]}
+    return y, hiz, oran
+
+
 def harf_agirligi(ch: str) -> float:
     c = kucuk(ch)
     if c in UNLU:
@@ -763,7 +779,7 @@ def main() -> None:
 
     # --- 1) seslendirme
     print("1) Seslendirme")
-    sesler, hizalamalar, kaynak_turu = [], [], set()
+    sesler, hizalamalar, kaynak_turu, tempolar = [], [], set(), []
     for i, (tts, _) in enumerate(ttsler, 1):
         onceki = ttsler[i - 2][0] if i > 1 else ""
         sonraki = ttsler[i][0] if i < len(ttsler) else ""
@@ -774,6 +790,10 @@ def main() -> None:
         kirp = ayar.get("ses_kirpma", {})
         x, hiz = sessizlik_kirp(x, hiz, kirp.get("en_uzun_duraklama", 0.3), kirp.get("bas_pay", 0.03),
                                 kirp.get("son_pay", 0.1))
+        if not arg.onizleme and ayar.get("tempo"):
+            x, hiz, oran = tempo_ayarla(x, tts, hiz, ayar["tempo"].get("hedef_hece_hizi", 6.0),
+                                        ayar["tempo"].get("en_fazla", 1.3))
+            tempolar.append(round(oran, 2))
         if hiz is None:
             hiz = hizala_tahmin(tts, x)
             tur += " + tahmini hizalama"
@@ -781,6 +801,8 @@ def main() -> None:
         hizalamalar.append(hiz)
         kaynak_turu.add(tur)
 
+    if tempolar:
+        print(f"  tempo (sahne başına hızlandırma): {tempolar}")
     # --- 2) zaman çizelgesi
     print("2) Zamanlama, ağız senkronu, altyazı")
     global kelimeler_g

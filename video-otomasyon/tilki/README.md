@@ -96,8 +96,10 @@ gelebildiği için listede olmayan bir kaynak gerektiğinde Claude onay ister.
    (görsel, ses ve video dosyaları commit'lenmez). **YouTube'a yükleme yapma.**
 
 Seslendirme ayarı (`ayarlar.json`): model `eleven_v4` (İngilizce kelimeleri en doğal okuyan model; kullanıcı
-4 örnek arasından seçti), hız 1,10, stability 0,5, style 0,25. `ses_kirpma` her sahnenin baş/son
-sessizliğini kırpar ve cümle içi duraklamaları en fazla 0,3 sn'ye indirir (hizalama da kaydırılır).
+4 örnek arasından seçti), hız 1,2 (API üst sınırı), stability 0,5, style 0,25. `ses_kirpma` her sahnenin baş/son
+sessizliğini kırpar ve cümle içi duraklamaları en fazla 0,18 sn'ye indirir. `tempo` her sahneyi ses perdesini
+koruyarak saniyede ~6 heceye hızlandırır (en fazla ×1,3). Model tek başına saniyede 3–4,5 hecede kalıp kelimeleri
+uzatıyordu. Hizalama ve dudak senkronu birlikte kaydırılır.
 
 `--onizleme` yerel espeak-ng sesiyle taslak üretir (robotik ses, sağ üstte "ÖNİZLEME" etiketi). Yalnızca
 animasyon ve zamanlamayı denemek içindir, yayına uygun değildir.
