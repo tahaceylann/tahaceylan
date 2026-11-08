@@ -13,12 +13,12 @@ const R = {
   gece: '#0B1430', eldiven: '#111116', parmak: '#2A1915',
 };
 const IFADE = {  // kas r>0: iç uç yukarı (endişe), r<0: iç uç aşağı (kararlı)
-  normal:  { kasY: 0, kasR: 0, egim: 0, kulak: 0, goz: 1, kisik: 0, gulus: 0.4 },
-  heyecan: { kasY: -9, kasR: 0.06, egim: -0.03, kulak: -0.05, goz: 1.12, kisik: 0, gulus: 0.8, pupil: 1.7 },
+  normal:  { kasY: 0, kasR: -0.04, egim: 0, kulak: 0, goz: 1, kisik: 0.05, gulus: 0.15 },
+  heyecan: { kasY: -9, kasR: 0.06, egim: -0.03, kulak: -0.05, goz: 1.12, kisik: 0, gulus: 0.5, pupil: 1.6 },
   saskin:  { kasY: -16, kasR: 0.12, egim: 0.03, kulak: -0.08, goz: 1.22, kisik: 0, gulus: 0.1, pupil: 0.8 },
   supheli: { kasY: 4, kasR: -0.14, egim: 0.06, kulak: 0.05, goz: 0.85, kisik: 0.25, gulus: 0.2, kasSag: { y: -10, r: 0.12 } },
   uzgun:   { kasY: -3, kasR: 0.3, egim: 0.05, kulak: 0.3, goz: 0.95, kisik: 0.1, gulus: -0.4 },
-  gulme:   { kasY: -6, kasR: 0.05, egim: -0.05, kulak: -0.04, goz: 1, kisik: 0.45, gulus: 1 },
+  gulme:   { kasY: -6, kasR: 0.02, egim: -0.05, kulak: -0.04, goz: 1, kisik: 0.4, gulus: 0.7 },
   dusunme: { kasY: -6, kasR: -0.06, egim: 0.08, kulak: 0.04, goz: 0.95, kisik: 0.12, gulus: 0.1, bak: [-0.6, -0.7] },
   ciddi:   { kasY: 2, kasR: -0.08, egim: 0, kulak: 0, goz: 1, kisik: 0.08, gulus: 0 },
 };
@@ -252,15 +252,15 @@ function elPoz(t, sc, o, c, a) {
 
 function basYolu(x, j) {
   simetrik(x, [0, -124], [
-    ['C', [62, -126], [104, -98], [118, -52]],
-    ['C', [124, -30], [127, -8], [130, 12]],
-    ['Q', [150, 18], [172, 34]],
-    ['Q', [152, 40], [140, 46]],
-    ['Q', [160, 58], [164, 74]],
-    ['Q', [146, 74], [130, 80]],
-    ['Q', [146, 94], [144, 108 + j * 0.4]],
-    ['Q', [124, 104 + j * 0.5], [104, 108 + j * 0.6]],
-    ['C', [82, 126 + j], [44, 142 + j], [0, 146 + j]],
+    ['C', [64, -126], [108, -98], [122, -52]],
+    ['C', [128, -30], [132, -8], [136, 12]],
+    ['Q', [158, 16], [186, 30]],
+    ['Q', [164, 40], [152, 46]],
+    ['Q', [174, 58], [180, 78]],
+    ['Q', [160, 80], [144, 86]],
+    ['Q', [160, 100], [156, 118 + j * 0.4]],
+    ['Q', [136, 116 + j * 0.5], [116, 122 + j * 0.6]],
+    ['C', [98, 142 + j], [58, 154 + j], [0, 156 + j]],
   ]);
 }
 function kulak(x, yon, sarkma) {
@@ -278,8 +278,8 @@ function kulak(x, yon, sarkma) {
 function goz(x, yon, d) {
   const P = d.P, acik = clamp((1 - d.kirp) * (P.goz || 1) - (P.kisik || 0) * 0.6, 0, 1.25);
   x.save(); x.translate(yon * 50, -12); x.scale(yon, 1); x.rotate(-0.04);
-  const ust = (o) => { x.moveTo(-26, 6); x.bezierCurveTo(-16, -6 - 16 * o, 14, -12 - 18 * o, 34, -8); };
-  const yol = (o) => { x.beginPath(); ust(o); x.bezierCurveTo(20, 6 + 8 * o, -4, 12 + 8 * o, -26, 6); x.closePath(); };
+  const ust = (o) => { x.moveTo(-26, 6); x.bezierCurveTo(-16, -4 - 12 * o, 14, -9 - 13 * o, 34, -6); };
+  const yol = (o) => { x.beginPath(); ust(o); x.bezierCurveTo(20, 5 + 6 * o, -4, 10 + 6 * o, -26, 6); x.closePath(); };
   if (acik > 0.06) {
     yol(acik); x.fillStyle = '#FFF8EC'; x.fill();
     x.save(); yol(acik); x.clip();
@@ -289,19 +289,20 @@ function goz(x, yon, d) {
     x.beginPath(); x.arc(ix, iy, 17, 0, 7); x.fillStyle = g; x.fill();
     x.lineWidth = 2; x.strokeStyle = 'rgba(90,30,0,0.6)'; x.stroke();
     x.beginPath(); x.ellipse(ix, iy, 3.2 * (P.pupil || 1), 12, 0, 0, 7); x.fillStyle = '#0B0605'; x.fill();
-    x.fillStyle = '#fff'; x.beginPath(); x.arc(ix - 6, iy - 7, 4.5, 0, 7); x.fill();
+    x.fillStyle = 'rgba(90,30,8,0.38)'; x.fillRect(-32, -40, 76, 26);                    // ağır üst kapak gölgesi
+    x.fillStyle = '#fff'; x.beginPath(); x.arc(ix - 6, iy - 6, 3.4, 0, 7); x.fill();
     x.beginPath(); x.arc(ix + 5, iy + 6, 2, 0, 7); x.fill();
     x.restore();
   }
-  x.beginPath(); ust(Math.max(acik, 0.02)); x.lineTo(44, -18);
-  x.lineWidth = 5.5; x.lineCap = 'round'; x.lineJoin = 'round'; x.strokeStyle = R.siyah; x.stroke();
+  x.beginPath(); ust(Math.max(acik, 0.02));
+  x.lineWidth = 4.5; x.lineCap = 'round'; x.lineJoin = 'round'; x.strokeStyle = R.siyah; x.stroke();
   if (acik > 0.06) { x.beginPath(); x.moveTo(-22, 8); x.bezierCurveTo(-4, 12 + 8 * acik, 18, 6 + 8 * acik, 30, -4); x.lineWidth = 2.5; x.strokeStyle = 'rgba(30,15,10,0.55)'; x.stroke(); }
   x.restore();
 }
 function kas(x, yon, k) {
-  x.save(); x.translate(yon * 52, -50 + k.y); x.scale(yon, 1); x.rotate(k.r);
-  x.beginPath(); x.moveTo(-26, 6); x.quadraticCurveTo(4, -8, 34, -2);
-  x.lineWidth = 9; x.lineCap = 'round'; x.strokeStyle = '#4E1907'; x.stroke(); x.restore();
+  x.save(); x.translate(yon * 52, -42 + k.y); x.scale(yon, 1); x.rotate(k.r);
+  x.beginPath(); x.moveTo(-30, 3); x.quadraticCurveTo(2, -5, 40, -3);
+  x.lineWidth = 13; x.lineCap = 'round'; x.strokeStyle = '#3A1204'; x.stroke(); x.restore();
 }
 function agizYolu(x, hw, h, y0) {
   x.beginPath(); x.moveTo(-hw, y0 + 2); x.quadraticCurveTo(0, y0 - 4, hw, y0 + 2);
@@ -313,8 +314,8 @@ function agiz(x, d) {
   x.lineCap = 'round'; x.lineJoin = 'round'; x.strokeStyle = R.siyah; x.lineWidth = 4;
   x.beginPath(); x.moveTo(0, 76); x.lineTo(0, y0 - 2); x.stroke();
   if (h < 3) {
-    const kv = 8 * gul;
-    x.beginPath(); x.moveTo(-40, 92 - kv); x.quadraticCurveTo(-18, 102, 0, y0 - 2); x.quadraticCurveTo(18, 102, 40, 92 - kv); x.stroke();
+    const kv = 7 * gul;
+    x.beginPath(); x.moveTo(-36, 95 - kv * 0.3); x.quadraticCurveTo(-18, 99, 0, y0 - 1); x.quadraticCurveTo(20, 97, 42, 88 - kv); x.stroke();
     return;
   }
   const hw = w * (1 - 0.3 * r) * 1.05;
@@ -366,19 +367,18 @@ function bas(x, d) {
   x.strokeStyle = 'rgba(40,18,10,0.5)'; x.lineWidth = 5; x.lineCap = 'round';
   for (const s of [-1, 1]) { x.beginPath(); x.moveTo(s * 25, -2); x.quadraticCurveTo(s * 22, 20, s * 16, 40); x.stroke(); }
   basYolu(x, j); x.lineWidth = 4.5; x.strokeStyle = R.kontur; x.stroke();
-  x.fillStyle = R.kurkKoyu;                                           // perçem
-  x.beginPath(); x.moveTo(-34, -120); x.quadraticCurveTo(-22, -160, 2, -172); x.quadraticCurveTo(-6, -142, 6, -122); x.closePath(); x.fill();
+  x.fillStyle = R.kurkKoyu;                                           // sivri saç tutamları
+  for (const [a, tx, ty, b] of [[-60, -58, -204, -26], [-34, -16, -226, 4], [-8, 14, -214, 30]]) {
+    x.beginPath(); x.moveTo(a, -118); x.lineTo(tx, ty); x.lineTo(b, -122); x.closePath(); x.fill();
+  }
   x.fillStyle = R.camgobegi;
-  x.beginPath(); x.moveTo(-4, -124); x.quadraticCurveTo(36, -164, 80, -150); x.quadraticCurveTo(54, -130, 62, -94);
-  x.quadraticCurveTo(38, -118, 14, -110); x.closePath(); x.fill();
+  x.beginPath(); x.moveTo(16, -124); x.lineTo(52, -216); x.lineTo(56, -140); x.lineTo(92, -150); x.lineTo(62, -110); x.lineTo(36, -118); x.closePath(); x.fill();
   x.strokeStyle = '#139CA8'; x.lineWidth = 3;
-  for (const o of [0, 10, 20]) { x.beginPath(); x.moveTo(10 + o, -126 + o * 0.3); x.quadraticCurveTo(40 + o, -140, 60 + o * 0.4, -112 + o); x.stroke(); }
-  x.fillStyle = `rgba(255,120,120,${0.18 + 0.2 * Math.max(0, d.P.gulus || 0)})`;
-  for (const s of [-1, 1]) { x.beginPath(); x.ellipse(s * 92, 42, 22, 12, 0, 0, 7); x.fill(); }
+  x.beginPath(); x.moveTo(28, -124); x.lineTo(48, -196); x.moveTo(44, -124); x.lineTo(78, -146); x.stroke();
   goz(x, -1, d); goz(x, 1, d); kas(x, -1, d.kasSol); kas(x, 1, d.kasSag);
   agiz(x, d);
-  x.beginPath(); x.moveTo(-22, 56); x.bezierCurveTo(-22, 46, 22, 46, 22, 56); x.bezierCurveTo(22, 66, 6, 74, 0, 76);
-  x.bezierCurveTo(-6, 74, -22, 66, -22, 56); x.fillStyle = R.siyah; x.fill();
+  x.beginPath(); x.moveTo(-26, 56); x.bezierCurveTo(-26, 44, 26, 44, 26, 56); x.bezierCurveTo(26, 67, 7, 76, 0, 78);
+  x.bezierCurveTo(-7, 76, -26, 67, -26, 56); x.fillStyle = R.siyah; x.fill();
   x.fillStyle = 'rgba(255,255,255,0.55)'; x.beginPath(); x.ellipse(-7, 52, 7, 4, -0.2, 0, 7); x.fill();
   kulaklik(x, d.t);
 }
@@ -389,13 +389,13 @@ function govde(x, d) {
   x.save(); ky(); x.clip(); x.fillStyle = R.krem; x.beginPath(); x.ellipse(70, -306, 82, 62, 0.3, 0, 7); x.fill(); x.restore();
   ky(); x.lineWidth = 4.5; x.strokeStyle = R.kontur; x.stroke();
   x.restore();
-  x.fillStyle = R.kurkKoyu; x.beginPath(); x.moveTo(-58, 100); x.lineTo(58, 100); x.lineTo(66, 236); x.lineTo(-66, 236); x.closePath(); x.fill();
-  x.fillStyle = R.krem; x.beginPath(); x.moveTo(-60, 116); x.quadraticCurveTo(-48, 190, -20, 228); x.lineTo(-8, 214); x.lineTo(0, 236);
-  x.lineTo(8, 214); x.lineTo(20, 228); x.quadraticCurveTo(48, 190, 60, 116); x.closePath(); x.fill();
+  x.fillStyle = R.kurkKoyu; x.beginPath(); x.moveTo(-72, 100); x.lineTo(72, 100); x.lineTo(80, 236); x.lineTo(-80, 236); x.closePath(); x.fill();
+  x.fillStyle = R.krem; x.beginPath(); x.moveTo(-72, 116); x.quadraticCurveTo(-58, 190, -20, 228); x.lineTo(-8, 214); x.lineTo(0, 236);
+  x.lineTo(8, 214); x.lineTo(20, 228); x.quadraticCurveTo(58, 190, 72, 116); x.closePath(); x.fill();
   x.save(); x.rotate(d.govdeEgim);
   const g = x.createLinearGradient(-260, 210, 260, 540); g.addColorStop(0, '#2A3A70'); g.addColorStop(1, '#101833');
-  x.beginPath(); x.moveTo(-66, 210); x.bezierCurveTo(-150, 208, -232, 222, -258, 282); x.lineTo(-284, 580); x.lineTo(284, 580);
-  x.lineTo(258, 282); x.bezierCurveTo(232, 222, 150, 208, 66, 210); x.closePath(); x.fillStyle = g; x.fill();
+  x.beginPath(); x.moveTo(-72, 210); x.bezierCurveTo(-160, 206, -256, 218, -284, 280); x.lineTo(-308, 580); x.lineTo(308, 580);
+  x.lineTo(284, 280); x.bezierCurveTo(256, 218, 160, 206, 72, 210); x.closePath(); x.fillStyle = g; x.fill();
   x.save(); x.beginPath(); x.moveTo(-68, 210); x.lineTo(0, 380); x.lineTo(68, 210); x.closePath(); x.clip();
   x.fillStyle = R.forma; x.fillRect(-80, 200, 160, 200);
   x.fillStyle = R.kirmizi; x.beginPath(); x.moveTo(-80, 300); x.lineTo(80, 240); x.lineTo(80, 262); x.lineTo(-80, 322); x.fill();
@@ -437,7 +437,7 @@ function el(x, P, aci, yon) {
   x.restore();
 }
 function kol(x, yon, P) {
-  const S = { x: yon * 250, y: 282 }, L1 = 160, L2 = 160;
+  const S = { x: yon * 272, y: 284 }, L1 = 160, L2 = 160;
   const dx = P.x - S.x, dy = P.y - S.y, D = Math.hypot(dx, dy), menzil = L1 + L2 - 2;
   const Pp = D > menzil ? { x: S.x + dx / D * menzil, y: S.y + dy / D * menzil } : { x: P.x, y: P.y };
   const Dc = clamp(Math.min(D, menzil), 30, menzil), aci = Math.atan2(dy, dx);

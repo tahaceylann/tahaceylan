@@ -1,8 +1,9 @@
 # 🦊 Tilki Haber — günlük oyun haberi → YouTube Shorts
 
 Her sabah oyun haberlerini tarayan, seçtiğin haberi TV haber kanalı temalı, 1080×1920 Türkçe bir Shorts
-videosuna çeviren hat. Sunucu, haber masasında oturan insansı "gamer" bir spiker tilki: kızıl kürk, lacivert
-blazer altında e-spor forması, RGB'li mikrofonlu oyuncu kulaklığı, camgöbeği boyalı perçem, parmaksız eldivenler.
+videosuna çeviren hat. Sunucu, haber masasında oturan insansı, erkeksi "gamer" bir spiker tilki: kızıl kürk, geniş çene ve yanak tüyleri,
+kalın düz kaşlar, dar ve ağır kapaklı kehribar gözler, sivri saç (bir tutamı camgöbeği), kalın boyun, geniş omuzlar,
+lacivert blazer altında e-spor forması, RGB'li mikrofonlu oyuncu kulaklığı, parmaksız eldivenler.
 Sahnede alt bant (SON DAKİKA + manşet), kayan haber bandı, görüntü ekranı ve spiker penceresi, bilgi grafikleri ve
 "SİZE SORUYORUZ" kapanışı var. YouTube'a yükleme kararı her zaman sende.
 
