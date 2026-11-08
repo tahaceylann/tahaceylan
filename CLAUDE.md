@@ -25,7 +25,10 @@ Oyun haberi veya tilki geçen isteklerde yukarıdaki genel video hattını deği
 2. **Seçim:** Bültenden sonra kullanıcı yalnızca bir numara yazarsa, o günün `video-otomasyon/tilki/bultenler/<tarih>.md`
    dosyasındaki maddeyle `video-otomasyon/tilki/README.md` → "Video üretimi" adımlarını uygula. Kullanıcı numara
    yazmadan video üretme.
-3. Tilkinin sesi (`ayarlar.json`) ve görünüşü (`render/tilki.js`) bölümler arasında sabittir. Bölüme göre değiştirme.
-4. Teslimde ölçülen süreyi kontrol et (sınır 60 sn), MP4'ü SendUserFile ile gönder, Shorts başlığını ve
+3. **Görseller her seferinde kullanıcıdan istenir:** Haberi doğruladıktan sonra gereken 3–4 görseli öneri ve resmî
+   kaynaklarıyla listele. PushNotification ile kullanıcıya bildirim gönder ve görselleri bekle. Gelenleri gözle
+   kontrol et (doğru oyun, platform, güncel yazı, çözünürlük). Uygunsuzsa nedenini söyle; `gorsel.py ekle` ile kaydet.
+4. Tilkinin sesi (`ayarlar.json`) ve görünüşü (`render/tilki.js`) bölümler arasında sabittir. Bölüme göre değiştirme.
+5. Teslimde ölçülen süreyi kontrol et (sınır 60 sn), MP4'ü SendUserFile ile gönder, Shorts başlığını ve
    kaynaklı YouTube açıklamasını mesaja yaz. **YouTube'a yükleme yapma.** `senaryo.json` ve `kaynaklar.json`
    dosyalarını commit'le. Görsel, ses ve video dosyalarını commit'leme.

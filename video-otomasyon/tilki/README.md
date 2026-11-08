@@ -20,7 +20,7 @@ Claude     haberi doğrular → 3–4 görsel bulur/doğrular → senaryo → El
 | Zamanlama | ✅ Her gün 08:41 (Europe/Istanbul), Claude bildirimi | Değiştirmek için Claude'a "bülten saatini 10:00 yap" yazman yeterli. |
 | Video üretimi | ✅ Container'da hazır (ffmpeg + Chromium/Playwright + Python) | Ek hizmet gerekmez. |
 | ElevenLabs sesi | ✅ Anahtar Default ortamına kaydedildi · ⚠ ücretli plan + STT izni bekleniyor | Aşağıdaki **A**. |
-| Google Görseller | ⚠ Arama API anahtarı gerekli | Aşağıdaki **C**. |
+| Görseller | ✅ Her videoda kullanıcıdan bildirimle istenir | İsteğe bağlı otomatik arama için **C**. |
 | Haber/görsel sitelerine erişim | ⚠ Ortamın ağı kısıtlı | Aşağıdaki **D**. |
 
 **A. ElevenLabs API anahtarı (önerilen, tam otomatik ve kelime düzeyinde zaman damgalı).**
@@ -60,13 +60,18 @@ gelebildiği için listede olmayan bir kaynak gerektiğinde Claude onay ister.
 
 1. **Doğrula.** Seçilen haberi kaynağından (tercihen geliştirici duyurusu/resmî yama notu) aç; tarih, sürüm,
    sayı ve adları kontrol et. Bölüm klasörü: `bolumler/YYYY-MM-DD-kisa-ad/`.
-2. **Görseller (3–4 adet).** Oyunun adı + habere özgü terimlerle ara:
-   `python3 gorsel.py ara "GTA 6 Grotti Cheetah screenshot"` (Google Görseller), `python3 gorsel.py steam "<oyun>"`
-   (resmî Steam ekran görüntüleri). Her aday için özgün sayfayı aç: doğru oyun/sürüm mü, haberdeki içeriği mi
-   gösteriyor, kullanım koşulları videoda yayımlamaya izin veriyor mu? Öncelik: geliştiricinin basın kiti ve resmî
-   ekran görüntüleri. Örnek dağılım: genel görünüm, ayrıntının yakın planı, oyun içi kullanım. Seçilenleri kaydet:
-   `python3 gorsel.py indir <bolum> <anahtar> <url> --sayfa <özgün sayfa> --sahip "<hak sahibi>" --lisans "<koşul>" --aciklama "<ne gösteriyor>" --resmi`.
-   İndirdikten sonra görseli Read ile **gözle kontrol et** ve vurgulanacak ayrıntının kutusunu (0–1 oranlarıyla) belirle.
+2. **Görseller (3–4 adet), kullanıcıdan istenir.** Haberi doğruladıktan sonra hangi görsellerin gerektiğini çıkar
+   (ör. genel görünüm, ayrıntının yakın planı, oyun içi kullanım). Her biri için öneri ve resmî kaynak ver: basın
+   kiti, resmî site, Steam mağaza sayfası, Newswire galerisi. Sonra **PushNotification** ile kullanıcıya bildirim gönder,
+   ör. "🦊 GTA VI videosu için 3 görsel gönder: kapak, araç yakın planı, harita". Aynı listeyi mesajda da yaz ve
+   görseller gelene kadar bekle.
+   Gelen her görseli Read ile **gözle kontrol et**: doğru oyun, sürüm ve platform mu? Eski bir yazı ("COMING 2025",
+   "Xbox One" gibi) var mı? Resmî mi? Çözünürlüğü yeterli mi? Sorunluysa nedenini söyle; kırpılarak kurtarılıyorsa
+   kırp, değilse yenisini iste ya da kullanıcı onaylarsa o sahneyi bilgi grafiğiyle anlat. Kullanılacakları
+   kaydet: `python3 gorsel.py ekle <bolum> <anahtar> <dosya> --sahip "…" --sayfa "<özgün sayfa>" --lisans "…"
+   --aciklama "…" [--kirp x0,y0,x1,y1] --resmi`. Vurgulanacak ayrıntının kutusunu (0–1 oranlarıyla) belirle.
+   Serper anahtarı ortama eklenirse `python3 gorsel.py ara "…"` ile Google Görseller'den aday da önerebilirsin;
+   ağ izni varsa `gorsel.py indir` doğrudan indirir.
 3. **Senaryo** (`senaryo.json`, biçim aşağıda). Hedef 40–55 sn (seslendirilen metin ≈ 560–780 karakter;
    `--metin` tahmini gösterir), 5–7 sahne. İngilizce oyun/şirket adlarını **yazıldığı gibi** bırak; ses modeli
    (eleven_v4) onları doğru okur. Türkçe harflerle yeniden yazma ("Ekboks" yanlış okunuyordu).

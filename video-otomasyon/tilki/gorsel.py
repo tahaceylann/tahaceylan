@@ -6,6 +6,8 @@
   python3 gorsel.py indir <bolum> <anahtar> <görsel_url> --sayfa <kaynak_sayfa> \
         --sahip "Rockstar Games" --lisans "Resmî basın görseli – editoryal kullanım" \
         --aciklama "Grotti Cheetah, resmî ekran görüntüsü" [--resmi]
+  python3 gorsel.py ekle <bolum> <anahtar> <kullanıcının gönderdiği dosya> --sahip "Rockstar Games" \
+        --sayfa "https://www.rockstargames.com/VI" --lisans "..." --aciklama "..." [--kirp x0,y0,x1,y1] [--resmi]
   python3 gorsel.py liste <bolum>
 
 Kayıtlar <bolum>/kaynaklar.json'a yazılır; uret.py ve YouTube açıklaması buradan beslenir.
@@ -112,6 +114,34 @@ def indir(bolum: Path, anahtar: str, url: str, sayfa: str, sahip: str, lisans: s
     print(f"Kaydedildi: {hedef} ({rgb.width}x{rgb.height}){uyari}")
 
 
+def ekle(bolum: Path, anahtar: str, dosya: Path, sayfa: str, sahip: str, lisans: str, aciklama: str,
+         resmi: bool, kirp: str | None, not_: str) -> None:
+    """Kullanıcının sohbete eklediği görseli (gerekirse kırparak) bölüme kaynağıyla kaydeder."""
+    baytlar = dosya.read_bytes()
+    try:
+        im = Image.open(io.BytesIO(baytlar)).convert("RGB")
+    except Exception as e:  # noqa: BLE001
+        hata(f"görsel açılamadı: {e}")
+    if kirp:
+        x0, y0, x1, y1 = (int(v) for v in kirp.split(","))
+        im = im.crop((x0, y0, x1, y1))
+    klasor = bolum / "gorseller"
+    klasor.mkdir(parents=True, exist_ok=True)
+    hedef = klasor / f"{anahtar}.jpg"
+    im.save(hedef, "JPEG", quality=95)
+    kayit_yolu = bolum / "kaynaklar.json"
+    kayitlar = json.loads(kayit_yolu.read_text(encoding="utf-8")) if kayit_yolu.exists() else {}
+    kayitlar[anahtar] = {
+        "dosya": f"gorseller/{hedef.name}", "sayfa": sayfa, "sahip": sahip, "lisans": lisans,
+        "aciklama": aciklama, "resmi": resmi, "genislik": im.width, "yukseklik": im.height,
+        "kaynak_notu": not_ or "Kullanıcı tarafından sohbete eklendi." + (f" Kırpma: {kirp}." if kirp else ""),
+        "sha256": hashlib.sha256(baytlar).hexdigest(), "indirme": datetime.now().isoformat(timespec="seconds"),
+    }
+    kayit_yolu.write_text(json.dumps(kayitlar, ensure_ascii=False, indent=2), encoding="utf-8")
+    uyari = "  ⚠ 1000 px'ten dar, ekranda bir miktar büyütülecek" if im.width < 1000 else ""
+    print(f"Kaydedildi: {hedef} ({im.width}x{im.height}){uyari}")
+
+
 def liste(bolum: Path) -> None:
     yol = bolum / "kaynaklar.json"
     if not yol.exists():
@@ -132,6 +162,11 @@ def main() -> None:
     i.add_argument("--sayfa", required=True); i.add_argument("--sahip", required=True)
     i.add_argument("--lisans", required=True); i.add_argument("--aciklama", default="")
     i.add_argument("--resmi", action="store_true")
+    e = alt.add_parser("ekle")
+    e.add_argument("bolum", type=Path); e.add_argument("anahtar"); e.add_argument("dosya", type=Path)
+    e.add_argument("--sayfa", required=True); e.add_argument("--sahip", required=True)
+    e.add_argument("--lisans", required=True); e.add_argument("--aciklama", default="")
+    e.add_argument("--resmi", action="store_true"); e.add_argument("--kirp"); e.add_argument("--not", dest="not_", default="")
     li = alt.add_parser("liste"); li.add_argument("bolum", type=Path)
     arg = ap.parse_args()
     if arg.komut == "ara":
@@ -140,6 +175,8 @@ def main() -> None:
         steam(arg.oyun)
     elif arg.komut == "indir":
         indir(arg.bolum, arg.anahtar, arg.url, arg.sayfa, arg.sahip, arg.lisans, arg.aciklama, arg.resmi)
+    elif arg.komut == "ekle":
+        ekle(arg.bolum, arg.anahtar, arg.dosya, arg.sayfa, arg.sahip, arg.lisans, arg.aciklama, arg.resmi, arg.kirp, arg.not_)
     else:
         liste(arg.bolum)
 

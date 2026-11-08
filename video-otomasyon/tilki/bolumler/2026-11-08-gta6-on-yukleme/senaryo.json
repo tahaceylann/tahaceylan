@@ -29,19 +29,34 @@
   },
   "sahneler": [
     {
-      "metin": "Son dakika! GTA 6 için diskinde 212 GB'a kadar yer açman gerekiyor!",
+      "metin": "212 GB! GTA 6 diskinde koca bir şehir kadar yer istiyor.",
       "ekran": "212 GB'A KADAR YER LAZIM",
       "ifade": "saskin",
+      "gorsel": "kapak",
+      "tetik": "koca",
+      "odak": [
+        0.5,
+        0.45
+      ],
+      "etiket": "RESMİ GÖRSEL",
       "espri": {
         "tip": "emoji",
         "emoji": "💾",
-        "metin": "212 GB?!",
-        "tetik": "212"
+        "metin": "212 GB?!"
       }
     },
     {
-      "metin": "Rockstar ön yüklemeyi iki gün öne çekti: PS5'te 10 Kasım gece yarısı, Xbox'ta saat üçte başlıyor.",
-      "tetik": "ön yüklemeyi",
+      "metin": "Ama asıl sürpriz başka: Rockstar indirmeyi iki gün öne çekti!",
+      "ekran": "İndirme iki gün öne çekildi",
+      "ifade": "heyecan",
+      "espri": {
+        "tip": "unlem",
+        "tetik": "sürpriz"
+      }
+    },
+    {
+      "metin": "PS5'te 10 Kasım gece yarısı, Xbox'ta ise sabah üçte ön yükleme başlıyor.",
+      "tetik": "PS5'te",
       "ekran": "Ön yükleme 10 Kasım'da",
       "grafik": {
         "tip": "liste",
@@ -65,12 +80,12 @@
       }
     },
     {
-      "metin": "Resmî boyut cihaza göre 212 GB'a kadar. Xbox'taki 225 rakamı ise sadece birim farkı.",
-      "tetik": "Resmî",
-      "ekran": "212 GB'a kadar",
+      "metin": "Peki Xbox neden 225 GB diyor? Cevap şaşırtıcı derecede basit: birim farkı! Konsolunda yaklaşık 210 görünecek.",
+      "tetik": "Xbox",
+      "ekran": "225 GB'ın sırrı: birim farkı",
       "espri": {
-        "tip": "ter",
-        "tetik": "Xbox'taki"
+        "tip": "soru",
+        "tetik": "Peki"
       },
       "grafik": {
         "tip": "sayi",
@@ -92,9 +107,9 @@
       }
     },
     {
-      "metin": "Kutulu kopyalarda disk yok, indirme kodu var. Oyun 19 Kasım'da çıkıyor; PC için hâlâ tarih yok.",
+      "metin": "Kutulu kopya alacaklar dikkat: kutuyu açınca disk değil, sadece bir indirme kodu çıkacak!",
       "tetik": "Kutulu",
-      "ekran": "Çıkış 19 Kasım",
+      "ekran": "Kutuda disk yok, kod var",
       "grafik": {
         "tip": "liste",
         "etiket": "Takvim",
@@ -120,15 +135,22 @@
       }
     },
     {
-      "metin": "Otomatik indirme için konsolunu dinlenme ya da uyku modunda bırak. Salıdan önce eski oyunlarına veda et!",
-      "ekran": "Diskini şimdiden boşalt",
+      "metin": "Jason ve Lucia 19 Kasım'da geliyor. PC'ciler mi? Onlar hâlâ bekliyor.",
+      "gorsel": "jason_lucia",
+      "tetik": "Jason",
+      "ekran": "Çıkış 19 Kasım",
+      "etiket": "RESMİ GÖRSEL",
       "ifade": "gulme",
-      "jest": "basparmak",
-      "espri": {
-        "tip": "emoji",
-        "emoji": "🧹",
-        "metin": "Disk temizliği!",
-        "tetik": "Salıdan"
+      "vurgu": {
+        "kutu": [
+          0.33,
+          0.27,
+          0.3,
+          0.25
+        ],
+        "tetik": "Lucia",
+        "yakinlik": 1.35,
+        "yazi": "Jason & Lucia"
       }
     },
     {
@@ -139,7 +161,7 @@
     }
   ],
   "youtube": {
-    "baslik": "GTA 6 için kaç GB yer lazım? Ön yükleme 10 Kasım'da 🦊 #shorts",
+    "baslik": "GTA 6 neden 225 GB görünüyor? Ön yükleme 10 Kasım'da 🦊 #shorts",
     "aciklama": "Rockstar, GTA VI'nın dijital ön yüklemesini 10 Kasım'a çekti: PS5'te 00:00, Xbox Series X|S'te 03:00 (TSİ). Resmî boyut cihaza göre en fazla 212 GB; Xbox'taki 225 GB rakamı birim farkından geliyor. Oyun 19 Kasım'da çıkıyor.",
     "etiketler": [
       "gta6",
