@@ -77,7 +77,10 @@ gelebildiği için listede olmayan bir kaynak gerektiğinde Claude onay ister.
    (eleven_v4) onları doğru okur. Türkçe harflerle yeniden yazma ("Ekboks" yanlış okunuyordu).
    `telaffuz.json` yalnızca özel istekler içindir: **GTA → "Geta"**, GTA 6 → **"Geta Altı"** (büyük A ile tek ad gibi
    okunur; "Geta altı" arada 0,2 sn duruyordu), GB → gigabayt, PS5 → PlayStation 5. Bir adda bekleme duyulursa
-   yazım varyantlarını zaman damgalı TTS ile deneyip en kısa boşluklu olanı seç. İlk sahne
+   yazım varyantlarını zaman damgalı TTS ile deneyip en kısa boşluklu olanı seç.
+   **Oyun adından hemen sonra ad tamlaması kurabilecek bir isim koyma.** "GTA 6 diskinde" bitişik okununca
+   "6 diskte" gibi anlaşılıyordu. Ya cümleyi değiştir ("GTA 6, senden … disk alanı istiyor") ya da addan sonra
+   virgül koy. Virgül 0,18 sn'lik kısa bir ayrım bırakır, noktalamasız boşluk 0,08 sn'ye kırpılır. İlk sahne
    ilk iki saniyede en çarpıcı somut ayrıntıyı söylesin. Her görsel, tilki tam o ayrıntıdan söz ederken açılsın
    (`tetik`). Son sahne `"duzen": "kapanis"`: habere özgü, kolay yanıtlanır tek soru. Yeni oyun/karakter adlarını
    `telaffuz` alanına ekle (ör. `"Lucia": "Luçiya"`).
