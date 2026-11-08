@@ -28,7 +28,7 @@ elevenlabs.io → Profile → API Keys → yeni anahtar (Text to Speech + Speech
 Claude'a "ElevenLabs anahtarını ekleyelim" yaz. Güvenli bir form açılır ve anahtar ortamın *network secrets*
 kısmına `api.elevenlabs.io` / `xi-api-key` olarak kaydedilir. Anahtar sohbete yazılmaz.
 Tilkinin sesi `ayarlar.json` içinde sabittir: **Hasan – Energetic, Expressive, Playful**
-(`TA7RCSTD5b2z14h1TDTX`, `eleven_multilingual_v2`, seed 1907). API ses kütüphanesi sesini kabul etmezse
+(`TA7RCSTD5b2z14h1TDTX`, `eleven_v4`, seed 1907). API ses kütüphanesi sesini kabul etmezse
 ElevenLabs'te Voice Library → Hasan → "Add to my voices" yap.
 - **Plan:** Ücretsiz plan API'de kütüphane seslerini (Hasan) kullandırmaz (402), ticari lisans vermez ve ayda
   ~10 videoluk kredi verir. En düşük ücretli plan (Starter) yeterlidir. Hazır sesler (ör. Liam) ücretsiz planda da çalışır.
@@ -68,14 +68,15 @@ gelebildiği için listede olmayan bir kaynak gerektiğinde Claude onay ister.
    `python3 gorsel.py indir <bolum> <anahtar> <url> --sayfa <özgün sayfa> --sahip "<hak sahibi>" --lisans "<koşul>" --aciklama "<ne gösteriyor>" --resmi`.
    İndirdikten sonra görseli Read ile **gözle kontrol et** ve vurgulanacak ayrıntının kutusunu (0–1 oranlarıyla) belirle.
 3. **Senaryo** (`senaryo.json`, biçim aşağıda). Hedef 40–55 sn (seslendirilen metin ≈ 560–780 karakter;
-   `--metin` tahmini gösterir), 5–7 sahne. İngilizce adları seste Türkçe okunuşuyla ver (`telaffuz.json`),
-   harf harf okunuşlardan kaçın: "Ge Te A" duraklatıyordu, artık **GTA → "Geta"**. İlk sahne
+   `--metin` tahmini gösterir), 5–7 sahne. İngilizce oyun/şirket adlarını **yazıldığı gibi** bırak; ses modeli
+   (eleven_v4) onları doğru okur. Türkçe harflerle yeniden yazma ("Ekboks" yanlış okunuyordu).
+   `telaffuz.json` yalnızca özel istekler içindir: **GTA → "Geta"**, GB → gigabayt, PS5 → PlayStation 5. İlk sahne
    ilk iki saniyede en çarpıcı somut ayrıntıyı söylesin. Her görsel, tilki tam o ayrıntıdan söz ederken açılsın
    (`tetik`). Son sahne `"duzen": "kapanis"`: habere özgü, kolay yanıtlanır tek soru. Yeni oyun/karakter adlarını
    `telaffuz` alanına ekle (ör. `"Lucia": "Luçiya"`).
 4. **Süre tahmini ve metin:** `python3 uret.py <bolum>/senaryo.json --metin`.
 5. **Ses.** API anahtarı varsa doğrudan 6. adım (sesler `ses/` altında önbelleğe alınır). Bağlayıcı yolunda her
-   sahne için `ses/metinler.json`'daki metni `creative_generate_speech` ile (ses: Hasan, model `eleven_multilingual_v2`)
+   sahne için `ses/metinler.json`'daki metni `creative_generate_speech` ile (ses: Hasan, model `eleven_v4`)
    üret, `content_url`'i indir ve `python3 uret.py <bolum>/senaryo.json --ses-ekle <sahne> <dosya.mp3>` ile kaydet.
 6. **Telaffuz kontrolü:** `python3 uret.py <bolum>/senaryo.json --telaffuz` (ElevenLabs Speech-to-Text). ✗ çıkan adı
    `telaffuz` sözlüğünde yeniden yaz ve yalnızca o sahneyi yeniden seslendir (dosyayı sil, 7. adım yeniden üretir).
@@ -89,7 +90,8 @@ gelebildiği için listede olmayan bir kaynak gerektiğinde Claude onay ister.
    görsellerin özgün sayfaları ve hak sahipleri) yaz. `senaryo.json` + `kaynaklar.json` dosyalarını commit'le
    (görsel, ses ve video dosyaları commit'lenmez). **YouTube'a yükleme yapma.**
 
-Seslendirme ayarı (`ayarlar.json`): hız 1,10, stability 0,5, style 0,25. `ses_kirpma` her sahnenin baş/son
+Seslendirme ayarı (`ayarlar.json`): model `eleven_v4` (İngilizce kelimeleri en doğal okuyan model; kullanıcı
+4 örnek arasından seçti), hız 1,10, stability 0,5, style 0,25. `ses_kirpma` her sahnenin baş/son
 sessizliğini kırpar ve cümle içi duraklamaları en fazla 0,3 sn'ye indirir (hizalama da kaydırılır).
 
 `--onizleme` yerel espeak-ng sesiyle taslak üretir (robotik ses, sağ üstte "ÖNİZLEME" etiketi). Yalnızca
