@@ -1,6 +1,7 @@
 # Günlük oyun haberleri bülteni — talimat
 
-Zamanlanmış görev her sabah (08:41, Europe/Istanbul) yeni bir Claude oturumu açar ve bu dosyayı uygular.
+Zamanlanmış görev her sabah 08:48'de (Europe/Istanbul) yeni bir Claude oturumu açar ve bu dosyayı uygular;
+araştırma bitince (≈ 09:00) telefona bildirim gider. Son mesajın ilk satırı bildirimde görünecek kısa özettir.
 Kullanıcı "oyun haberleri", "bülteni hazırla" gibi bir şey yazdığında da aynı adımlar geçerlidir.
 
 ## 1. Tara (son 24 saat, Türkiye saati)

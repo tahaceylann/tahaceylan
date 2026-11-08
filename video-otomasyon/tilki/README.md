@@ -8,7 +8,7 @@ Sahnede alt bant (SON DAKİKA + manşet), kayan haber bandı, görüntü ekranı
 "SİZE SORUYORUZ" kapanışı var. YouTube'a yükleme kararı her zaman sende.
 
 ```
-08:41 TSİ  zamanlanmış görev → yeni Claude oturumu → bülten (5–10 haber) → telefonuna bildirim
+08:48 TSİ  zamanlanmış görev → yeni Claude oturumu → araştırma + bülten (5–10 haber) → ≈09:00 telefonuna bildirim
 sen        "3" yazarsın
 Claude     haberi doğrular → 3–4 görsel bulur/doğrular → senaryo → ElevenLabs sesi → animasyon → kontrol
            → MP4 + Shorts başlığı + YouTube açıklaması (kaynaklarla) gönderir
@@ -18,7 +18,7 @@ Claude     haberi doğrular → 3–4 görsel bulur/doğrular → senaryo → El
 
 | Ne | Durum | Ne yapmalı |
 |---|---|---|
-| Zamanlama | ✅ Her gün 08:41 (Europe/Istanbul), Claude bildirimi | Değiştirmek için Claude'a "bülten saatini 10:00 yap" yazman yeterli. |
+| Zamanlama | ✅ Her gün 08:48'de araştırma başlar, ≈ 09:00 bildirim (Europe/Istanbul) | Değiştirmek için Claude'a "bülten saatini 10:00 yap" yazman yeterli. |
 | Video üretimi | ✅ Container'da hazır (ffmpeg + Chromium/Playwright + Python) | Ek hizmet gerekmez. |
 | ElevenLabs sesi | ✅ Anahtar Default ortamına kaydedildi · ⚠ ücretli plan + STT izni bekleniyor | Aşağıdaki **A**. |
 | Görseller | ✅ Her videoda kullanıcıdan bildirimle istenir | İsteğe bağlı otomatik arama için **C**. |

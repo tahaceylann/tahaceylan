@@ -19,7 +19,7 @@ yazdığında bu hattı çalıştır (zamanlayıcı yok, tetikleyici kullanıcı
 
 Oyun haberi veya tilki geçen isteklerde yukarıdaki genel video hattını değil, bu hattı kullan.
 
-1. **Bülten:** Zamanlanmış görev her gün 08:41'de (Europe/Istanbul) yeni bir oturum açar. Kullanıcı
+1. **Bülten:** Zamanlanmış görev her gün 08:48'de (Europe/Istanbul) yeni bir oturum açar, haberleri araştırır; bülten hazır olunca (≈ 09:00) telefona bildirim gider. Kullanıcı
    "oyun haberleri" ya da "bülten" yazarsa da aynı işi yap: `video-otomasyon/tilki/BULTEN.md` talimatını uygula.
    Bülten 5–10 doğrulanmış haber içerir ve şu soruyla biter: "Bugün tilki hangi haberi sunsun? Numarasını yazman yeterli. 🦊"
 2. **Seçim:** Bültenden sonra kullanıcı yalnızca bir numara yazarsa, o günün `video-otomasyon/tilki/bultenler/<tarih>.md`
