@@ -810,3 +810,65 @@ function ciz(t, k) {
   soruPaneli(t, c);
   ac.restore();
 }
+
+// ------------------------------------------------------------ YouTube kapağı
+// kapakCiz({w, h, src, buyuk, orta, alt, ifade, marka}) → JPEG data URL. Spiker, videodaki çizim koduyla
+// yüksek çözünürlükte yeniden çizilir; arka plan resmî haber görseli (yoksa stüdyo).
+async function kapakCiz(v) {
+  T = { fps: 30, sure: 1, marka: v.marka, gorseller: {}, gorsel_olaylari: [], pencereler: [], kelimeler: [], altyazi: [],
+        agiz: [[26, 40, 0.9, 0]], genlik: [0.5], kirpmalar: [], kulaklar: [],
+        sahneler: [{ bas: 0, son: 1, ses_bas: 0, ses_son: 1, duzen: 'studyo', ifade: v.ifade || 'saskin', jest: '', zoom: 1, k0: 0, k1: 0 }] };
+  for (const f of ['900 60px Inter', '800 60px Inter', '60px "Noto Color Emoji"']) { try { await document.fonts.load(f, 'AaÇğİşÖü'); } catch (e) { /* */ } }
+  const yatay = v.w > v.h, c = document.createElement('canvas'); c.width = v.w; c.height = v.h; const x = c.getContext('2d');
+  // arka plan
+  if (v.src) {
+    const im = await new Promise((ok, red) => { const i = new Image(); i.onload = () => ok(i); i.onerror = red; i.src = v.src; });
+    const k = Math.max(v.w / im.width, v.h / im.height), dw = im.width * k, dh = im.height * k;
+    x.drawImage(im, (v.w - dw) / 2, yatay ? (v.h - dh) / 2 : 0, dw, dh);
+  } else { x.drawImage(statik, 0, 0, v.w, v.h); }
+  let g = yatay ? x.createLinearGradient(0, 0, v.w, 0) : x.createLinearGradient(0, 0, 0, v.h);
+  if (yatay) { g.addColorStop(0, 'rgba(6,12,34,0.94)'); g.addColorStop(0.55, 'rgba(6,12,34,0.55)'); g.addColorStop(1, 'rgba(6,12,34,0.15)'); }
+  else { g.addColorStop(0, 'rgba(6,12,34,0.85)'); g.addColorStop(0.38, 'rgba(6,12,34,0.35)'); g.addColorStop(0.62, 'rgba(6,12,34,0.45)'); g.addColorStop(1, 'rgba(6,12,34,0.97)'); }
+  x.fillStyle = g; x.fillRect(0, 0, v.w, v.h);
+  // spiker: şaşkın, yazıyı işaret ediyor
+  const f = document.createElement('canvas'); f.width = W; f.height = H; const fx = f.getContext('2d');
+  const P = IFADE[v.ifade || 'saskin'] || IFADE.saskin;
+  const d = { t: 0.4, m: [26, 42, 0.9, 0.1], a: 0.5, P, bx: yatay ? -0.5 : 0.1, by: -0.6, kirp: 0,
+    kasSol: { y: P.kasY - 6, r: P.kasR }, kasSag: { y: P.kasY - 6, r: P.kasR }, kulakSol: P.kulak, kulakSag: P.kulak,
+    x: 540, y: 600, s: 1.25, egim: yatay ? 0.06 : -0.05, bas: 0, govdeEgim: 0, kuyruk: 0.1,
+    el: { L: { x: -150, y: 444, s: 1, p: 'masa' }, R: { x: 300, y: -40, s: 1.15, p: 'isaret' } } };
+  if (yatay) { d.el = { L: { x: -300, y: -40, s: 1.15, p: 'isaret' }, R: { x: 150, y: 444, s: 1, p: 'masa' } }; }
+  spiker(fx, d); spikerKollar(fx, d);
+  const kx = 90, ky = 150, kw = 900, kh = 1000;                   // baş, omuzlar ve kalkık el
+  x.save(); x.shadowColor = 'rgba(0,0,0,0.6)'; x.shadowBlur = 40;
+  if (yatay) x.drawImage(f, kx, ky, kw, kh, v.w - 640, 40, 640, 640 * kh / kw);
+  else x.drawImage(f, kx, ky, kw, kh, 40, 880, 1040, 1040 * kh / kw);
+  x.restore();
+  // logo
+  const L = yatay ? 0.75 : 1, lx = yatay ? 36 : 44, ly = yatay ? 30 : 64;
+  x.save(); x.translate(lx, ly); x.scale(L, L);
+  x.fillStyle = R.kirmizi; x.fillRect(0, 0, 96, 96); amblem(x, 48, 52, 0.7, '#fff', R.kirmizi);
+  x.font = `900 44px ${YAZI}`; const mw = x.measureText(v.marka).width + 44;
+  x.fillStyle = 'rgba(8,16,40,0.94)'; x.fillRect(96, 0, mw, 96); x.fillStyle = '#fff'; x.textBaseline = 'middle'; x.fillText(v.marka, 118, 50);
+  x.restore();
+  // yazılar
+  const sol = yatay ? 44 : 60, maxW = yatay ? 700 : 960;
+  let y = yatay ? 175 : 300;
+  x.save(); x.translate(sol, y); x.rotate(-0.035);
+  const fb = sigdir(x, v.buyuk, 900, yatay ? 190 : 270, 90, maxW, 1);
+  x.font = `900 ${fb.boyut}px ${YAZI}`; x.textBaseline = 'top'; x.lineJoin = 'round';
+  x.lineWidth = yatay ? 16 : 22; x.strokeStyle = '#0A0F24'; x.strokeText(v.buyuk, 0, 0);
+  x.fillStyle = R.altin; x.shadowColor = 'rgba(255,194,51,0.5)'; x.shadowBlur = 30; x.fillText(v.buyuk, 0, 0);
+  x.restore();
+  y += fb.boyut * 1.05 + (yatay ? 10 : 24);
+  const bant = (metin, zemin, renk, boy, yy) => {
+    const fz = sigdir(x, metin.toLocaleUpperCase('tr-TR'), 900, boy, Math.round(boy * 0.55), maxW - 40, 1);
+    x.font = `900 ${fz.boyut}px ${YAZI}`; const bw = x.measureText(fz.satir[0]).width + 44, bh = fz.boyut * 1.32;
+    x.save(); x.translate(sol, yy); x.rotate(-0.02); x.fillStyle = zemin; x.shadowColor = 'rgba(0,0,0,0.5)'; x.shadowBlur = 24; x.fillRect(0, 0, bw, bh);
+    x.shadowBlur = 0; x.fillStyle = renk; x.textBaseline = 'middle'; x.fillText(fz.satir[0], 22, bh / 2 + 3); x.restore();
+    return bh;
+  };
+  if (v.orta) y += bant(v.orta, R.kirmizi, '#fff', yatay ? 64 : 92, y) + (yatay ? 12 : 18);
+  if (v.alt) bant(v.alt, '#FFFFFF', R.gece, yatay ? 46 : 66, y);
+  return c.toDataURL('image/jpeg', 0.93);
+}

@@ -712,12 +712,40 @@ def youtube_metni(senaryo: dict, kaynaklar: dict, kullanilan: list[str], marka_a
             satir.append(" – ".join(p for p in parca if p))
     if not kullanilan:
         satir += ["", f"🖼️ Görseller: Bu bölümde yalnızca {marka_ad} bilgi grafikleri kullanıldı (üçüncü taraf görsel yok)."]
+    soru = next((s["metin"] for s in reversed(senaryo["sahneler"]) if s.get("duzen") == "kapanis"), "")
+    if soru:
+        satir += ["", f"💬 {soru}"]
+    satir += [f"🔔 Her gün oyun gündemi için {marka_ad}'e abone ol!"]
     satir += ["", "🎙️ Seslendirme: ElevenLabs ile yapay zekâ seslendirmesi. Tilki animasyonu bu kanal için üretilmiştir."]
     if kullanilan:
         satir.append("Görseller haber/bilgilendirme amacıyla, hak sahiplerinin resmî tanıtım materyallerinden kullanılmıştır.")
     if yt.get("etiketler"):
         satir += ["", " ".join(e if e.startswith("#") else "#" + e for e in yt["etiketler"])]
     return "\n".join(satir).strip() + "\n"
+
+
+def kapak_uret(bolum: Path, senaryo: dict, ayar: dict, cikti: Path) -> None:
+    """YouTube kapakları: kapak-dikey.jpg (1080x1920, Shorts) ve kapak-yatay.jpg (1280x720)."""
+    k = dict(senaryo.get("kapak") or {})
+    if not k.get("buyuk"):
+        k["buyuk"] = next((s.get("ekran") for s in senaryo["sahneler"] if s.get("ekran")), senaryo.get("oyun", ""))
+    k.setdefault("orta", senaryo.get("manset", ""))
+    src = ""
+    anahtar = k.get("gorsel") or next((s["gorsel"] for s in senaryo["sahneler"] if s.get("gorsel")), None)
+    if anahtar:
+        kaynaklar = json.loads((bolum / "kaynaklar.json").read_text(encoding="utf-8"))
+        im = Image.open(bolum / kaynaklar[anahtar]["dosya"]).convert("RGB")
+        tampon = io.BytesIO()
+        im.save(tampon, "JPEG", quality=93)
+        src = "data:image/jpeg;base64," + base64.b64encode(tampon.getvalue()).decode()
+    istek = {"marka": ayar.get("marka", "FOX BÜLTEN"), "buyuk": k["buyuk"], "orta": k.get("orta", ""),
+             "alt": k.get("alt", ""), "ifade": k.get("ifade", "saskin"), "src": src}
+    istek_yolu = cikti / ".kapak-istek.json"
+    istek_yolu.write_text(json.dumps(istek, ensure_ascii=False), encoding="utf-8")
+    r = subprocess.run(["node", str(RENDER / "kapak.mjs"), str(istek_yolu), str(cikti)])
+    istek_yolu.unlink(missing_ok=True)
+    if r.returncode != 0:
+        hata("kapak üretilemedi")
 
 
 def kontrol_paftasi(video: Path, anlar: list[tuple[float, str]], hedef: Path, calisma: Path) -> None:
@@ -757,6 +785,7 @@ def main() -> None:
     ap.add_argument("--telaffuz", action="store_true", help="ElevenLabs STT ile ad telaffuzunu denetle")
     ap.add_argument("--isci", type=int, default=None, help="paralel render işçisi")
     ap.add_argument("--zorla", action="store_true", help="süre tahmini sınırı aşsa da devam et")
+    ap.add_argument("--kapak", action="store_true", help="yalnızca YouTube kapaklarını ve açıklamasını üret")
     arg = ap.parse_args()
 
     ayar = ayarlari_yukle()
@@ -815,6 +844,18 @@ def main() -> None:
             print(f"     duyulan: {yazi}")
         return
 
+    if arg.kapak:
+        cikti = bolum / "cikti"
+        cikti.mkdir(exist_ok=True)
+        print("YouTube kapakları:")
+        kapak_uret(bolum, senaryo, ayar, cikti)
+        yol = bolum / "kaynaklar.json"
+        kaynaklar = json.loads(yol.read_text(encoding="utf-8")) if yol.exists() else {}
+        kullanilan = list(dict.fromkeys(s["gorsel"] for s in sahneler if s.get("gorsel")))
+        (cikti / "youtube.txt").write_text(youtube_metni(senaryo, kaynaklar, kullanilan, ayar.get("marka_ad", "Fox Bülten")),
+                                           encoding="utf-8")
+        print(f"   {cikti / 'youtube.txt'}")
+        return
     if tahmin > sinir - 1 and not arg.zorla:
         hata(f"tahmini süre {tahmin:.1f} sn — {sinir} sn sınırına çok yakın. Metni kısaltın (ya da --zorla).", 3)
 
@@ -1059,6 +1100,8 @@ def main() -> None:
             anlar.append((o["vurgu"]["bas"] + 0.9, f"vurgu: {o['anahtar']}"))
     anlar.append((tl_sahneler[-1]["ses_bas"] + 1.0, "kapanış sorusu"))
     kontrol_paftasi(video, anlar, cikti / "kontrol.jpg", calisma)
+    print("   YouTube kapakları:")
+    kapak_uret(bolum, senaryo, ayar, cikti)
 
     rapor = {
         "video": str(video), "olculen_sure": round(gercek, 2), "sinir": sinir,

@@ -101,7 +101,12 @@ gelebildiği için listede olmayan bir kaynak gerektiğinde Claude onay ister.
 8. **Kontrol et.** Çıktıdaki **ölçülen süre** 60 sn'yi geçerse betik 3 koduyla çıkar: metni kısalt, 5–7'yi tekrarla
    (değişmeyen sahnelerin sesi önbellekten gelir). `kontrol.jpg`'yi Read ile aç: görsel doğru anda mı, vurgulanan
    ayrıntı kadrajda mı, altyazı görselin üstüne biniyor mu? `rapor.json`'daki uyarıları gider.
-9. **Teslim.** MP4'ü SendUserFile ile gönder. Mesaja kısa Shorts başlığını ve `youtube.txt` içeriğini (haber kaynağı,
+9. **Kapak.** Üretimin sonunda `cikti/kapak-dikey.jpg` (1080×1920, Shorts kapağı) ve `cikti/kapak-yatay.jpg`
+   (1280×720, kanal/arama) otomatik çıkar. Spiker yüksek çözünürlükte, şaşkın ifadeyle yazıyı işaret ederken çizilir;
+   arka plan bölümün resmî görselidir. Yazılar senaryodaki `"kapak": {"buyuk", "orta", "alt", "gorsel", "ifade"}`
+   alanından gelir (yoksa ilk `ekran` + manşet). Yalnızca kapağı yenilemek için: `uret.py <senaryo> --kapak`.
+   Kapak yazısı videoda gerçekten söylenen, doğrulanmış bir bilgi olsun (tık tuzağı olmasın).
+10. **Teslim.** MP4'ü ve iki kapağı SendUserFile ile gönder. Mesaja kısa Shorts başlığını ve `youtube.txt` içeriğini (haber kaynağı,
    görsellerin özgün sayfaları ve hak sahipleri) yaz. `senaryo.json` + `kaynaklar.json` dosyalarını commit'le
    (görsel, ses ve video dosyaları commit'lenmez). **YouTube'a yükleme yapma.**
 
