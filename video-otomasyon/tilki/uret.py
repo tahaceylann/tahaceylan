@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+import contextlib
 import difflib
 import hashlib
 import io
@@ -218,6 +219,40 @@ def elevenlabs_stt(dosya: Path) -> str:
     yanit = eleven_istek("/v1/speech-to-text", b"".join(parcalar),
                          {"Content-Type": f"multipart/form-data; boundary={sinir}"})
     return json.loads(yanit).get("text", "")
+
+
+def dinleme_kontrolu(bolum: Path, ttsler: list, uyarilar: list) -> None:
+    """Her sahne sesini ElevenLabs STT ile yazıya döker ve senaryodaki metinle kelime kelime karşılaştırır.
+
+    "gigabayt diyor" → "gidiyor" gibi yutulan/birleşen kelimeleri yakalar. Sonuç ses dosyasının meta
+    dosyasında saklanır (aynı ses için tekrar ücret ödenmez). İzin yoksa uyarı verir, üretimi durdurmaz.
+    """
+    for i, (tts, _) in enumerate(ttsler, 1):
+        mp3, meta_yolu = bolum / "ses" / f"sahne{i:02d}.mp3", bolum / "ses" / f"sahne{i:02d}.json"
+        if not mp3.exists():
+            continue
+        meta = json.loads(meta_yolu.read_text(encoding="utf-8")) if meta_yolu.exists() else {}
+        imza = hashlib.sha1(mp3.read_bytes()).hexdigest()[:12]
+        if meta.get("stt_imza") != imza:
+            try:
+                with contextlib.redirect_stderr(io.StringIO()):
+                    meta["stt"] = elevenlabs_stt(mp3)
+            except SystemExit:
+                uyar(uyarilar, "dinleme kontrolü yapılamadı: anahtarda Speech-to-Text izni yok (elevenlabs.io → "
+                               "API Keys → anahtarı düzenle → Speech to Text)")
+                return
+            meta["stt_imza"] = imza
+            meta_yolu.write_text(json.dumps(meta, ensure_ascii=False), encoding="utf-8")
+        beklenen = [normal(w) for w in tts.split() if normal(w)]
+        duyulan = [normal(w) for w in meta["stt"].split() if normal(w)]
+        sm = difflib.SequenceMatcher(None, beklenen, duyulan, autojunk=False)
+        for op, a0, a1, b0, b1 in sm.get_opcodes():
+            if op == "equal":
+                continue
+            b, d = " ".join(beklenen[a0:a1]), " ".join(duyulan[b0:b1])
+            if difflib.SequenceMatcher(None, b.replace(" ", ""), d.replace(" ", "")).ratio() >= 0.85:
+                continue  # yazım farkı (ör. rakam/harf), söyleyiş doğru
+            uyar(uyarilar, f"sahne {i}: beklenen «{b or '—'}», duyulan «{d or '—'}»")
 
 
 def espeak_sesi(metin: str, hedef: Path) -> None:
@@ -822,6 +857,9 @@ def main() -> None:
 
     if tempolar:
         print(f"  tempo (sahne başına hızlandırma): {tempolar}")
+    if not arg.onizleme and ayar.get("dinleme_kontrolu", True):
+        print("   dinleme kontrolü (ElevenLabs Speech-to-Text)…")
+        dinleme_kontrolu(bolum, ttsler, uyarilar)
     # --- 2) zaman çizelgesi
     print("2) Zamanlama, ağız senkronu, altyazı")
     global kelimeler_g

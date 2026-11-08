@@ -88,7 +88,11 @@ gelebildiği için listede olmayan bir kaynak gerektiğinde Claude onay ister.
 5. **Ses.** API anahtarı varsa doğrudan 6. adım (sesler `ses/` altında önbelleğe alınır). Bağlayıcı yolunda her
    sahne için `ses/metinler.json`'daki metni `creative_generate_speech` ile (ses: Hasan, model `eleven_v4`)
    üret, `content_url`'i indir ve `python3 uret.py <bolum>/senaryo.json --ses-ekle <sahne> <dosya.mp3>` ile kaydet.
-6. **Telaffuz kontrolü:** `python3 uret.py <bolum>/senaryo.json --telaffuz` (ElevenLabs Speech-to-Text). ✗ çıkan adı
+6. **Dinleme kontrolü (otomatik):** `uret.py` her sahne sesini ElevenLabs Speech-to-Text ile yazıya döker ve
+   senaryodaki metinle kelime kelime karşılaştırır. "gigabayt diyor" → "gidiyor" gibi yutulan ya da birleşen
+   kelimeler `rapor.json` uyarılarına "beklenen … / duyulan …" olarak düşer; o cümleyi değiştirip yalnızca o sahneyi
+   yeniden üret. Anahtarda Speech to Text izni yoksa kontrol atlanır ve uyarı verilir.
+   **Telaffuz kontrolü:** `python3 uret.py <bolum>/senaryo.json --telaffuz` (ElevenLabs Speech-to-Text). ✗ çıkan adı
    `telaffuz` sözlüğünde yeniden yaz ve yalnızca o sahneyi yeniden seslendir (dosyayı sil, 7. adım yeniden üretir).
    Bağlayıcı yolunda `creative_transcribe_audio` ile aynı kontrolü yap.
 7. **Üret:** `python3 uret.py <bolum>/senaryo.json` → `cikti/tilki-<bolum>.mp4`, `.srt`, `youtube.txt`,
