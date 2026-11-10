@@ -43,3 +43,13 @@ ElevenLabs'e gitmeden görüntüyü denemek için: `--onizleme` (sessiz, süre t
 - Her sahnenin süresi, o sahnenin ses uzunluğuna göre otomatik ayarlanır.
 - Aynı metin + ses ayarı tekrar üretilmez (`.onbellek/`), yani düzeltme
   yaparken sadece değişen sahneler için ElevenLabs kredisi harcanır.
+
+## YouTube Shorts uyumu
+
+- **Format:** 1080×1920 (9:16). Hedef süre 30–45 sn; **60 sn üstünde uyarı** verir.
+- **Güvenli alan:** Yazılar YouTube arayüzünün kapattığı alt %20 ve üst bölgeden uzak
+  tutulur; ilk sahnenin ekran yazısı kanca olarak daha büyüktür.
+- **Yükleme metadatası:** `cikti/<tarih>.shorts.json` → başlık (≤100 karakter, `#Shorts`
+  ile biter), açıklama (`#Shorts` etiketi otomatik eklenir), etiketler, kategori,
+  görünürlük (`private`). YouTube Studio'ya yüklerken bu alanları kopyala.
+- Sıradaki adım (istenirse): YouTube Data API ile otomatik yükleme.

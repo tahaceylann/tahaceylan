@@ -34,6 +34,15 @@ VARSAYILAN_SES = "pNInz6obpgDQGcFmaJgB"  # ElevenLabs hazır ses "Adam" (çok di
 VARSAYILAN_MODEL = "eleven_multilingual_v2"
 SAHNE_SONU_BOSLUK = 0.35  # saniye; sahneler arası nefes payı
 
+# YouTube Shorts: dikey 9:16, <= 60 sn (ideal 30-45). Arayüz alt ~%20'yi (başlık, kanal, butonlar)
+# ve sağ kenarı kaplar; üst ~%10'da arama/kamera simgeleri var. Yazılar bu "güvenli alana" konur.
+SHORTS_MAX_SURE = 60.0
+SHORTS_IDEAL_SURE = 45.0
+BASLIK_Y = 210            # üstteki seri adı (üst arayüzün altında)
+EKRAN_Y_ORAN = 0.34       # büyük ekran yazısının merkezi
+ALT_KUTU_Y_ORAN = 0.56    # anlatım kutusunun üstü
+ALT_KUTU_H_ORAN = 0.24    # alt kutu yüksekliği -> bittiği yer %80 (alt %20 boş kalır)
+
 FONT_KALIN = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 FONT_NORMAL = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 
@@ -160,13 +169,13 @@ def sahne_render(no: int, sahne: dict, baslik: str, ses_dosyasi: Path,
     filtre = ",".join([
         f"drawbox=x=0:y=0:w=iw:h=ih:color=black@0.18:t=fill",
         f"drawtext=fontfile={FONT_NORMAL}:textfile={ust_txt}:fontsize=40:fontcolor=white@0.85:"
-        f"x=(w-text_w)/2:y=140",
-        f"drawtext=fontfile={FONT_KALIN}:textfile={ekran_txt}:fontsize=104:fontcolor=white:"
+        f"x=(w-text_w)/2:y={BASLIK_Y}",
+        f"drawtext=fontfile={FONT_KALIN}:textfile={ekran_txt}:fontsize={124 if no == 1 else 104}:fontcolor=white:"
         f"line_spacing=18:shadowcolor=black@0.45:shadowx=4:shadowy=6:"
-        f"x=(w-text_w)/2:y=(h*0.36-text_h/2)+40*(1-{giris}):alpha={giris}",
-        f"drawbox=x=60:y=ih*0.64:w=iw-120:h=ih*0.25:color=black@0.35:t=fill",
+        f"x=(w-text_w)/2:y=(h*{EKRAN_Y_ORAN}-text_h/2)+40*(1-{giris}):alpha={giris}",
+        f"drawbox=x=60:y=ih*{ALT_KUTU_Y_ORAN}:w=iw-120:h=ih*{ALT_KUTU_H_ORAN}:color=black@0.35:t=fill",
         f"drawtext=fontfile={FONT_NORMAL}:textfile={alt_txt}:fontsize={alt_font}:fontcolor=white:"
-        f"line_spacing=14:x=(w-text_w)/2:y=h*0.765-text_h/2",
+        f"line_spacing=14:x=(w-text_w)/2:y=h*{ALT_KUTU_Y_ORAN + ALT_KUTU_H_ORAN / 2}-text_h/2",
         # İlerleme çubuğu
         f"drawbox=x=0:y=ih-14:w=iw*{(no - 1) / toplam:.4f}+iw*{1 / toplam:.4f}*t/{sure:.3f}:h=14:"
         f"color=white@0.9:t=fill",
@@ -190,6 +199,26 @@ def sahne_render(no: int, sahne: dict, baslik: str, ses_dosyasi: Path,
 def srt_zaman(s: float) -> str:
     ms = int(round(s * 1000))
     return f"{ms // 3600000:02d}:{ms // 60000 % 60:02d}:{ms // 1000 % 60:02d},{ms % 1000:03d}"
+
+
+# ---------------------------------------------------------------- Shorts metadatası
+
+def shorts_metadata(veri: dict, baslik: str) -> dict:
+    """YouTube yükleme alanları: başlık (<=100), açıklama (#Shorts içerir), etiketler."""
+    aciklama = (veri.get("aciklama") or "").strip()
+    etiketler = [t for t in aciklama.split() if t.startswith("#")]
+    if not any(t.lower() == "#shorts" for t in etiketler):
+        etiketler.append("#Shorts")
+        aciklama = (aciklama + " #Shorts").strip()
+    ilk = veri["sahneler"][0].get("ekran") or baslik
+    yt_baslik = "".join(ch for ch in ilk if ord(ch) < 0x10000 and ch != "\ufe0f").strip()
+    yt_baslik = f"{yt_baslik} | {baslik}" if baslik and baslik not in yt_baslik else yt_baslik
+    if len(yt_baslik) > 92:
+        yt_baslik = yt_baslik[:91].rstrip() + "…"
+    yt_baslik += " #Shorts"
+    return {"baslik": yt_baslik, "aciklama": aciklama,
+            "etiketler": [t.lstrip("#") for t in etiketler], "kategori": "Entertainment",
+            "gorunurluk": "private"}
 
 
 # ---------------------------------------------------------------- Ana akış
@@ -233,10 +262,19 @@ def main() -> None:
     (CIKTI / f"{ad}.srt").write_text("\n".join(srt), encoding="utf-8")
     shutil.rmtree(calisma)
 
+    meta = shorts_metadata(veri, baslik)
+    (CIKTI / f"{ad}.shorts.json").write_text(
+        json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
+
     print(f"\nHazır: {video}  ({an:.1f} sn, {len(sahneler)} sahne)")
+    if an > SHORTS_MAX_SURE:
+        print(f"UYARI: {an:.1f} sn > {SHORTS_MAX_SURE:.0f} sn; YouTube bunu Shorts saymayabilir. "
+              "Senaryoyu kısalt.", file=sys.stderr)
+    elif an > SHORTS_IDEAL_SURE:
+        print(f"Not: {an:.1f} sn Shorts için uygun ama {SHORTS_IDEAL_SURE:.0f} sn altı daha iyi tutulur.")
+    print(f"Shorts metadatası: {CIKTI / (ad + '.shorts.json')}")
     print(f"Altyazı: {CIKTI / (ad + '.srt')}")
-    if veri.get("aciklama"):
-        print(f"\nPaylaşım metni:\n{veri['aciklama']}")
+    print(f"\nBaşlık: {meta['baslik']}\nPaylaşım metni:\n{meta['aciklama']}")
 
 
 if __name__ == "__main__":
