@@ -1,0 +1,28 @@
+{
+  "kapak": {
+    "sahip": "Rockstar Games",
+    "resmi": true,
+    "sayfa": "https://www.rockstargames.com/VI",
+    "lisans": "Rockstar Games resmî tanıtım görseli (kapak/key art); haber ve bilgilendirme amaçlı kullanım. Hak sahibinin açık bir yeniden kullanım lisansı yok, nihai yayın kararı kanal sahibinde.",
+    "kaynak_notu": "Kullanıcı tarafından iletildi (3.webp, 1536x864). Rockstar logolu resmî GTA VI kapak görseli olduğu gözle doğrulandı; özgün sayfa ağ izni olmadığı için açılamadı. Alttaki eski 'COMING 2025' yazısı kırpıldı.",
+    "indirme": "2026-11-08T13:05:56",
+    "dosya": "gorseller/kapak-genis.jpg",
+    "aciklama": "GTA VI resmî kapak görseli: Jason, Lucia ve Vice City (geniş kadraj)",
+    "sha256": "d1f9b1b5170d0dfce39de2d6edf07d3398ca211b3fa1fb01a4cfb847e589164f",
+    "genislik": 1536,
+    "yukseklik": 712
+  },
+  "jason_lucia": {
+    "sahip": "Rockstar Games",
+    "resmi": true,
+    "sayfa": "https://www.rockstargames.com/VI",
+    "lisans": "Rockstar Games resmî tanıtım görseli (kapak/key art); haber ve bilgilendirme amaçlı kullanım. Hak sahibinin açık bir yeniden kullanım lisansı yok, nihai yayın kararı kanal sahibinde.",
+    "kaynak_notu": "Kullanıcı tarafından iletildi (3.webp, 1536x864). Rockstar logolu resmî GTA VI kapak görseli olduğu gözle doğrulandı; özgün sayfa ağ izni olmadığı için açılamadı. Alttaki eski 'COMING 2025' yazısı kırpıldı.",
+    "indirme": "2026-11-08T13:05:56",
+    "dosya": "gorseller/jason-lucia.jpg",
+    "aciklama": "GTA VI resmî kapak görseli: Jason ve Lucia (yakın kadraj)",
+    "sha256": "f8de0a01deec1bcbe3fd9f105015496a8853231e4c8229d6acda7178d44301b7",
+    "genislik": 820,
+    "yukseklik": 592
+  }
+}

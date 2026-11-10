@@ -1,0 +1,9 @@
+{
+  "_aciklama": "Ekranda/altyazıda soldaki yazılır, seslendirmede sağdaki okunur. Model (eleven_v4) İngilizce adları yazıldığı gibi doğru okur; Türkçe harflerle yeniden yazma (\"Ekboks\" gibi yazımlar yanlış okunuyordu). Buraya yalnızca okunuşu özellikle istenen kelimeleri (GTA → Geta), birimleri ve kısaltma açılımlarını ekle. Bölüme özel ekler senaryo.json içindeki 'telaffuz' alanına yazılır. Uzun anahtar önce eşleşir.",
+  "GTA VI": "Geta Altı",
+  "GTA 6": "Geta Altı",
+  "GTA": "Geta",
+  "GB": "gigabayt",
+  "PS5": "PlayStation 5",
+  "Xbox Series X|S": "Xbox Series X ve S"
+}

@@ -1,0 +1,196 @@
+{
+  "baslik": "GTA VI ön yükleme 10 Kasım'da",
+  "oyun": "GTA VI",
+  "tarih": "8 KASIM 2026",
+  "manset": "GTA VI ön yükleme 10 Kasım'da",
+  "kayan": [
+    "GTA VI çıkış tarihi: 19 Kasım",
+    "Path of Exile 2 · 11 Aralık'ta 1.0 ve ücretsiz",
+    "Fortnite · Kaptan Günü'nde 13 yeni Sprite",
+    "NieR: Automata · Steam'de 366 GB kurulum hatası"
+  ],
+  "haber": {
+    "baslik": "Grand Theft Auto VI Pre-Load Begins on November 10",
+    "kaynak": "https://www.rockstargames.com/newswire/article/k4ak9okk485712/grand-theft-auto-vi-pre-load-begins-on-november-10",
+    "kaynak_adi": "Rockstar Games",
+    "tarih": "Rockstar Newswire ve destek sayfaları, 3–4 Kasım 2026",
+    "ek_kaynaklar": [
+      "Ön yükleme SSS (212 GB, otomatik indirme koşulları): https://support.rockstargames.com/articles/7nPqOA2uCbpEQHXx7KVrYd/grand-theft-auto-vi-pre-load-faq",
+      "Bölgesel ön yükleme ve çıkış saatleri: https://support.rockstargames.com/articles/29jV3Cv2cCgvwM1XgtMO5o/grand-theft-auto-vi-regional-pre-load-and-release-times-on-playstation-5-and-xbox-series-x-or-s",
+      "Kutulu kopya (indirme kodu, 12 Kasım): https://store.rockstargames.com/game/buy-gta-vi",
+      "Xbox paket boyutu (Microsoft verisi, 7 Kasım): https://www.merlininkazani.com/gta-6-xbox-ta-daha-fazla-yer-kaplayacak-haber-264181",
+      "209,9 GiB = 225,3 GB birim farkı: https://windowsforum.com/news/gta-6-xbox-download-size-why-209-gb-and-225-gb-may-mean-the-same-thing.451357/"
+    ]
+  },
+  "telaffuz": {
+    "212": "iki yüz on iki",
+    "225": "iki yüz yirmi beş",
+    "210": "iki yüz on"
+  },
+  "sahneler": [
+    {
+      "metin": "212 GB! GTA 6, senden koca bir şehir kadar disk alanı istiyor.",
+      "ekran": "212 GB'A KADAR YER LAZIM",
+      "ifade": "saskin",
+      "gorsel": "kapak",
+      "tetik": "koca",
+      "odak": [
+        0.5,
+        0.45
+      ],
+      "etiket": "RESMİ GÖRSEL",
+      "espri": {
+        "tip": "emoji",
+        "emoji": "💾",
+        "metin": "212 GB?!"
+      }
+    },
+    {
+      "metin": "Ama asıl sürpriz başka: Rockstar indirmeyi iki gün öne çekti!",
+      "ekran": "İndirme iki gün öne çekildi",
+      "ifade": "heyecan",
+      "espri": {
+        "tip": "unlem",
+        "tetik": "sürpriz"
+      }
+    },
+    {
+      "metin": "PS5'te 10 Kasım gece yarısı, Xbox'ta ise sabah üçte ön yükleme başlıyor.",
+      "tetik": "PS5'te",
+      "ekran": "Ön yükleme 10 Kasım'da",
+      "grafik": {
+        "tip": "liste",
+        "etiket": "Ön yükleme",
+        "baslik": "10 Kasım · Türkiye saatiyle",
+        "satirlar": [
+          [
+            "PS5",
+            "10 Kasım · 00:00"
+          ],
+          [
+            "Xbox Series X|S",
+            "10 Kasım · 03:00"
+          ],
+          [
+            "Eski tarih",
+            "12 Kasım (iki gün öne alındı)"
+          ]
+        ],
+        "not": "Kaynak: Rockstar Games destek sayfası"
+      }
+    },
+    {
+      "metin": "Peki Xbox'ta neden 225 GB yazıyor? Cevap şaşırtıcı derecede basit: birim farkı! Konsolunda yaklaşık 210 görünecek.",
+      "tetik": "Xbox",
+      "ekran": "225 GB'ın sırrı: birim farkı",
+      "espri": {
+        "tip": "soru",
+        "tetik": "Peki"
+      },
+      "grafik": {
+        "tip": "sayi",
+        "etiket": "İndirme boyutu",
+        "baslik": "Ne kadar yer lazım?",
+        "buyuk": "212 GB",
+        "alt": "Rockstar: cihaza göre en fazla",
+        "satirlar": [
+          [
+            "Xbox verisi",
+            "225,3 GB = 209,9 GiB"
+          ],
+          [
+            "Konsolda görünen",
+            "≈ 210 GB"
+          ]
+        ],
+        "not": "Fark birimden geliyor: 1 GiB = 1,074 GB"
+      }
+    },
+    {
+      "metin": "Kutulu kopya alacaklar dikkat: kutuyu açınca disk değil, sadece bir indirme kodu çıkacak!",
+      "tetik": "Kutulu",
+      "ekran": "Kutuda disk yok, kod var",
+      "grafik": {
+        "tip": "liste",
+        "etiket": "Takvim",
+        "baslik": "GTA VI takvimi",
+        "satirlar": [
+          [
+            "10 Kasım",
+            "Dijital ön yükleme"
+          ],
+          [
+            "12 Kasım",
+            "Kutulu kopya: disk yok, kod var"
+          ],
+          [
+            "19 Kasım",
+            "Çıkış · PS5 ve Xbox Series X|S"
+          ],
+          [
+            "PC",
+            "Henüz tarih yok"
+          ]
+        ]
+      }
+    },
+    {
+      "metin": "Bir ipucu: konsolunu dinlenme ya da uyku modunda bırak, otomatik indirmeyi aç. Sen uyurken Vice City iner!",
+      "ekran": "Uyku modu + otomatik indirme",
+      "ifade": "gulme",
+      "jest": "basparmak",
+      "espri": {
+        "tip": "emoji",
+        "emoji": "😴",
+        "metin": "Zzz… indiriliyor",
+        "tetik": "uyurken"
+      }
+    },
+    {
+      "metin": "Jason ve Lucia 19 Kasım'da geliyor. PC'ciler mi? Onlar hâlâ bekliyor.",
+      "gorsel": "jason_lucia",
+      "tetik": "Jason",
+      "ekran": "Çıkış 19 Kasım",
+      "etiket": "RESMİ GÖRSEL",
+      "ifade": "gulme",
+      "vurgu": {
+        "kutu": [
+          0.33,
+          0.27,
+          0.3,
+          0.25
+        ],
+        "tetik": "Lucia",
+        "yakinlik": 1.35,
+        "yazi": "Jason & Lucia"
+      }
+    },
+    {
+      "metin": "Sen GTA 6'ya yer açmak için hangi oyunu sileceksin? Yorumlara yaz!",
+      "duzen": "kapanis",
+      "ifade": "heyecan",
+      "espri": "soru"
+    }
+  ],
+  "youtube": {
+    "baslik": "GTA 6 neden 225 GB görünüyor? Ön yükleme 10 Kasım'da 🦊 #shorts",
+    "aciklama": "Rockstar, GTA VI'nın dijital ön yüklemesini 10 Kasım'a çekti: PS5'te 00:00, Xbox Series X|S'te 03:00 (TSİ). Resmî boyut cihaza göre en fazla 212 GB; Xbox'taki 225 GB rakamı birim farkından geliyor. Oyun 19 Kasım'da çıkıyor.",
+    "etiketler": [
+      "gta6",
+      "gtavi",
+      "rockstar",
+      "ps5",
+      "xbox",
+      "oyunhaberleri",
+      "foxbulten",
+      "shorts"
+    ]
+  },
+  "kapak": {
+    "buyuk": "212 GB?!",
+    "orta": "GTA 6 ön yükleme",
+    "alt": "10 Kasım'da başlıyor",
+    "gorsel": "kapak",
+    "ifade": "saskin"
+  }
+}
