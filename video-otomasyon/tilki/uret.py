@@ -662,6 +662,9 @@ def gorselleri_hazirla(bolum: Path, senaryo: dict, uyarilar: list) -> tuple[dict
     kaynaklar = json.loads(kaynaklar_yolu.read_text(encoding="utf-8")) if kaynaklar_yolu.exists() else {}
     kaynaklar.update(senaryo.get("gorseller", {}))
     kullanilan = {s["gorsel"] for s in senaryo["sahneler"] if s.get("gorsel")}
+    rozet = (senaryo.get("kiyafet") or {}).get("rozet")
+    if rozet:
+        kullanilan.add(rozet)  # kıyafet rozeti (ör. yakadaki portre)
     eksik = kullanilan - set(kaynaklar)
     if eksik:
         hata(f"kaynaklar.json'da olmayan görsel anahtarı: {', '.join(sorted(eksik))}")
@@ -740,6 +743,18 @@ def kapak_uret(bolum: Path, senaryo: dict, ayar: dict, cikti: Path) -> None:
         src = "data:image/jpeg;base64," + base64.b64encode(tampon.getvalue()).decode()
     istek = {"marka": ayar.get("marka", "FOX BÜLTEN"), "buyuk": k["buyuk"], "orta": k.get("orta", ""),
              "alt": k.get("alt", ""), "ifade": k.get("ifade", "saskin"), "src": src}
+    if k.get("odak"):
+        istek["odak"] = k["odak"]
+    kiyafet = senaryo.get("kiyafet")
+    if kiyafet:
+        istek["kiyafet"] = kiyafet
+        if kiyafet.get("rozet"):
+            kaynaklar = json.loads((bolum / "kaynaklar.json").read_text(encoding="utf-8"))
+            ri = Image.open(bolum / kaynaklar[kiyafet["rozet"]]["dosya"]).convert("RGB")
+            ri.thumbnail((600, 600))
+            tampon = io.BytesIO()
+            ri.save(tampon, "JPEG", quality=93)
+            istek["rozet_src"] = "data:image/jpeg;base64," + base64.b64encode(tampon.getvalue()).decode()
     istek_yolu = cikti / ".kapak-istek.json"
     istek_yolu.write_text(json.dumps(istek, ensure_ascii=False), encoding="utf-8")
     r = subprocess.run(["node", str(RENDER / "kapak.mjs"), str(istek_yolu), str(cikti)])
@@ -793,6 +808,7 @@ def main() -> None:
     bolum = senaryo_yolu.parent
     senaryo = json.loads(senaryo_yolu.read_text(encoding="utf-8"))
     sahneler = senaryo.get("sahneler") or hata("senaryoda 'sahneler' yok")
+    ayar["sure"] = {**ayar["sure"], **senaryo.get("sure", {})}  # bölüme özel süre sınırı
     ses = {**ayar["ses"], **senaryo.get("ses", {})}
     sozluk = sozluk_yukle(senaryo)
     ttsler = [telaffuz_uygula(s["metin"], sozluk) for s in sahneler]
@@ -988,7 +1004,8 @@ def main() -> None:
                 if gorsel_olaylari and abs(gorsel_olaylari[-1]["son"] - olay["bas"]) < 0.3:
                     gorsel_olaylari[-1]["son"] = olay["bas"]
                 gorsel_olaylari.append(olay)
-                efektler.append(("whoosh", olay["bas"] - 0.06))
+                if not s.get("sessiz"):  # anma gibi ciddi sahnelerde geçiş sesi çalınmaz
+                    efektler.append(("whoosh", olay["bas"] - 0.06))
         tl_sahneler.append(oge)
     for o in gorsel_olaylari:
         if o["son"] - o["bas"] < 1.6:
@@ -1045,7 +1062,7 @@ def main() -> None:
         "altyazi": [{"bas": round(p["bas"], 3), "son": round(p["son"], 3), "i0": p["i0"], "i1": p["i1"],
                      "s": p["sahne"]} for p in parcalar],
         "agiz": agiz, "genlik": genlik.tolist(), "kirpmalar": kirpmalar, "kulaklar": kulaklar,
-        "gorseller": gorseller,
+        "gorseller": gorseller, "kiyafet": senaryo.get("kiyafet"),
     }
     zaman_yolu = calisma / "zaman.json"
     zaman_yolu.write_text(json.dumps(zaman, ensure_ascii=False), encoding="utf-8")

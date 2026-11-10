@@ -1,0 +1,54 @@
+{
+  "fc27_kapak": {
+    "dosya": "gorseller/fc27_kapak.jpg",
+    "sayfa": "https://www.ea.com/games/ea-sports-fc/fc-27",
+    "sahip": "Electronic Arts",
+    "lisans": "EA SPORTS FC 27 resmî tanıtım görseli (Ultimate Edition key art). Hak sahibinin açık bir yeniden kullanım lisansı yok; haber ve bilgilendirme amaçlı kullanım, nihai yayın kararı kanal sahibinde.",
+    "aciklama": "EA SPORTS FC 27 Ultimate Edition resmî kapak görseli",
+    "resmi": true,
+    "genislik": 1529,
+    "yukseklik": 860,
+    "kaynak_notu": "Kullanıcı tarafından sohbete eklendi.",
+    "sha256": "3bcc5613d4aed366417685cf9176c8e161c2473574fbbb9b5b7c8027fc07e544",
+    "indirme": "2026-11-10T17:36:15"
+  },
+  "pitch_notes": {
+    "dosya": "gorseller/pitch_notes.jpg",
+    "sayfa": "https://www.ea.com/games/ea-sports-fc/fc-27/news/fc27-october-gameplay-developer-notes",
+    "sahip": "Electronic Arts",
+    "lisans": "EA SPORTS FC resmî 'Pitch Notes' başlık görseli. Hak sahibinin açık bir yeniden kullanım lisansı yok; haber ve bilgilendirme amaçlı kullanım, nihai yayın kararı kanal sahibinde.",
+    "aciklama": "EA SPORTS FC 'The Pitch Notes' resmî başlık görseli (alttaki 'FC 27 Launch Update' yazısı kırpıldı)",
+    "resmi": true,
+    "genislik": 1529,
+    "yukseklik": 640,
+    "kaynak_notu": "Kullanıcı tarafından sohbete eklendi. Kırpma: 0,0,1529,640.",
+    "sha256": "0ebc0a39d34dcaebf16da950d84e463157270ac3435991e35273d97d40902244",
+    "indirme": "2026-11-10T17:36:15"
+  },
+  "taktik": {
+    "dosya": "gorseller/taktik.jpg",
+    "sayfa": "https://www.ea.com/games/ea-sports-fc/fc-27/news/fc27-october-gameplay-developer-notes",
+    "sahip": "Electronic Arts (EA geliştirici notlarındaki taktik şeması olduğu tahmin ediliyor; doğrulanmadı)",
+    "lisans": "Hak sahibinin açık bir yeniden kullanım lisansı yok; haber ve bilgilendirme amaçlı kullanım, nihai yayın kararı kanal sahibinde.",
+    "aciklama": "Bek konumlanmasını gösteren taktik şeması (kullanıcı iletti; kaynağı doğrulanmadı)",
+    "resmi": false,
+    "genislik": 1237,
+    "yukseklik": 699,
+    "kaynak_notu": "Kullanıcı tarafından sohbete eklendi.",
+    "sha256": "332971b1efa55a0e20c22fc58d21670ced1bbb1419399945a2118375b642f319",
+    "indirme": "2026-11-10T17:36:15"
+  },
+  "ataturk": {
+    "dosya": "gorseller/ataturk.jpg",
+    "sayfa": "https://commons.wikimedia.org/wiki/Category:Portraits_of_Mustafa_Kemal_Atat%C3%BCrk",
+    "sahip": "Kamu malı (Mustafa Kemal Atatürk'ün tarihî portresi)",
+    "lisans": "Tarihî portre fotoğrafı, telif süresi dolmuş (kamu malı) olduğu kabul edilir.",
+    "aciklama": "Gazi Mustafa Kemal Atatürk portresi (kullanıcı iletti)",
+    "resmi": false,
+    "genislik": 748,
+    "yukseklik": 1000,
+    "kaynak_notu": "Kullanıcı tarafından sohbete eklendi.",
+    "sha256": "4d681c67193be65330a6be409b9b830de9bfbafec4fb3fa15b67cecc84bfe0ac",
+    "indirme": "2026-11-10T17:36:15"
+  }
+}

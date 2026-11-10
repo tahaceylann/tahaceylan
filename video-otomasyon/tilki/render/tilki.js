@@ -382,7 +382,22 @@ function bas(x, d) {
   x.fillStyle = 'rgba(255,255,255,0.55)'; x.beginPath(); x.ellipse(-7, 52, 7, 4, -0.2, 0, 7); x.fill();
   kulaklik(x, d.t);
 }
+function takimMi() { return !!(T && T.kiyafet && T.kiyafet.tip === 'takim'); }
+function rozetCiz(x, cx, cy) {                                         // yakadaki portre rozeti
+  const im = T.kiyafet && G[T.kiyafet.rozet]; const rx = 30, ry = 38;
+  x.save(); x.shadowColor = 'rgba(0,0,0,0.45)'; x.shadowBlur = 8; x.shadowOffsetY = 3;
+  x.beginPath(); x.ellipse(cx, cy, rx + 6, ry + 6, 0, 0, 7);
+  const a = x.createLinearGradient(cx - rx, cy - ry, cx + rx, cy + ry); a.addColorStop(0, '#FFE9A6'); a.addColorStop(0.5, '#D4A437'); a.addColorStop(1, '#8C6512');
+  x.fillStyle = a; x.fill(); x.restore();
+  x.save(); x.beginPath(); x.ellipse(cx, cy, rx, ry, 0, 0, 7); x.clip();
+  x.fillStyle = '#111'; x.fillRect(cx - rx, cy - ry, rx * 2, ry * 2);
+  if (im) { const sw = im.width * 0.62, sh = sw * ry / rx; x.drawImage(im, im.width * 0.19, im.height * 0.12, sw, sh, cx - rx, cy - ry, rx * 2, ry * 2); }
+  const p = x.createLinearGradient(cx - rx, cy - ry, cx + rx, cy + ry); p.addColorStop(0, 'rgba(255,255,255,0.22)'); p.addColorStop(0.45, 'rgba(255,255,255,0)');
+  x.fillStyle = p; x.fillRect(cx - rx, cy - ry, rx * 2, ry * 2); x.restore();
+  x.beginPath(); x.ellipse(cx, cy, rx, ry, 0, 0, 7); x.lineWidth = 2; x.strokeStyle = 'rgba(90,60,10,0.9)'; x.stroke();
+}
 function govde(x, d) {
+  const tk = takimMi();
   x.save(); x.translate(250, 470); x.rotate(-0.25 + d.kuyruk);        // kuyruk
   const ky = () => { x.beginPath(); x.moveTo(0, 40); x.bezierCurveTo(90, 10, 150, -120, 120, -260); x.bezierCurveTo(110, -320, 50, -340, 20, -300); x.bezierCurveTo(60, -230, 40, -110, -40, -20); x.closePath(); };
   ky(); x.fillStyle = R.kurk; x.fill();
@@ -393,25 +408,38 @@ function govde(x, d) {
   x.fillStyle = R.krem; x.beginPath(); x.moveTo(-72, 116); x.quadraticCurveTo(-58, 190, -20, 228); x.lineTo(-8, 214); x.lineTo(0, 236);
   x.lineTo(8, 214); x.lineTo(20, 228); x.quadraticCurveTo(58, 190, 72, 116); x.closePath(); x.fill();
   x.save(); x.rotate(d.govdeEgim);
-  const g = x.createLinearGradient(-260, 210, 260, 540); g.addColorStop(0, '#2A3A70'); g.addColorStop(1, '#101833');
+  const g = x.createLinearGradient(-260, 210, 260, 540); g.addColorStop(0, tk ? '#34343B' : '#2A3A70'); g.addColorStop(1, tk ? '#0E0E12' : '#101833');
   x.beginPath(); x.moveTo(-72, 210); x.bezierCurveTo(-160, 206, -256, 218, -284, 280); x.lineTo(-308, 580); x.lineTo(308, 580);
   x.lineTo(284, 280); x.bezierCurveTo(256, 218, 160, 206, 72, 210); x.closePath(); x.fillStyle = g; x.fill();
   x.save(); x.beginPath(); x.moveTo(-68, 210); x.lineTo(0, 380); x.lineTo(68, 210); x.closePath(); x.clip();
-  x.fillStyle = R.forma; x.fillRect(-80, 200, 160, 200);
-  x.fillStyle = R.kirmizi; x.beginPath(); x.moveTo(-80, 300); x.lineTo(80, 240); x.lineTo(80, 262); x.lineTo(-80, 322); x.fill();
-  x.fillStyle = R.camgobegi; x.beginPath(); x.moveTo(-80, 330); x.lineTo(80, 270); x.lineTo(80, 280); x.lineTo(-80, 340); x.fill();
+  if (tk) {                                                           // beyaz gömlek + koyu kravat
+    x.fillStyle = '#F4F4F2'; x.fillRect(-80, 200, 160, 200);
+    x.fillStyle = '#1A1C24'; x.beginPath(); x.moveTo(-14, 226); x.lineTo(14, 226); x.lineTo(9, 244); x.lineTo(-9, 244); x.closePath(); x.fill();
+    x.beginPath(); x.moveTo(-9, 244); x.lineTo(9, 244); x.lineTo(20, 350); x.lineTo(0, 376); x.lineTo(-20, 350); x.closePath(); x.fill();
+    x.strokeStyle = 'rgba(255,255,255,0.10)'; x.lineWidth = 3;
+    for (let i = 0; i < 5; i++) { x.beginPath(); x.moveTo(-18, 262 + i * 22); x.lineTo(18, 250 + i * 22); x.stroke(); }
+  } else {
+    x.fillStyle = R.forma; x.fillRect(-80, 200, 160, 200);
+    x.fillStyle = R.kirmizi; x.beginPath(); x.moveTo(-80, 300); x.lineTo(80, 240); x.lineTo(80, 262); x.lineTo(-80, 322); x.fill();
+    x.fillStyle = R.camgobegi; x.beginPath(); x.moveTo(-80, 330); x.lineTo(80, 270); x.lineTo(80, 280); x.lineTo(-80, 340); x.fill();
+  }
   x.restore();
-  x.beginPath(); x.moveTo(-60, 212); x.quadraticCurveTo(0, 250, 60, 212); x.lineWidth = 12; x.strokeStyle = R.kirmizi; x.stroke();
+  x.beginPath(); x.moveTo(-60, 212); x.quadraticCurveTo(0, 250, 60, 212); x.lineWidth = 12; x.strokeStyle = tk ? '#FFFFFF' : R.kirmizi; x.stroke();
   for (const yon of [-1, 1]) {                                        // yakalar
     x.save(); x.scale(yon, 1);
     x.beginPath(); x.moveTo(68, 210); x.lineTo(8, 372); x.lineTo(40, 384); x.lineTo(118, 276); x.lineTo(100, 264);
-    x.lineTo(128, 248); x.lineTo(106, 216); x.closePath(); x.fillStyle = R.ceketAcik; x.fill();
+    x.lineTo(128, 248); x.lineTo(106, 216); x.closePath(); x.fillStyle = tk ? '#24242A' : R.ceketAcik; x.fill();
     x.lineWidth = 2; x.strokeStyle = 'rgba(255,255,255,0.18)'; x.stroke();
     x.restore();
   }
-  x.fillStyle = R.kirmizi; x.beginPath(); x.moveTo(150, 316); x.lineTo(196, 316); x.lineTo(176, 290); x.closePath(); x.fill();
-  x.fillStyle = 'rgba(255,255,255,0.15)'; x.fillRect(146, 316, 54, 4);
-  amblem(x, -150, 312, 0.16, R.altin);
+  if (tk) {
+    x.fillStyle = 'rgba(255,255,255,0.12)'; x.fillRect(140, 350, 64, 4);  // göğüs cebi
+    rozetCiz(x, 172, 300);                                             // sol göğüs (izleyicinin sağı)
+  } else {
+    x.fillStyle = R.kirmizi; x.beginPath(); x.moveTo(150, 316); x.lineTo(196, 316); x.lineTo(176, 290); x.closePath(); x.fill();
+    x.fillStyle = 'rgba(255,255,255,0.15)'; x.fillRect(146, 316, 54, 4);
+    amblem(x, -150, 312, 0.16, R.altin);
+  }
   x.restore();
   x.fillStyle = 'rgba(5,8,20,0.28)'; x.beginPath(); x.ellipse(0, 166, 120, 30, 0, 0, 7); x.fill();
 }
@@ -445,10 +473,11 @@ function kol(x, yon, P) {
   const ea = aci + (P.y < S.y + 40 ? yon * B : -yon * B);
   const E = { x: S.x + L1 * Math.cos(ea), y: S.y + L1 * Math.sin(ea) };
   x.lineCap = 'round'; x.lineJoin = 'round';
-  for (const [renk, kal] of [['#0C1228', 84], [R.ceket, 72]]) { x.beginPath(); x.moveTo(S.x, S.y); x.lineTo(E.x, E.y); x.lineTo(Pp.x, Pp.y); x.strokeStyle = renk; x.lineWidth = kal; x.stroke(); }
+  const tk = takimMi();
+  for (const [renk, kal] of (tk ? [['#09090C', 84], ['#1C1C22', 72]] : [['#0C1228', 84], [R.ceket, 72]])) { x.beginPath(); x.moveTo(S.x, S.y); x.lineTo(E.x, E.y); x.lineTo(Pp.x, Pp.y); x.strokeStyle = renk; x.lineWidth = kal; x.stroke(); }
   const ka = Math.atan2(Pp.y - E.y, Pp.x - E.x);
   x.beginPath(); x.moveTo(Pp.x - Math.cos(ka) * 22, Pp.y - Math.sin(ka) * 22); x.lineTo(Pp.x - Math.cos(ka) * 6, Pp.y - Math.sin(ka) * 6);
-  x.strokeStyle = R.kirmizi; x.lineWidth = 64; x.lineCap = 'butt'; x.stroke(); x.lineCap = 'round';
+  x.strokeStyle = tk ? '#F4F4F2' : R.kirmizi; x.lineWidth = 64; x.lineCap = 'butt'; x.stroke(); x.lineCap = 'round';
   x.save(); x.translate(Pp.x, Pp.y); el(x, P, ka, yon); x.restore();
 }
 function spiker(x, d) {
@@ -817,14 +846,19 @@ function ciz(t, k) {
 async function kapakCiz(v) {
   T = { fps: 30, sure: 1, marka: v.marka, gorseller: {}, gorsel_olaylari: [], pencereler: [], kelimeler: [], altyazi: [],
         agiz: [[26, 40, 0.9, 0]], genlik: [0.5], kirpmalar: [], kulaklar: [],
-        sahneler: [{ bas: 0, son: 1, ses_bas: 0, ses_son: 1, duzen: 'studyo', ifade: v.ifade || 'saskin', jest: '', zoom: 1, k0: 0, k1: 0 }] };
+        sahneler: [{ bas: 0, son: 1, ses_bas: 0, ses_son: 1, duzen: 'studyo', ifade: v.ifade || 'saskin', jest: '', zoom: 1, k0: 0, k1: 0 }],
+        kiyafet: v.kiyafet || null };
+  if (v.kiyafet && v.kiyafet.rozet && v.rozet_src) {
+    G[v.kiyafet.rozet] = await new Promise((ok, red) => { const i = new Image(); i.onload = () => ok(i); i.onerror = red; i.src = v.rozet_src; });
+  }
   for (const f of ['900 60px Inter', '800 60px Inter', '60px "Noto Color Emoji"']) { try { await document.fonts.load(f, 'AaÇğİşÖü'); } catch (e) { /* */ } }
   const yatay = v.w > v.h, c = document.createElement('canvas'); c.width = v.w; c.height = v.h; const x = c.getContext('2d');
   // arka plan
   if (v.src) {
     const im = await new Promise((ok, red) => { const i = new Image(); i.onload = () => ok(i); i.onerror = red; i.src = v.src; });
     const k = Math.max(v.w / im.width, v.h / im.height), dw = im.width * k, dh = im.height * k;
-    x.drawImage(im, (v.w - dw) / 2, yatay ? (v.h - dh) / 2 : 0, dw, dh);
+    const ox = v.odak ? clamp(v.w / 2 - dw * v.odak[0], v.w - dw, 0) : (v.w - dw) / 2;
+    x.drawImage(im, ox, yatay ? (v.h - dh) / 2 : 0, dw, dh);
   } else { x.drawImage(statik, 0, 0, v.w, v.h); }
   let g = yatay ? x.createLinearGradient(0, 0, v.w, 0) : x.createLinearGradient(0, 0, 0, v.h);
   if (yatay) { g.addColorStop(0, 'rgba(6,12,34,0.94)'); g.addColorStop(0.55, 'rgba(6,12,34,0.55)'); g.addColorStop(1, 'rgba(6,12,34,0.15)'); }

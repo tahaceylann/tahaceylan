@@ -1,0 +1,130 @@
+{
+  "baslik": "FC 27 Title Update 1.2.0 yayında",
+  "oyun": "EA SPORTS FC 27",
+  "tarih": "10 KASIM 2026",
+  "manset": "FC 27 · 1.2.0 yaması yayında",
+  "kayan": [
+    "GTA VI ön yüklemesi başladı · 212 GB",
+    "Football Manager 27 Console bugün Game Pass'te",
+    "GTA VI festivali 21 Kasım'da Miami'de",
+    "Beholder IV duyuruldu · PC"
+  ],
+  "sure": {"hedef_min": 50, "hedef_max": 68, "sinir": 75},
+  "kiyafet": {"tip": "takim", "rozet": "ataturk", "_not": "10 Kasım için bir seferlik takım elbise + sol göğüste Atatürk rozeti"},
+  "haber": {
+    "baslik": "EA SPORTS FC 27 Title Update 1.2.0",
+    "kaynak": "https://mixed-news.com/en/ea-sports-fc-27-title-update-120-defence-career-mode/",
+    "kaynak_adi": "EA SPORTS FC (MIXED aracılığıyla)",
+    "tarih": "9–10 Kasım 2026",
+    "ek_kaynaklar": [
+      "Yama notları (10 Kasım): https://mp1st.com/title-updates-and-patches/ea-sports-fc-27-new-update-1-09-brings-long-list-of-fixes-on-november-10",
+      "EA resmî geliştirici notu (28 Ekim, şut/pas/AcceleRATE değişmiyor): https://www.ea.com/games/ea-sports-fc/fc-27/news/fc27-october-gameplay-developer-notes"
+    ]
+  },
+  "telaffuz": {
+    "1.2.0": "bir nokta iki nokta sıfır",
+    "88": "seksen sekiz"
+  },
+  "sahneler": [
+    {
+      "metin": "FC 27'de santradan hemen sonra gol yemekten bıktın mı? EA tam bunu düzeltti!",
+      "gorsel": "fc27_kapak",
+      "tetik": "FC",
+      "odak": [0.7, 0.45],
+      "etiket": "RESMİ GÖRSEL",
+      "ekran": "Santra golü devri bitiyor mu?",
+      "ifade": "saskin",
+      "espri": {"tip": "emoji", "emoji": "⚽", "metin": "Yine mi santra?!", "tetik": "bıktın"}
+    },
+    {
+      "metin": "Ama önce: Bugün 10 Kasım. Cumhuriyetimizin kurucusu Gazi Mustafa Kemal Atatürk'ü, aramızdan ayrılışının seksen sekizinci yılında saygı ve özlemle anıyoruz.",
+      "gorsel": "ataturk",
+      "tetik": "Bugün",
+      "odak": [0.5, 0.42],
+      "etiket": "10 KASIM 1938",
+      "ekran": "Saygı ve özlemle anıyoruz",
+      "ifade": "ciddi",
+      "sessiz": true
+    },
+    {
+      "metin": "Şimdi gelelim yamaya: FC 27'nin ilk büyük oynanış güncellemesi, 1.2.0 yayında!",
+      "gorsel": "pitch_notes",
+      "tetik": "yamaya",
+      "odak": [0.3, 0.5],
+      "etiket": "RESMİ GÖRSEL",
+      "ekran": "Title Update 1.2.0",
+      "ifade": "heyecan"
+    },
+    {
+      "metin": "PC, PlayStation ve Xbox'ta bugünden itibaren iniyor. Switch'e ise 12 Kasım'da geliyor.",
+      "tetik": "PC",
+      "ekran": "Switch'e 12 Kasım'da",
+      "grafik": {
+        "tip": "liste",
+        "etiket": "Yayın takvimi",
+        "baslik": "Title Update 1.2.0",
+        "satirlar": [["PC · PS5 · Xbox", "10 Kasım'dan itibaren"], ["Nintendo Switch", "12 Kasım"]],
+        "not": "Kaynak: EA SPORTS FC yama notları"
+      }
+    },
+    {
+      "metin": "En büyük değişiklik savunmada. Aşırı yüksek defans hattında oyuncular artık daha erken geri çekiliyor, bekler de eskisi kadar derine düşmüyor.",
+      "gorsel": "taktik",
+      "tetik": "savunmada",
+      "odak": [0.45, 0.5],
+      "ekran": "Yüksek defans hattı ayarlandı",
+      "vurgu": {"kutu": [0.36, 0.2, 0.17, 0.62], "tetik": "bekler", "yakinlik": 1.3, "yazi": "Bekler"}
+    },
+    {
+      "metin": "Santra sonrası kolay goller azaldı. Yapay zekâ takım arkadaşların da artık daha az ofsayta düşüyor.",
+      "tetik": "Santra",
+      "ekran": "Santra golleri azaltıldı",
+      "grafik": {
+        "tip": "liste",
+        "etiket": "Oynanış",
+        "baslik": "1.2.0 neleri değiştirdi?",
+        "satirlar": [["Yüksek defans", "Daha erken geri çekiliyor"], ["Santra sonrası", "Kolay goller azaltıldı"], ["Yapay zekâ hücum", "Daha az ofsayt"]],
+        "not": "Kaynak: EA SPORTS FC yama notları"
+      }
+    },
+    {
+      "metin": "Kariyer Modu'nda da müjde var: Düzenli oynadığı halde transfer isteyen oyuncu hatası nihayet düzeltildi!",
+      "tetik": "Kariyer",
+      "ekran": "Kariyer Modu hatası düzeltildi",
+      "ifade": "gulme",
+      "espri": {"tip": "emoji", "emoji": "😅", "metin": "Nihayet!", "tetik": "nihayet"},
+      "grafik": {
+        "tip": "liste",
+        "etiket": "Kariyer Modu",
+        "baslik": "Menajerlere müjde",
+        "satirlar": [["Transfer isteği hatası", "Düzeltildi"], ["Maaş talepleri", "Kadro rolüne göre"]],
+        "not": "Kaynak: EA SPORTS FC yama notları"
+      }
+    },
+    {
+      "metin": "Peki sürpriz ne? EA'ya göre şutlara, pas gücüne ve AcceleRATE'e hiç dokunulmadı!",
+      "ekran": "Şut ve pas gücü aynı",
+      "ifade": "saskin",
+      "espri": {"tip": "soru", "tetik": "Peki"}
+    },
+    {
+      "metin": "Sence yüksek defans hâlâ meta mı? Yorumlara yaz!",
+      "duzen": "kapanis",
+      "ifade": "heyecan",
+      "espri": "soru"
+    }
+  ],
+  "youtube": {
+    "baslik": "FC 27 yeni yama: Yüksek defans ve santra golü ayarlandı! 🦊 #shorts",
+    "aciklama": "Bugün 10 Kasım. Gazi Mustafa Kemal Atatürk'ü aramızdan ayrılışının 88. yılında saygı ve özlemle anıyoruz.\n\nEA SPORTS FC 27 Title Update 1.2.0, 10 Kasım'dan itibaren PC, PlayStation ve Xbox'ta; Switch'te 12 Kasım'da. Aşırı yüksek defans hattında oyuncular daha erken geri çekiliyor, bekler daha az derine düşüyor, santra sonrası kolay goller azaltıldı, yapay zekâ takım arkadaşları daha az ofsayta düşüyor. Kariyer Modu'ndaki haksız transfer isteği hatası düzeltildi. EA'nın geliştirici notuna göre şut, pas gücü, PlayStyle ve AcceleRATE değişmedi.",
+    "etiketler": ["fc27", "eafc27", "easportsfc", "fc27yama", "ultimateteam", "kariyermodu", "10kasım", "oyunhaberleri", "foxbulten", "shorts"]
+  },
+  "kapak": {
+    "buyuk": "1.2.0",
+    "orta": "FC 27 savunma yaması",
+    "alt": "Santra golleri azaltıldı",
+    "gorsel": "fc27_kapak",
+    "odak": [0.74, 0.5],
+    "ifade": "saskin"
+  }
+}
