@@ -23,10 +23,11 @@ const IFADE = {  // kas r>0: iç uç yukarı (endişe), r<0: iç uç aşağı (k
   ciddi:   { kasY: 2, kasR: -0.08, egim: 0, kulak: 0, goz: 1, kisik: 0.08, gulus: 0 },
 };
 const SPIKER = { x: 540, y: 600, s: 1.25 };           // kamera tuvalinde spiker
-const BROLL = { x: 0, y: 150, w: 1080, h: 780 };       // görüntü / grafik alanı
-const PIP = { x: 40, y: 944, w: 300, h: 222 };         // spiker penceresi (görüntü modunda)
-const KUNYE = { x: 356, y: 944, w: 564, h: 222 };      // künye kutusu
-const ALTBANT_Y = 1188, ALTYAZI_Y = 1420, ALTYAZI_X = 490, ALTYAZI_W = 820, BANT_Y = 1522;
+const UB = 60;                                          // Shorts'un üst arayüzüne (arama/kamera simgeleri) boşluk: tüm yayın yerleşimi bu kadar aşağıda
+const BROLL = { x: 0, y: 150 + UB, w: 1080, h: 780 };  // görüntü / grafik alanı
+const PIP = { x: 40, y: 944 + UB, w: 300, h: 222 };    // spiker penceresi (görüntü modunda)
+const KUNYE = { x: 356, y: 944 + UB, w: 564, h: 222 }; // künye kutusu
+const ALTBANT_Y = 1188 + UB, ALTYAZI_Y = 1420 + UB, ALTYAZI_X = 490, ALTYAZI_W = 820, BANT_Y = 1522 + UB;
 
 let T = null, ana, ac, kam, kc, statik, masa, arka;
 const G = {};
@@ -714,7 +715,7 @@ function kunye(t, g, sc) {
 function ust(t) {
   ac.fillStyle = 'rgba(255,255,255,0.15)'; ac.fillRect(0, 0, W, 8);
   ac.fillStyle = R.kirmizi; ac.fillRect(0, 0, W * clamp(t / T.sure, 0, 1), 8);
-  ac.save(); ac.shadowColor = 'rgba(0,0,0,0.4)'; ac.shadowBlur = 12;
+  ac.save(); ac.translate(0, UB); ac.shadowColor = 'rgba(0,0,0,0.4)'; ac.shadowBlur = 12;   // logo/CANLI/tarih Shorts üst çubuğunun altında
   ac.fillStyle = R.kirmizi; ac.fillRect(40, 48, 84, 84); ac.shadowBlur = 0;
   amblem(ac, 82, 94, 0.62, '#fff', R.kirmizi);
   ac.font = `900 38px ${YAZI}`; const mw = ac.measureText(T.marka).width + 40;
@@ -805,7 +806,7 @@ function soruPaneli(t, c) {
   const sc = sonSahne(), kel = T.kelimeler.slice(sc.k0, sc.k1 + 1);
   ac.font = `800 54px ${YAZI}`;
   const n = Math.min(4, satirla(ac, kel.map((k) => k.w).join(' '), 860).length);
-  const x0 = 60, w = 960, y0 = 170, h = 74 + n * 70 + 40, pc = eBack(c);
+  const x0 = 60, w = 960, y0 = 170 + UB, h = 74 + n * 70 + 40, pc = eBack(c);
   ac.save(); ac.translate(W / 2, y0 + h / 2); ac.scale(lerp(0.7, 1, pc), lerp(0.7, 1, pc)); ac.translate(-W / 2, -(y0 + h / 2));
   ac.shadowColor = 'rgba(0,0,0,0.45)'; ac.shadowBlur = 30; ac.fillStyle = '#fff'; ac.fillRect(x0, y0, w, h); ac.shadowBlur = 0;
   ac.fillStyle = R.kirmizi; ac.fillRect(x0, y0, w, 74);

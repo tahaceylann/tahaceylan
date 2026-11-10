@@ -166,8 +166,9 @@ animasyon ve zamanlamayı denemek içindir, yayına uygun değildir.
 
 ## Ekran yerleşimi (1080×1920)
 
-Kanal logosu + CANLI + tarih 48–132 · görüntü/grafik ekranı 150–930 · spiker penceresi ve künye 944–1166 ·
-alt bant 1188–1316 · altyazı merkezi 1420 (x 80–900) · kayan bant 1522–1574. Hepsi Shorts'un sağdaki
+Üstte 108 px boşluk (Shorts'un arama/kamera çubuğu için; `render/tilki.js` → `UB`). Kanal logosu + CANLI + tarih 108–192 ·
+görüntü/grafik ekranı 210–990 · spiker penceresi ve künye 1004–1226 · alt bant 1248–1376 · altyazı merkezi 1480
+(x 80–900) · kayan bant 1582–1634 (altta 286 px boşluk). Hepsi Shorts'un sağdaki
 düğmelerinden ve alttaki başlık alanından uzak tutulur.
 
 ## Dosyalar
