@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>FOX BÜLTEN – Shorts Tasarımı</title>
+<style>
+  /* Sahne seçimi: ?sahne=haber | spiker | kapanis */
+  :root{
+    --lacivert:#0a1430; --lacivert2:#122350; --kirmizi:#e5202e; --altin:#ffc629;
+    --cam:#22d3ee; --beyaz:#fff; --gri:#9fb0d0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1080px;height:1920px;overflow:hidden;background:#050b1e}
+  body{font-family:"Inter","Inter Display",sans-serif;font-weight:900;color:#fff;position:relative}
+  .kare{position:absolute;inset:0;overflow:hidden;
+    background:radial-gradient(ellipse at 50% 30%,#16295f 0%,#0a1430 55%,#050b1e 100%)}
+
+  /* LED video duvarı */
+  .duvar{position:absolute;left:0;right:0;top:0;height:1500px;display:grid;
+    grid-template-columns:repeat(9,1fr);grid-auto-rows:120px;gap:8px;padding:8px;opacity:.55}
+  .duvar i{display:block;border-radius:6px;background:linear-gradient(135deg,#17306b,#0d1c46)}
+  .duvar i:nth-child(3n){background:linear-gradient(135deg,#1c3b82,#112656)}
+  .duvar i:nth-child(7n){background:linear-gradient(135deg,#0f2a5c,#0a1a3d)}
+  .duvar i:nth-child(11n){background:linear-gradient(135deg,#1b4a8f,#14306a)}
+  .karart{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,11,30,.55),rgba(5,11,30,.1) 30%,rgba(5,11,30,.7) 100%)}
+  /* ışık sütunları */
+  .sutun{position:absolute;top:0;bottom:0;width:26px;
+    background:linear-gradient(180deg,transparent,var(--cam) 15%,#8af0ff 50%,var(--cam) 85%,transparent);
+    box-shadow:0 0 50px 12px rgba(34,211,238,.45);opacity:.85}
+  .sutun.s1{left:14px}.sutun.s2{right:14px}
+
+  /* 1. üst bar */
+  .ilerleme{position:absolute;left:0;top:0;height:10px;width:100%;background:rgba(255,255,255,.12)}
+  .ilerleme b{display:block;height:100%;width:38%;background:var(--kirmizi);box-shadow:0 0 14px var(--kirmizi)}
+  .ustbar{position:absolute;left:56px;right:56px;top:96px;height:96px;display:flex;align-items:center;gap:20px}
+  .logo{width:96px;height:96px;background:var(--kirmizi);display:grid;place-items:center;border-radius:10px;flex:none}
+  .marka{line-height:1}
+  .marka .ad{font-size:46px;letter-spacing:1px}
+  .marka .alt{font-size:22px;color:var(--cam);letter-spacing:5px;margin-top:8px}
+  .bosluk{flex:1}
+  .canli{background:var(--kirmizi);padding:14px 22px;font-size:30px;border-radius:8px;display:flex;gap:10px;align-items:center;letter-spacing:1px}
+  .canli u{width:16px;height:16px;border-radius:50%;background:#fff;display:inline-block;animation:yan 1s infinite}
+  @keyframes yan{50%{opacity:.2}}
+  .tarih{background:#fff;color:var(--lacivert);padding:14px 20px;font-size:28px;border-radius:8px}
+
+  /* 2. görüntü ekranı */
+  .ekran{position:absolute;left:56px;right:56px;top:232px;height:700px;border-radius:14px;
+    background:#0b1736;border:6px solid #fff;box-shadow:0 0 0 6px var(--kirmizi),0 24px 60px rgba(0,0,0,.6);overflow:hidden}
+  .ekran .gorsel{position:absolute;inset:0;
+    background:
+      radial-gradient(circle at 70% 35%,rgba(255,198,41,.35),transparent 40%),
+      linear-gradient(135deg,#1d2f6b,#0c1a45 60%,#3a1448)}
+  .ekran .izgi{position:absolute;inset:0;background:
+    repeating-linear-gradient(90deg,rgba(255,255,255,.06) 0 2px,transparent 2px 60px),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.06) 0 2px,transparent 2px 60px)}
+  .ekran .yer{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font-size:44px;color:rgba(255,255,255,.55);letter-spacing:4px;line-height:1.3}
+  .etiket{position:absolute;left:0;top:0;background:var(--kirmizi);padding:14px 26px;font-size:30px;letter-spacing:2px;border-bottom-right-radius:12px}
+
+  /* 3. spiker şeridi */
+  .spiker{position:absolute;left:56px;right:56px;top:966px;height:210px;display:flex;gap:24px}
+  .pencere{width:210px;height:210px;flex:none;border:7px solid var(--kirmizi);border-radius:14px;background:linear-gradient(180deg,#1b3470,#0a1430);position:relative;overflow:hidden}
+  .pencere .ad{position:absolute;left:0;right:0;bottom:0;background:var(--kirmizi);font-size:20px;text-align:center;padding:5px 0;letter-spacing:1px}
+  .pencere svg{position:absolute;left:0;top:-6px;width:100%}
+  .kart{flex:1;background:var(--lacivert2);border-left:10px solid var(--altin);border-radius:12px;padding:22px 28px;display:flex;flex-direction:column;justify-content:center;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+  .kart .b1{font-size:54px;color:var(--altin);line-height:1.05}
+  .kart .b2{font-size:54px;color:#fff;line-height:1.05}
+  .kart .kaynak{font-size:22px;color:var(--gri);margin-top:12px;font-weight:700;letter-spacing:1px}
+
+  /* 4. alt bant */
+  .bant{position:absolute;left:56px;right:56px;top:1210px}
+  .bant .sd{display:inline-block;background:var(--kirmizi);padding:12px 30px;font-size:34px;letter-spacing:3px;border-top-left-radius:10px;border-top-right-radius:10px}
+  .bant .mansetsit{background:#fff;color:var(--lacivert);font-size:56px;line-height:1.08;padding:22px 30px;text-transform:uppercase;border-radius:0 10px 10px 10px;border-bottom:10px solid var(--altin)}
+
+  /* 5. altyazı */
+  .altyazi{position:absolute;left:70px;right:70px;top:1462px;text-align:center;font-size:56px;line-height:1.15;
+    text-shadow:0 4px 0 #000,0 0 18px rgba(0,0,0,.8);-webkit-text-stroke:2px #000;paint-order:stroke fill}
+  .altyazi em{font-style:normal;color:var(--altin)}
+
+  /* 6. kayan bant */
+  .kayan{position:absolute;left:0;right:0;top:1604px;height:84px;background:#fff;display:flex;align-items:center;overflow:hidden}
+  .kayan .et{background:var(--kirmizi);height:100%;padding:0 34px;display:flex;align-items:center;font-size:34px;letter-spacing:3px;z-index:2;flex:none}
+  .kayan .akis{white-space:nowrap;color:var(--lacivert);font-size:34px;animation:akis 28s linear infinite;padding-left:24px}
+  .kayan .akis span{color:var(--kirmizi);margin:0 22px}
+  @keyframes akis{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  /* tam boy spiker (görsel yok) */
+  .tam{position:absolute;left:0;right:0;top:232px;height:700px;display:none}
+  body.s-spiker .ekran,body.s-spiker .spiker{display:none}
+  body.s-spiker .tam{display:block}
+  .masa{position:absolute;left:56px;right:56px;bottom:0;height:150px;border-radius:14px 14px 0 0;
+    background:linear-gradient(180deg,#1b2d63,#0a1430);border-top:8px solid var(--cam);box-shadow:0 -10px 40px rgba(34,211,238,.35)}
+
+  /* kapanış */
+  .kap{display:none}
+  body.s-kapanis .kap{display:block}
+  body.s-kapanis .ekran,body.s-kapanis .spiker,body.s-kapanis .bant,body.s-kapanis .altyazi,body.s-kapanis .tam{display:none}
+  .soru{position:absolute;left:56px;right:56px;top:232px;background:#fff;color:var(--lacivert);border-radius:16px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.55)}
+  .soru .bas{background:var(--kirmizi);color:#fff;padding:20px 32px;font-size:44px;letter-spacing:4px}
+  .soru .ic{padding:34px 36px 40px;font-size:60px;line-height:1.15;text-align:center}
+  .yakin{position:absolute;left:0;right:0;top:640px;height:560px;display:flex;justify-content:center}
+  .yakin svg{height:600px;margin-top:-30px}
+  .hap{position:absolute;left:150px;right:150px;top:1230px;height:92px;border-radius:46px;background:rgba(5,11,30,.9);border:3px solid rgba(255,255,255,.3);display:grid;place-items:center;font-size:36px;letter-spacing:1px}
+  .abone{position:absolute;left:0;right:0;top:1360px;display:flex;justify-content:center;align-items:center;gap:26px}
+  .kanal{width:120px;height:120px;border-radius:50%;background:var(--kirmizi);display:grid;place-items:center;border:6px solid #fff;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+  .dugme{background:var(--kirmizi);padding:30px 44px;border-radius:18px;font-size:50px;letter-spacing:2px;display:flex;gap:16px;align-items:center;box-shadow:0 10px 30px rgba(229,32,46,.55)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <!-- Beyaz tilki amblemi -->
+    <symbol id="amblem" viewBox="0 0 100 100">
+      <path d="M12 14 L38 34 Q50 30 62 34 L88 14 L84 52 Q80 72 50 90 Q20 72 16 52 Z" fill="#fff"/>
+      <path d="M30 52 L44 58 L40 62 Z M70 52 L56 58 L60 62 Z" fill="#e5202e"/>
+      <path d="M45 74 L50 80 L55 74 Z" fill="#e5202e"/>
+    </symbol>
+
+    <!-- Spiker: 2D çizgi film tilkisi (göğüs boyu). viewBox 400x420 -->
+    <symbol id="tilki" viewBox="0 0 400 420">
+      <g stroke="#1a0f0a" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
+        <!-- gövde: lacivert blazer -->
+        <path d="M30 420 Q36 330 120 300 L280 300 Q364 330 370 420 Z" fill="#14234f"/>
+        <!-- e-spor forması -->
+        <path d="M150 300 L200 372 L250 300 Z" fill="#0b1430"/>
+        <path d="M168 300 L200 346 L232 300" fill="none" stroke="#22d3ee" stroke-width="9"/>
+        <text x="200" y="408" text-anchor="middle" font-family="Inter" font-weight="900" font-size="34" fill="#e5202e" stroke="none">07</text>
+        <!-- yaka -->
+        <path d="M120 300 L170 300 L190 345 L140 335 Z M280 300 L230 300 L210 345 L260 335 Z" fill="#1b2f6e"/>
+        <!-- boyun -->
+        <path d="M160 262 L160 306 Q200 330 240 306 L240 262 Z" fill="#d95a14"/>
+        <!-- kulaklar -->
+        <path d="M88 150 L74 40 L160 96 Z" fill="#e8641b"/>
+        <path d="M312 150 L326 40 L240 96 Z" fill="#e8641b"/>
+        <path d="M98 128 L90 70 L136 100 Z" fill="#1a0f0a" stroke="none"/>
+        <path d="M302 128 L310 70 L264 100 Z" fill="#1a0f0a" stroke="none"/>
+        <!-- kafa -->
+        <path d="M78 160 Q80 96 200 92 Q320 96 322 160 Q326 214 260 262 Q232 288 200 290 Q168 288 140 262 Q74 214 78 160 Z" fill="#e8641b"/>
+        <!-- beyaz yanak tüyleri -->
+        <path d="M80 176 L130 196 L150 250 Q118 238 96 210 Z" fill="#fff"/>
+        <path d="M320 176 L270 196 L250 250 Q282 238 304 210 Z" fill="#fff"/>
+        <!-- beyaz çene/burun bölgesi -->
+        <path d="M150 210 Q200 196 250 210 Q246 262 200 288 Q154 262 150 210 Z" fill="#fff"/>
+        <!-- saç: sivri, camgöbeği tutam -->
+        <path d="M110 128 L126 56 L158 104 L186 38 L210 100 L244 44 L254 106 L290 70 L292 132 Q200 100 110 128 Z" fill="#c2500f"/>
+        <path d="M186 38 L210 100 L196 108 L176 70 Z" fill="#22d3ee"/>
+        <!-- kaşlar: kalın, düz -->
+        <path d="M118 158 L180 160" stroke-width="16"/>
+        <path d="M282 158 L220 160" stroke-width="16"/>
+        <!-- gözler: kehribar -->
+        <ellipse cx="152" cy="186" rx="24" ry="18" fill="#ffb000"/>
+        <ellipse cx="248" cy="186" rx="24" ry="18" fill="#ffb000"/>
+        <circle cx="156" cy="187" r="9" fill="#1a0f0a" stroke="none"/>
+        <circle cx="244" cy="187" r="9" fill="#1a0f0a" stroke="none"/>
+        <circle cx="160" cy="182" r="3.5" fill="#fff" stroke="none"/>
+        <circle cx="248" cy="182" r="3.5" fill="#fff" stroke="none"/>
+        <!-- burun -->
+        <path d="M184 226 Q200 216 216 226 Q214 244 200 250 Q186 244 184 226 Z" fill="#1a0f0a"/>
+        <!-- ağız -->
+        <path d="M170 262 Q200 282 230 262" fill="none" stroke-width="6"/>
+        <!-- kulaklık bandı -->
+        <path d="M70 188 Q60 70 200 62 Q340 70 330 188" fill="none" stroke="#1d2335" stroke-width="20"/>
+        <path d="M70 188 Q60 70 200 62 Q340 70 330 188" fill="none" stroke="#22d3ee" stroke-width="4" stroke-dasharray="14 10"/>
+        <!-- kulaklık yastıkları + RGB halka -->
+        <rect x="46" y="170" width="44" height="86" rx="18" fill="#1d2335"/>
+        <rect x="310" y="170" width="44" height="86" rx="18" fill="#1d2335"/>
+        <rect x="56" y="186" width="24" height="54" rx="10" fill="none" stroke="#ff2dd4" stroke-width="6"/>
+        <rect x="320" y="186" width="24" height="54" rx="10" fill="none" stroke="#22d3ee" stroke-width="6"/>
+        <!-- mikrofon kolu -->
+        <path d="M54 250 Q60 300 130 280 Q158 272 172 268" fill="none" stroke="#1d2335" stroke-width="10"/>
+        <circle cx="174" cy="268" r="11" fill="#1d2335"/>
+        <circle cx="174" cy="268" r="5" fill="#ff2dd4" stroke="none"/>
+      </g>
+    </symbol>
+
+    <!-- Eller: parmaksız eldivenli (masa üstü) -->
+    <symbol id="eller" viewBox="0 0 400 90">
+      <g stroke="#1a0f0a" stroke-width="6" stroke-linejoin="round">
+        <path d="M60 80 Q50 30 100 26 L170 26 Q200 30 196 80 Z" fill="#1d2335"/>
+        <path d="M340 80 Q350 30 300 26 L230 26 Q200 30 204 80 Z" fill="#1d2335"/>
+        <path d="M90 26 L90 8 M118 26 L118 4 M146 26 L146 8" stroke="#e8641b" stroke-width="14" stroke-linecap="round"/>
+        <path d="M310 26 L310 8 M282 26 L282 4 M254 26 L254 8" stroke="#e8641b" stroke-width="14" stroke-linecap="round"/>
+        <path d="M70 62 L190 62 M330 62 L210 62" stroke="#22d3ee" stroke-width="6"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<script>
+  const s = new URLSearchParams(location.search).get('sahne') || 'haber';
+  document.body.classList.add('s-'+s);
+</script>
+
+<div class="kare">
+  <div class="duvar" id="duvar"></div>
+  <div class="karart"></div>
+  <div class="sutun s1"></div><div class="sutun s2"></div>
+
+  <!-- 1. ÜST BAR -->
+  <div class="ilerleme"><b></b></div>
+  <div class="ustbar">
+    <div class="logo"><svg width="76" height="76"><use href="#amblem"/></svg></div>
+    <div class="marka"><div class="ad">FOX BÜLTEN</div><div class="alt">OYUN GÜNDEMİ</div></div>
+    <div class="bosluk"></div>
+    <div class="canli"><u></u>CANLI</div>
+    <div class="tarih">10.11.2026</div>
+  </div>
+
+  <!-- 2. GÖRÜNTÜ EKRANI -->
+  <div class="ekran">
+    <div class="gorsel"></div><div class="izgi"></div>
+    <div class="yer">HABER GÖRSELİ<br>VEYA BİLGİ GRAFİĞİ</div>
+    <div class="etiket">RESMİ GÖRSEL</div>
+  </div>
+
+  <!-- tam boy spiker (görsel yokken) -->
+  <div class="tam">
+    <svg viewBox="0 0 400 420" style="height:700px;display:block;margin:0 auto"><use href="#tilki"/></svg>
+    <div class="masa"></div>
+  </div>
+
+  <!-- 3. SPİKER ŞERİDİ -->
+  <div class="spiker">
+    <div class="pencere"><svg viewBox="0 0 400 420"><use href="#tilki"/></svg><div class="ad">TİLKİ · Oyun muhabiri</div></div>
+    <div class="kart">
+      <div class="b1">YENİ GÜNCELLEME</div>
+      <div class="b2">YAYINDA!</div>
+      <div class="kaynak">GÖRSEL: YAYINCI / ŞİRKET AÇIKLAMASI</div>
+    </div>
+  </div>
+
+  <!-- 4. ALT BANT -->
+  <div class="bant">
+    <div class="sd">SON DAKİKA</div>
+    <div class="mansetsit">Oyun dünyasında beklenen duyuru geldi</div>
+  </div>
+
+  <!-- 5. ALTYAZI -->
+  <div class="altyazi">Bugün oyun dünyasında <em>herkesi</em> şaşırtan haber var</div>
+
+  <!-- KAPANIŞ -->
+  <div class="kap">
+    <div class="soru"><div class="bas">SİZE SORUYORUZ</div><div class="ic">Sizce bu güncelleme oyunu kurtarır mı?</div></div>
+    <div class="yakin"><svg viewBox="0 0 400 420"><use href="#tilki"/></svg></div>
+    <div class="hap">👍 Beğen · 💬 Yorumlara yaz</div>
+    <div class="abone">
+      <div class="kanal"><svg width="84" height="84"><use href="#amblem"/></svg></div>
+      <div class="dugme">🔔 ABONE OL</div>
+    </div>
+  </div>
+
+  <!-- 6. KAYAN BANT -->
+  <div class="kayan">
+    <div class="et">GÜNDEM</div>
+    <div class="akis" id="akis"></div>
+  </div>
+</div>
+
+<script>
+  const d=document.getElementById('duvar');
+  for(let i=0;i<9*13;i++) d.appendChild(document.createElement('i'));
+  const b=['Yeni yama notları yayınlandı','E-spor turnuvasında final heyecanı','Konsol fiyatlarında yeni gelişme','Ücretsiz oyun haftası başladı','Büyük stüdyodan sürpriz duyuru'];
+  const h=b.map(x=>x+'<span>◆</span>').join('');
+  document.getElementById('akis').innerHTML=h+h;
+</script>
+</body>
+</html>

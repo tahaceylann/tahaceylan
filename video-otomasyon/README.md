@@ -53,3 +53,10 @@ ElevenLabs'e gitmeden görüntüyü denemek için: `--onizleme` (sessiz, süre t
   ile biter), açıklama (`#Shorts` etiketi otomatik eklenir), etiketler, kategori,
   görünürlük (`private`). YouTube Studio'ya yüklerken bu alanları kopyala.
 - Sıradaki adım (istenirse): YouTube Data API ile otomatik yükleme.
+
+## FOX BÜLTEN tasarım şablonu
+
+`video-otomasyon/tasarim/fox-bulten.html` — 1080×1920 haber kanalı teması (üst bar, görüntü
+ekranı, spiker şeridi, SON DAKİKA bandı, altyazı, kayan GÜNDEM bandı, tilki spiker).
+Sahne seçimi: `fox-bulten.html?sahne=haber | spiker | kapanis`. Önizleme PNG'leri aynı klasörde.
+Alt ~%15 (y>1690) boş bırakıldı: YouTube arayüzü orayı kapatır.
