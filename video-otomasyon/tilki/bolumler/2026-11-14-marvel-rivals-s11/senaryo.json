@@ -1,0 +1,31 @@
+{
+  "baslik": "Marvel Rivals 11. Sezon Doomsday başladı",
+  "oyun": "Marvel Rivals",
+  "tarih": "14 KASIM 2026",
+  "manset": "Marvel Rivals · 11. Sezon başladı",
+  "kayan": [
+    "GTA VI 19 Kasım'da çıkıyor · ön yükleme açık",
+    "Zelda: Ocarina of Time remake 4 günde 5,2 milyon sattı",
+    "WoW: Forever hotfix'leri yayında",
+    "Marathon 3. Sezonun ilk haftasında ücretsiz olacak"
+  ],
+  "haber": {
+    "baslik": "Marvel Rivals Season 11: Doomsday",
+    "kaynak": "https://insider-gaming.com/marvel-rivals-season-11-patch-notes-all-buffs-nerfs/",
+    "kaynak_adi": "Insider Gaming (NetEase resmî notları üzerinden)",
+    "tarih": "13 Kasım 2026",
+    "ek_kaynaklar": ["https://beebom.com/marvel-rivals-season-11-roadmap/", "https://gameriv.com/marvel-rivals-season-11-balance-patch-notes/"]
+  },
+  "sahneler": [
+    {"metin": "Marvel Rivals'a ışınlanan bir şifacı geldi! Kim bu?", "ekran": "Yeni kahraman geldi!", "ifade": "saskin", "espri": {"tip": "unlem"}},
+    {"metin": "11. Sezon, Doomsday, dün başladı. Yeni kahramanımız Nightcrawler, bir Strategist.", "ekran": "Sezon 11: Doomsday",
+     "grafik": {"tip": "liste", "etiket": "Sezon 11", "baslik": "13 Kasım 2026", "satirlar": [["Sezon", "Doomsday"], ["Yeni kahraman", "Nightcrawler"], ["Rol", "Strategist"]], "not": "Kaynak: Insider Gaming, Beebom"}},
+    {"metin": "Müttefiklerini tehlikeden ışınlayarak kurtarıyor. Ultisi ise dostları tek tek hedefe ışınlıyor, düşmanları da üstüne çekiyor!", "ekran": "Işınlanan şifacı", "ifade": "heyecan"},
+    {"metin": "Yeni Incursion Battle Pass'te on kostüm seti var. Daredevil, Emma Frost ve Mantis bunların arasında.", "ekran": "Incursion Battle Pass",
+     "grafik": {"tip": "sayi", "etiket": "Battle Pass", "sayi": 10, "alt": "yeni kostüm seti", "not": "Kaynak: Beebom"}},
+    {"metin": "Üstelik denge yaması yirmi dokuz kahramanı değiştiriyor.", "ekran": "29 kahraman değişti",
+     "grafik": {"tip": "sayi", "etiket": "Denge yaması", "sayi": 29, "alt": "kahraman etkilendi", "not": "9 Vanguard · 9 Duelist · 11 Strategist"}},
+    {"metin": "Sen Nightcrawler'ı denedin mi? Yorumlara yaz!", "duzen": "kapanis", "ifade": "heyecan", "espri": "soru"}
+  ],
+  "youtube": {"baslik": "Marvel Rivals'a ışınlanan şifacı geldi! 🦊 #shorts", "aciklama": "", "etiketler": ["marvelrivals", "nightcrawler", "oyunhaberleri", "shorts"]}
+}
