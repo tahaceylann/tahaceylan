@@ -269,6 +269,59 @@ def gorsel_yukle(yol: Path, w: int, h: int) -> Image.Image:
     return im.resize((int(im.width * oran) + 1, int(im.height * oran) + 1), Image.LANCZOS)
 
 
+GECIS = 0.5  # saniye
+
+
+def ease_out_back(x: float) -> float:
+    c1 = 1.70158; c3 = c1 + 1
+    return 1 + c3 * (x - 1) ** 3 + c1 * (x - 1) ** 2
+
+
+def ease_in_out(x: float) -> float:
+    return 0.5 - 0.5 * math.cos(math.pi * x)
+
+
+def ken_burns(g: Image.Image, yerel: float) -> Image.Image:
+    z = 1.0 + 0.12 * yerel
+    cw, ch = int(PW * 1.15 / z), int(PH * 1.15 / z)
+    ox = int((g.width - cw) * (0.3 + 0.4 * yerel)); oy = int((g.height - ch) / 2)
+    return g.crop((ox, oy, ox + cw, oy + ch)).resize((PW, PH), Image.BILINEAR)
+
+
+def gecis(a: Image.Image, b: Image.Image, p: float, tur: int) -> Image.Image:
+    """İki kare arasında geçiş. tur 0: kaydırma, 1: dairesel açılış, 2: glitch + flaş."""
+    if tur == 0:
+        e = ease_in_out(p)
+        out = Image.new("RGB", (PW, PH))
+        dx = int(e * PW)
+        out.paste(a, (-dx, 0)); out.paste(b, (PW - dx, 0))
+        ImageDraw.Draw(out).rectangle([PW - dx - 6, 0, PW - dx + 6, PH], fill=NEON)
+        return out
+    if tur == 1:
+        e = ease_in_out(p)
+        r = e * math.hypot(PW, PH) / 2
+        m = Image.new("L", (PW, PH), 0)
+        ImageDraw.Draw(m).ellipse([PW / 2 - r, PH / 2 - r, PW / 2 + r, PH / 2 + r], fill=255)
+        out = Image.composite(b, a, m)
+        ImageDraw.Draw(out).ellipse([PW / 2 - r, PH / 2 - r, PW / 2 + r, PH / 2 + r], outline=TURUNCU, width=10)
+        return out
+    # glitch
+    kaynak = a if p < 0.5 else b
+    out = kaynak.copy()
+    rnd = random.Random(int(p * 1000))
+    siddet = 1 - abs(p - 0.5) * 2
+    for _ in range(int(10 * siddet) + 1):
+        y = rnd.randrange(0, PH - 20); h = rnd.randrange(8, 60)
+        dx = rnd.randint(-80, 80)
+        out.paste(kaynak.crop((0, y, PW, min(PH, y + h))), (dx, y))
+    r, g, bb = out.split()
+    out = Image.merge("RGB", (r.transform(out.size, Image.AFFINE, (1, 0, -int(14 * siddet), 0, 1, 0)), g,
+                              bb.transform(out.size, Image.AFFINE, (1, 0, int(14 * siddet), 0, 1, 0))))
+    if 0.4 < p < 0.6:
+        out = Image.blend(out, Image.new("RGB", out.size, (255, 255, 255)), 0.6)
+    return out
+
+
 def sar(metin: str, f, maks: int) -> list[str]:
     kelimeler, satirlar, s = metin.split(), [], ""
     for k in kelimeler:
@@ -347,6 +400,7 @@ def main() -> None:
     manset_satir = [] if gorselsiz else sar(sen.get("manset", ""), f_manset, PW - 60)[:2]
     ticker = "  •  ".join(["SON DAKİKA", "FOX BÜLTEN", sen.get("manset", "")]) + "  •  "
 
+    font_onbellek: dict[int, ImageFont.FreeTypeFont] = {}
     rnd = random.Random(7)
     kirp_zamanlari = sorted(rnd.uniform(0.5, toplam) for _ in range(int(toplam / 3)))
 
@@ -371,21 +425,27 @@ def main() -> None:
             d.ellipse([W - 230, 74, W - 202, 102], fill=(255, 50, 70))
         d.text((W - 190, 88), "CANLI", font=f_ticker, fill=(255, 255, 255), anchor="lm")
 
-        # haber paneli: görseller sırayla, Ken Burns
-        idx = min(int(t / max(sure, 0.1) * len(gorseller)), len(gorseller) - 1)
-        g = gorseller[idx]
-        yerel = (t * len(gorseller) / max(sure, 0.1)) % 1 if t < sure else 1
-        z = 1.0 + 0.12 * yerel
-        cw, ch = int(PW * 1.15 / z), int(PH * 1.15 / z)
-        ox = int((g.width - cw) * (0.3 + 0.4 * yerel)); oy = int((g.height - ch) / 2)
-        kare = g.crop((ox, oy, ox + cw, oy + ch)).resize((PW, PH), Image.BILINEAR)
-        d.rounded_rectangle([PX - 8, PY - 8, PX + PW + 8, PY + PH + 8], radius=44, fill=NEON if idx % 2 == 0 else TURUNCU)
-        fr.paste(kare, (PX, PY), maske)
+        # haber paneli: görseller sırayla, Ken Burns + animasyonlu geçişler
+        dilim = max(sure, 0.1) / len(gorseller)
+        idx = min(int(t / dilim), len(gorseller) - 1)
+        yerel = min(1.0, (t - idx * dilim) / dilim)
+        kare = ken_burns(gorseller[idx], yerel)
+        gecen = t - idx * dilim
+        if idx > 0 and gecen < GECIS:
+            p = gecen / GECIS
+            onceki = ken_burns(gorseller[idx - 1], 1.0)
+            kare = gecis(onceki, kare, p, (idx - 1) % 3)
+        # giriş: panel yukarıdan kayarak gelir
+        giris = ease_out_back(min(1.0, t / 0.55))
+        py = int(PY - (1 - giris) * (PY + PH + 40))
+        d.rounded_rectangle([PX - 8, py - 8, PX + PW + 8, py + PH + 8], radius=44, fill=NEON if idx % 2 == 0 else TURUNCU)
+        fr.paste(kare, (PX, py), maske)
         if manset_satir:
             bh = 30 + 58 * len(manset_satir)
-            d.rounded_rectangle([PX + 20, PY + PH - bh - 20, PX + PW - 20, PY + PH - 20], radius=24, fill=(15, 8, 30))
+            mx = int((1 - ease_out_back(min(1.0, max(0.0, (t - 0.4) / 0.5)))) * -W)
+            d.rounded_rectangle([PX + 20 + mx, py + PH - bh - 20, PX + PW - 20 + mx, py + PH - 20], radius=24, fill=(15, 8, 30))
             for j, s in enumerate(manset_satir):
-                d.text((PX + 50, PY + PH - bh + 2 + j * 58), s, font=f_manset, fill=(255, 255, 255))
+                d.text((PX + 50 + mx, py + PH - bh + 2 + j * 58), s, font=f_manset, fill=(255, 255, 255))
 
         # kayan yazı
         d.rectangle([0, TICKER_Y, W, TICKER_Y + 56], fill=TURUNCU)
@@ -408,7 +468,7 @@ def main() -> None:
         sallanma = math.sin(t * 2.2) * 6 + ses * 10
         aci = math.sin(t * 1.3) * 3 + (ses - 0.4) * 4
         kafa_r = kafa.rotate(aci, resample=Image.BICUBIC, center=(350, 560))
-        gy = GY + int(math.sin(t * 2.2 + 0.6) * 4)
+        gy = GY + int(math.sin(t * 2.2 + 0.6) * 4) + int((1 - ease_out_back(min(1.0, max(0.0, (t - 0.15) / 0.6)))) * 900)
         fr.paste(govde, (GX, gy), govde)
         fr.paste(kafa_r, (GX + 100, gy - 330 + int(sallanma)), kafa_r)
 
@@ -420,10 +480,13 @@ def main() -> None:
         # altyazı
         for a, b, metin in altyazi:
             if a <= t < b:
+                pop = ease_out_back(min(1.0, (t - a) / 0.16))
+                boy = max(20, int(58 * (0.6 + 0.4 * pop)))
+                fa = font_onbellek.setdefault(boy, font(boy))
                 satirlar = sar(metin.upper(), f_alt, W - 120)
                 for j, s in enumerate(satirlar):
                     yy = ALTYAZI_Y + j * 70 - (len(satirlar) - 1) * 35
-                    d.text((W / 2, yy), s, font=f_alt, fill=(255, 230, 60), anchor="mm", stroke_width=8, stroke_fill=(10, 5, 20))
+                    d.text((W / 2, yy), s, font=fa, fill=(255, 230, 60), anchor="mm", stroke_width=8, stroke_fill=(10, 5, 20))
                 break
 
         # kapanış: abone ol
