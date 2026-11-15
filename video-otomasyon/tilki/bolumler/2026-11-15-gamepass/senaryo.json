@@ -1,0 +1,31 @@
+{
+  "baslik": "Game Pass'ten 15 Kasım'da 13 oyun ayrılıyor",
+  "oyun": "Xbox Game Pass",
+  "tarih": "15 KASIM 2026",
+  "manset": "Game Pass'ten bugün 13 oyun gidiyor",
+  "kayan": [
+    "GTA VI 19 Kasım'da çıkıyor · ön yükleme açık",
+    "The Game Awards adayları 17 Kasım'da açıklanıyor",
+    "BLG, Worlds 2026 şampiyonu oldu",
+    "CS2'ye yeni yama: Retakes botları ve DX11 düzeltmesi"
+  ],
+  "haber": {
+    "baslik": "13 games leaving Xbox Game Pass on November 15, 2026",
+    "kaynak": "https://screenrant.com/xbox-game-pass-games-leaving-november-15-2026/",
+    "kaynak_adi": "Screen Rant",
+    "tarih": "8 Kasım 2026",
+    "ek_kaynaklar": ["https://gamerant.com/xbox-game-pass-games-leaving-soon-november/", "https://www.purexbox.com/news/2026/11/14-games-are-leaving-xbox-game-pass-in-early-november-2026"]
+  },
+  "sahneler": [
+    {"metin": "Oyuncular, Game Pass kütüphanenize son bir kez bakın, çünkü bugün kapıdan tam 13 oyun çıkıyor! Ben Tilki, ve bu haber benim bile kuyruğumu düşürdü.", "ekran": "Bugün 13 oyun gidiyor!", "ifade": "saskin", "espri": {"tip": "emoji", "emoji": "🎮", "metin": "13 oyun?!", "tetik": "13"}},
+    {"metin": "15 Kasım itibarıyla Xbox Game Pass'ten ayrılanlar arasında efsane GoldenEye 007,", "gorsel": "gamepass", "tetik": "Xbox", "odak": [0.5, 0.5], "etiket": "XBOX GAME PASS", "ekran": "15 Kasım'da ayrılıyor"},
+    {"metin": "ortalığı hurdalığa çeviren Wreckfest, zindan dükkâncısı Moonlighter,", "gorsel": "wreckfest", "tetik": "Wreckfest", "odak": [0.5, 0.5], "etiket": "RESMİ GÖRSEL", "ekran": "Wreckfest de gidiyor", "ifade": "heyecan"},
+    {"metin": "Winter Burrow ve Dragon Ball Xenoverse 2 var.", "gorsel": "dbx2", "tetik": "Dragon", "odak": [0.5, 0.45], "etiket": "RESMİ GÖRSEL", "ekran": "Dragon Ball Xenoverse 2"},
+    {"metin": "GoldenEye'ın bulut ve konsol sürümü gidiyor; yani nostalji treni kalkıyor, bilet almayan perona kaldı!", "gorsel": "goldeneye", "tetik": "GoldenEye'ın", "odak": [0.55, 0.45], "etiket": "GOLDENEYE 007", "ekran": "Bulut ve konsol sürümü gidiyor", "ifade": "gulme", "espri": {"tip": "emoji", "emoji": "🚂", "metin": "Nostalji treni kalktı!", "tetik": "nostalji"}},
+    {"metin": "Bir de Football Manager 26 var, o daha 10 Kasım'da sessiz sedasız ayrılmıştı. Teknik direktörler istifa bile edemeden kovuldu yani.", "tetik": "Football", "ekran": "FM 26 çoktan gitti", "ifade": "gulme", "grafik": {"tip": "liste", "etiket": "Game Pass", "baslik": "Ayrılan oyunlardan bazıları", "satirlar": [["10 Kasım", "Football Manager 26"], ["15 Kasım", "GoldenEye 007"], ["15 Kasım", "Wreckfest"], ["15 Kasım", "Moonlighter"], ["15 Kasım", "Dragon Ball Xenoverse 2"]], "not": "Kaynak: Screen Rant"}},
+    {"metin": "Yarım kalan kaydınız varsa bugün bitirin, yoksa satın almayı düşünün.", "ekran": "Bugün son gün!", "ifade": "ciddi", "jest": "isaret"},
+    {"metin": "Peki sizi en çok hangi veda üzdü? Yorumlara yazın, beğenip abone olmayı unutmayın. Tilki kaçar, haber kaçmaz!", "duzen": "kapanis", "ifade": "heyecan", "espri": "soru"}
+  ],
+  "kapak": {"buyuk": "13 OYUN", "orta": "GAME PASS'TEN GİDİYOR", "alt": "15 Kasım", "gorsel": "goldeneye", "ifade": "saskin"},
+  "youtube": {"baslik": "Game Pass'ten 13 oyun gidiyor! GoldenEye de veda ediyor 😱 #shorts", "aciklama": "", "etiketler": ["xboxgamepass", "gamepass", "goldeneye007", "wreckfest", "dragonball", "oyunhaberleri", "foxbulten", "shorts"]}
+}
