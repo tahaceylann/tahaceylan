@@ -1,5 +1,9 @@
 {
   "manset": "CS2'YE KIŞ MI GELİYOR?",
-  "metin": "Oyuncular, montlarınızı hazırlayın, çünkü CS2'ye kış geliyor olabilir! 12 Kasım'da Valve yaklaşık 1,1 GB'lık sıradan bir yama attı. Ama yama notlarını paylaşırken \"notes\" kelimesindeki o harfini buz emojisiyle değiştirdi. Valve, bu ne soğuk espri! Dataminer'lar da boş durmadı: oyunda gizli bir donma sistemi bulmuşlar. Dışarıda yaklaşık 10 saniye kalırsan donuyorsun, içeri girersen 10 saniyede çözülüyorsun. Yani artık seni sadece AWP değil, ayaz da tek atabilir! Sistem şu an canlı haritalarda kapalı, bir de karla ilgili yeni bir grafik ayarı bulunmuş. Söylentiye göre yenilenmiş bir Cobblestone geliyor. Ama dikkat: Valve henüz hiçbir şeyi doğrulamadı. Valve zamanı işte, iki hafta da sürebilir, iki yıl da. Peki sen karlı Cobblestone'da dışarıda donar mısın, yoksa içeride kamp mı kurarsın? Yorumlara yaz, beğenmeyi ve abone olmayı unutma!",
-  "gorseller": ["gorsel1.jpg", "gorsel2.jpg", "gorsel3.jpg"]
+  "metin": "Oyuncular, montlarınızı hazırlayın, çünkü CS2'ye kış geliyor olabilir! 12 Kasım'da Valve sıradan bir yama attı. Ama yama notlarını paylaşırken \"notes\" kelimesindeki o harfini buz emojisiyle değiştirdi. Valve, bu ne soğuk espri! Dataminer'lar da boş durmadı: oyunda gizli bir donma sistemi bulmuşlar. Dışarıda yaklaşık 10 saniye kalırsan donuyorsun, içeri girersen 10 saniyede çözülüyorsun. Yani artık seni sadece AWP değil, ayaz da tek atabilir! Sistem şu an canlı haritalarda kapalı. Söylentiye göre yenilenmiş bir Cobblestone geliyor, ama Valve henüz hiçbir şeyi doğrulamadı. Valve zamanı işte, iki hafta da sürebilir, iki yıl da. Sen karlı Cobblestone'da donar mısın, yoksa içeride kamp mı kurarsın? Yorumlara yaz, beğen ve abone ol!",
+  "gorseller": [
+    "gorsel1.jpg",
+    "gorsel2.jpg",
+    "gorsel3.jpg"
+  ]
 }
