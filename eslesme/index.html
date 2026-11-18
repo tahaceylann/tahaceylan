@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#e8335d">
+<title>Eşleşme · Tanışma Uygulaması</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header id="top"><div class="logo">💘 <b>Eşleşme</b></div><div id="topRight"></div></header>
+  <main id="view"></main>
+  <nav id="tabs" hidden>
+    <button data-tab="kesfet"><span>🔥</span>Keşfet</button>
+    <button data-tab="begenenler"><span>💗</span>Beğenenler<i id="bLikes" class="badge" hidden></i></button>
+    <button data-tab="mesajlar"><span>💬</span>Mesajlar<i id="bMsgs" class="badge" hidden></i></button>
+    <button data-tab="profil"><span>👤</span>Profil</button>
+  </nav>
+  <div id="overlay" hidden></div>
+  <div id="toast" hidden></div>
+</div>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
