@@ -147,7 +147,7 @@ function girisEkrani(kayit = false) {
   $("#view").innerHTML = `<div class="hero-wel"><div class="big">💘</div><h2>${kayit ? "Hesap oluştur" : "Giriş yap"}</h2></div>
   <div class="card"><label class="f">E-posta</label><input id="aMail" type="email" autocomplete="email" placeholder="ornek@mail.com">
   <label class="f">Şifre ${kayit ? "(en az 8 karakter)" : ""}</label><input id="aSifre" type="password" autocomplete="${kayit ? "new-password" : "current-password"}">
-  ${kayit ? '<label class="row" style="margin-top:12px;font-size:14px"><input id="aOnay" type="checkbox" style="width:auto"> 18 yaşından büyüğüm; kullanım koşullarını ve gizlilik (KVKK) metnini kabul ediyorum.</label>' : ""}
+  ${kayit ? '<label class="row" style="margin-top:12px;font-size:14px"><input id="aOnay" type="checkbox" style="width:auto"> 18 yaşından büyüğüm.</label><p class="mut" style="font-size:13px">Kişisel verilerinizin nasıl işlendiğini <a href="/yasal/aydinlatma.html" target="_blank" rel="noopener">KVKK Aydınlatma Metni</a>\'nde okuyabilirsiniz (onay gerektirmez).</p>' : '<p class="mut" style="font-size:13px"><a href="/yasal/aydinlatma.html" target="_blank" rel="noopener">KVKK Aydınlatma Metni</a></p>'}
   <p class="mut" id="aHata" style="color:#d92d2d"></p>
   <button class="btn block" id="aGonder">${kayit ? "Kayıt ol" : "Giriş yap"}</button>
   <button class="btn sec block" id="aGecis" style="margin-top:8px">${kayit ? "Zaten hesabım var" : "Yeni hesap oluştur"}</button></div>`;
@@ -192,6 +192,7 @@ function onboarding(duzenle) {
   <label class="f">Profil görselin</label>
   <div class="row"><div id="fPrev" style="width:80px">${avatar(m, "s")}</div><input id="fFoto" type="file" accept="image/*"></div>
   <div class="chips" style="margin-top:8px" id="fEmoji">${emojiler.map(e => `<span class="chip ${m.emoji === e ? "on" : ""}" data-e="${e}">${e}</span>`).join("")}</div>
+  ${duzenle ? "" : `<label class="row" style="margin-top:14px;font-size:14px;align-items:flex-start"><input id="fRiza" type="checkbox" style="width:auto;margin-top:4px"><span><a href="/yasal/acik-riza.html" target="_blank" rel="noopener">Açık Rıza Metni</a>'ni okudum; cinsiyetim ve ilgilendiğim cinsiyet tercihimden anlaşılabilen <b>cinsel yönelim</b> bilgimin (özel nitelikli kişisel veri), yalnızca eşleştirme amacıyla işlenmesine açık rıza veriyorum. Rızamı istediğim zaman geri çekebileceğimi biliyorum.</span></label>`}
   <p class="mut" id="fHata" style="color:#d92d2d"></p>
   <button class="btn block" id="fKaydet">${duzenle ? "Kaydet" : "Başla 🚀"}</button>
   ${duzenle ? '<button class="btn sec block" id="fIptal" style="margin-top:8px">Vazgeç</button>' : ""}
@@ -209,9 +210,11 @@ function onboarding(duzenle) {
     if (!ad) return hata.textContent = "Lütfen adını yaz.";
     if (!dg) return hata.textContent = "Doğum tarihini seç.";
     if (ilgi.length < 3) return hata.textContent = "En az 3 ilgi alanı seç.";
-    const ilk = !S.me, btn = $("#fKaydet"); btn.disabled = true; hata.textContent = "";
+    const ilk = !S.me, btn = $("#fKaydet");
+    if (ilk && !$("#fRiza").checked) return hata.textContent = "Eşleştirme bu bilgiye dayandığı için devam etmek üzere açık rıza kutusunu işaretlemelisin.";
+    btn.disabled = true; hata.textContent = "";
     try {
-      uygula(await api("PUT", "/ben", { ad, dogum: dg, cins: $("#fCins").value, ilgi_cins: $("#fIlgiCins").value, sehir: $("#fSehir").value, meslek: $("#fMeslek").value.trim(), boy: +$("#fBoy").value, hedef: $("#fHedef").value, sigara: $("#fSigara").value, alkol: $("#fAlkol").value, hakkinda: $("#fHak").value.trim(), ilgi, emoji, foto, renk: m.renk ?? 340 }));
+      uygula(await api("PUT", "/ben", { ad, dogum: dg, cins: $("#fCins").value, ilgi_cins: $("#fIlgiCins").value, sehir: $("#fSehir").value, meslek: $("#fMeslek").value.trim(), boy: +$("#fBoy").value, hedef: $("#fHedef").value, sigara: $("#fSigara").value, alkol: $("#fAlkol").value, hakkinda: $("#fHak").value.trim(), ilgi, emoji, foto, renk: m.renk ?? 340, riza: ilk ? true : undefined }));
       tab = "kesfet"; render(); toast(ilk ? `Hoş geldin ${ad}! 🎉` : "Profil güncellendi");
     } catch (e) { hata.textContent = e.message; btn.disabled = false; }
   };
@@ -412,9 +415,15 @@ function profil() {
     <div class="sw-row"><div><b>Koyu tema</b></div><button class="tg ${S.ayar.koyu ? "on" : ""}" id="pKoyu"></button></div>
     <div class="sw-row" style="border:0"><div><b>Keşfet filtreleri</b><div class="mut">${S.ayar.minYas}–${S.ayar.maxYas} yaş${S.ayar.ayniSehir ? " · aynı şehir" : ""}${S.ayar.hedef ? " · " + esc(S.ayar.hedef) : ""}</div></div><button class="btn sec" id="pFiltre" style="padding:8px 14px">Aç</button></div></div>
     <div class="card"><b>🔒 Güvenlik ipuçları</b><ul class="mut" style="padding-left:18px;margin:8px 0 0"><li>Para isteyen veya yatırım öneren kişilere karşı dikkatli ol.</li><li>İlk buluşmayı kalabalık, herkese açık bir yerde yap.</li><li>Kişisel bilgilerini (TC, adres, banka) paylaşma.</li><li>Rahatsız edici biri olursa engelle ve şikayet et.</li></ul></div>
+    <div class="card"><b>🔐 Gizlilik ve KVKK</b><div class="mut" style="margin:6px 0"><a href="/yasal/aydinlatma.html" target="_blank" rel="noopener">Aydınlatma Metni</a> · <a href="/yasal/acik-riza.html" target="_blank" rel="noopener">Açık Rıza Metni</a></div>
+    <button class="btn sec block" id="pIndir" style="margin-bottom:8px">⬇️ Verilerimi indir</button>
+    <div class="mut" style="font-size:13px">Açık rızanı geri çekmek için hesabını silebilirsin; verilerin silinir.</div></div>
     <div class="card"><div class="mut">Engellenenler: ${S.blocked.length} · Eşleşmeler: ${S.matches.length}</div>
     <button class="btn sec block" id="pSifirla" style="margin-top:10px">Hesabımı ve verilerimi sil</button></div>`;
   $("#pDuzenle").onclick = () => onboarding(true);
+  $("#pIndir").onclick = async () => {
+    try { const d = await api("GET", "/verilerim"), a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(d, null, 2)], { type: "application/json" })); a.download = "eslesme-verilerim.json"; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 5000); toast("Verilerin indirildi"); } catch (e) { toast(e.message); }
+  };
   $("#pCikis").onclick = () => api("POST", "/cikis").catch(() => {}).finally(oturumuBitir);
   $("#pGizli").onclick = () => api("PUT", "/gizli", { gizli: !S.me.gizli }).then(() => { S.me.gizli = !S.me.gizli; profil(); }).catch(e => toast(e.message));
   $("#pKoyu").onclick = () => { S.ayar.koyu = !S.ayar.koyu; save(); render(); };

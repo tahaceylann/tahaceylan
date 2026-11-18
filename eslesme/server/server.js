@@ -12,7 +12,7 @@ const BOTLAR = require("./botlar.js");
 const PORT = process.env.PORT !== undefined ? +process.env.PORT : 3000;
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, "veri.db");
 const ROOT = path.join(__dirname, "..");
-const STATIC = { "/": "index.html", "/index.html": "index.html", "/app.js": "app.js", "/data.js": "data.js", "/style.css": "style.css", "/manifest.json": "manifest.json" };
+const STATIC = { "/yasal/aydinlatma.html": "yasal/aydinlatma.html", "/yasal/acik-riza.html": "yasal/acik-riza.html", "/": "index.html", "/index.html": "index.html", "/app.js": "app.js", "/data.js": "data.js", "/style.css": "style.css", "/manifest.json": "manifest.json" };
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".json": "application/json; charset=utf-8" };
 const GUNLUK_SUPER = 3;
 
@@ -30,6 +30,8 @@ CREATE INDEX IF NOT EXISTS msg_pair ON messages(frm,to_);
 CREATE TABLE IF NOT EXISTS blocks(a TEXT, b TEXT, PRIMARY KEY(a,b));
 CREATE TABLE IF NOT EXISTS reports(id INTEGER PRIMARY KEY AUTOINCREMENT, a TEXT, b TEXT, neden TEXT, t INTEGER);
 `);
+try { db.exec("ALTER TABLE profiles ADD COLUMN riza_t INTEGER"); db.exec("ALTER TABLE profiles ADD COLUMN riza_v TEXT"); } catch { /* sütunlar zaten var */ }
+const RIZA_SURUMU = "1.0";
 const cache = new Map();
 const st = sql => { let s = cache.get(sql); if (!s) { s = db.prepare(sql); cache.set(sql, s); } return s; };
 const get = (sql, ...p) => st(sql).get(...p);
@@ -197,7 +199,7 @@ async function api(req, res, yol) {
     if (!EMAIL.test(email)) return hata(res, 400, "Geçerli bir e-posta gir.");
     if (yol === "/kayit") {
       if (sifre.length < 8 || sifre.length > 100) return hata(res, 400, "Şifre en az 8 karakter olmalı.");
-      if (b.onay !== true) return hata(res, 400, "18 yaşından büyük olduğunu ve koşulları kabul etmelisin.");
+      if (b.onay !== true) return hata(res, 400, "18 yaşından büyük olduğunu onaylamalısın.");
       if (get("SELECT 1 FROM users WHERE email=?", email)) return hata(res, 409, "Bu e-posta zaten kayıtlı.");
       const id = "u" + crypto.randomBytes(8).toString("hex");
       run("INSERT INTO users(id,email,pass,created) VALUES(?,?,?,?)", id, email, sifreHashle(sifre), Date.now());
@@ -223,13 +225,28 @@ async function api(req, res, yol) {
   if (m === "PUT" && yol === "/ben") {
     const v = profilDogrula(b); if (v.hata) return hata(res, 400, v.hata);
     const var_ = get("SELECT gizli FROM profiles WHERE user_id=?", uid);
-    run("INSERT INTO profiles(user_id,cins,ilgi_cins,data) VALUES(?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET cins=excluded.cins,ilgi_cins=excluded.ilgi_cins,data=excluded.data", uid, v.cins, v.ilgi_cins, JSON.stringify(v.data));
+    if (!var_ && b.riza !== true) return hata(res, 400, "Eşleştirme için cinsel yönelim bilgisinin işlenmesine açık rıza vermelisin.");
+    run("INSERT INTO profiles(user_id,cins,ilgi_cins,data,riza_t,riza_v) VALUES(?,?,?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET cins=excluded.cins,ilgi_cins=excluded.ilgi_cins,data=excluded.data", uid, v.cins, v.ilgi_cins, JSON.stringify(v.data), Date.now(), RIZA_SURUMU);
     if (!var_) { // ilk profil: sana ilgi duyan birkaç demo hesap seni beğenmiş olsun
       const ben = v.data; const aday = BOTLAR.filter(x => v.ilgi_cins === "herkes" || x.cins === v.ilgi_cins)
         .sort((x, y) => y.ilgi.filter(i => ben.ilgi.includes(i)).length - x.ilgi.filter(i => ben.ilgi.includes(i)).length).slice(0, 6);
       for (const x of aday) run("INSERT OR IGNORE INTO swipes VALUES(?,?,?,?)", x.id, uid, "like", Date.now());
     }
     return json(res, 200, durum(uid));
+  }
+  if (m === "GET" && yol === "/verilerim") { // KVKK m.11: kişinin kendi verilerine erişimi
+    const u = get("SELECT email,created FROM users WHERE id=?", uid), p = get("SELECT cins,ilgi_cins,gizli,riza_t,riza_v,data FROM profiles WHERE user_id=?", uid);
+    return json(res, 200, {
+      hesap: { id: uid, email: u.email, olusturma: new Date(u.created).toISOString() },
+      profil: p ? { ...JSON.parse(p.data), cinsiyet: p.cins, ilgilenilen_cinsiyet: p.ilgi_cins, gizli_mod: !!p.gizli } : null,
+      acik_riza: p?.riza_t ? { tarih: new Date(p.riza_t).toISOString(), metin_surumu: p.riza_v } : null,
+      kararlarim: all("SELECT b hedef,tip,t FROM swipes WHERE a=?", uid),
+      beni_begenen_sayisi: get("SELECT COUNT(*) n FROM swipes WHERE b=? AND tip IN ('like','super')", uid).n,
+      eslesmeler: all("SELECT a,b,t FROM matches WHERE a=? OR b=?", uid, uid),
+      mesajlar: all("SELECT frm gonderen,to_ alici,x metin,t zaman FROM messages WHERE frm=? OR to_=? ORDER BY id", uid, uid),
+      engellediklerim: all("SELECT b FROM blocks WHERE a=?", uid).map(r => r.b),
+      sikayetlerim: all("SELECT b,neden,t FROM reports WHERE a=?", uid)
+    });
   }
   if (m === "PUT" && yol === "/gizli") { run("UPDATE profiles SET gizli=? WHERE user_id=?", b.gizli ? 1 : 0, uid); return json(res, 200, {}); }
   if (!get("SELECT 1 FROM profiles WHERE user_id=?", uid)) return hata(res, 400, "Önce profilini tamamla.");

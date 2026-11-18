@@ -15,7 +15,7 @@ const { server } = require("./server.js");
   // --- hesap ---
   assert.equal((await call("POST", "/kayit", { email: "kotu", sifre: "12345678", onay: true })).s, 400);
   assert.equal((await call("POST", "/kayit", { email: "a@b.co", sifre: "kisa", onay: true })).s, 400);
-  assert.equal((await call("POST", "/kayit", { email: "a@b.co", sifre: "12345678" })).s, 400, "onay şart");
+  assert.equal((await call("POST", "/kayit", { email: "a@b.co", sifre: "12345678" })).s, 400, "18 yaş onayı şart");
   const a = (await call("POST", "/kayit", { email: "ayse@test.co", sifre: "parola-123", onay: true })).j.token;
   const b = (await call("POST", "/kayit", { email: "can@test.co", sifre: "parola-123", onay: true })).j.token;
   assert.ok(a && b);
@@ -28,11 +28,16 @@ const { server } = require("./server.js");
   // --- profil doğrulama ---
   assert.equal((await call("PUT", "/ben", prof("Ayşe", "kadin", "erkek", { dogum: "2015-01-01" }), a)).s, 400, "18 yaş altı");
   assert.equal((await call("PUT", "/ben", prof("Ayşe", "kadin", "erkek", { foto: "data:text/html;base64,AAAA" }), a)).s, 400);
-  const da = (await call("PUT", "/ben", prof("Ayşe", "kadin", "erkek"), a)).j;
+  assert.equal((await call("PUT", "/ben", prof("Ayşe", "kadin", "erkek"), a)).s, 400, "açık rıza olmadan profil yok");
+  const da = (await call("PUT", "/ben", { ...prof("Ayşe", "kadin", "erkek"), riza: true }, a)).j;
   assert.equal(da.me.yas > 18, true); assert.equal(da.likedMe.length, 6, "demo beğeniler");
   assert.equal(da.me.dogrulanmis, false);
   assert.ok(!JSON.stringify(da.profiller).includes("@test.co") && !da.profiller.some(p => "dogum" in p), "özel veri sızmıyor");
-  await call("PUT", "/ben", prof("Can", "erkek", "kadin"), b);
+  await call("PUT", "/ben", { ...prof("Can", "erkek", "kadin"), riza: true }, b);
+  const vr = (await call("GET", "/verilerim", null, a)).j;
+  assert.equal(vr.hesap.email, "ayse@test.co"); assert.equal(vr.acik_riza.metin_surumu, "1.0"); assert.ok(vr.acik_riza.tarih, "rıza kaydı tutuluyor");
+  assert.equal((await call("GET", "/verilerim")).s, 401);
+  for (const y of ["/yasal/aydinlatma.html", "/yasal/acik-riza.html"]) assert.equal((await fetch(base + y)).status, 200, y);
 
   // --- gerçek zamanlı: iki gerçek kullanıcı ---
   const wa = await ws(a), wb = await ws(b);

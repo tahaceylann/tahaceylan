@@ -16,6 +16,12 @@ Demo profiller sunucuda bot hesaplar olarak yüklenir; gerçek kullanıcılar da
 - **WebSocket** (`/ws`, ilk mesajla jeton doğrulama): anlık mesaj, "yazıyor…", çevrimiçi durumu, "seni beğendi" ve "eşleştiniz" bildirimleri; bağlantı kopunca otomatik yeniden bağlanıp durumu yeniler.
 - **Gizlilik:** doğum tarihi, e-posta ve cinsiyet tercihi diğer kullanıcılara gönderilmez; yalnızca beyaz listedeki statik dosyalar servis edilir; CSP ve `nosniff` başlıkları vardır.
 
+## KVKK / yasal metinler (`yasal/`)
+- `aydinlatma.html` — KVKK m.10 Aydınlatma Metni (onay gerektirmez; kayıt ekranında bağlantı olarak verilir).
+- `acik-riza.html` — özel nitelikli veri (cinsel yönelim) için **ayrı** Açık Rıza Metni; profil oluştururken işaretsiz başlayan ayrı bir kutuyla alınır. Sunucu rıza olmadan ilk profili kabul etmez ve rıza tarihini + metin sürümünü kaydeder.
+- Haklar uygulamada karşılanır: **Verilerimi indir** (`GET /api/verilerim`), düzenleme, **hesabı sil** (rızayı geri çekme).
+- ⚠️ Metinlerdeki sarı `[…]` alanlar (veri sorumlusu unvanı/adresi/KEP, saklama süreleri, barındırma ve yurt dışı aktarım bilgisi) doldurulmadan yayınlanmamalıdır; yayın öncesi bir KVKK avukatına incelettirin. Metin sürümünü değiştirirseniz `RIZA_SURUMU` sabitini (`server/server.js`) de güncelleyin.
+
 ## Özellikler
 - **Kaydırmalı kartlar** (sürükle ya da buton): Beğen / Geç / ⭐ Süper beğeni (günde 3) / Geri al
 - **Burç uyumu** (element bazlı yorum) + ortak ilgi + ilişki hedefi + şehir → **% uyum skoru**
