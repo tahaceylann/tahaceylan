@@ -1,6 +1,6 @@
 "use strict";
 // Eşleşme — tarayıcıda çalışan tanışma uygulaması (demo; veriler yalnızca bu cihazda tutulur)
-const KEY = "eslesme_v1";
+const AYAR_KEY = "eslesme_ayar_v1";
 const $ = (s, r = document) => r.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const bugun = () => new Date().toISOString().slice(0, 10);
@@ -8,19 +8,73 @@ const hash = s => { let h = 7; for (const c of String(s)) h = (h * 31 + c.charCo
 const byId = id => PROFILLER.find(p => p.id === id);
 const GUNLUK_SUPER = 3;
 
-let S = load();
+let TOKEN = null; try { TOKEN = localStorage.getItem("eslesme_token"); } catch { /* depolama kapalı */ }
+let S = varsayilan();
 let tab = "kesfet";
 let undoStack = [];
+let acikSohbetId = null, sohbetYenile = null;
+const ONLINE = {};
 
+function ayarYukle() {
+  const v = { koyu: false, minYas: 18, maxYas: 45, ayniSehir: false, hedef: "" };
+  try { return Object.assign(v, JSON.parse(localStorage.getItem(AYAR_KEY))); } catch { return v; }
+}
 function varsayilan() {
-  return { me: null, act: {}, matches: [], chats: {}, likedMe: [], blocked: [], reported: [],
-    supers: { d: bugun(), n: 0 }, ayar: { koyu: false, gizli: false, minYas: 18, maxYas: 45, ayniSehir: false, hedef: "" } };
+  return { me: null, act: {}, matches: [], chats: {}, likedMe: [], blocked: [], supers: { d: bugun(), n: 0 }, ayar: ayarYukle() };
 }
-function load() {
-  try { return Object.assign(varsayilan(), JSON.parse(localStorage.getItem(KEY)) || {}); } catch { return varsayilan(); }
-}
-function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch { /* depolama kapalı */ } }
+function save() { try { localStorage.setItem(AYAR_KEY, JSON.stringify(S.ayar)); } catch { /* depolama kapalı */ } }
 function toast(t) { const e = $("#toast"); e.textContent = t; e.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => e.hidden = true, 2200); }
+
+/* ---------- Sunucu bağlantısı ---------- */
+async function api(method, yol, body) {
+  const r = await fetch("/api" + yol, { method, headers: { "content-type": "application/json", ...(TOKEN ? { authorization: "Bearer " + TOKEN } : {}) }, body: body ? JSON.stringify(body) : undefined });
+  let j = {}; try { j = await r.json(); } catch { /* boş yanıt */ }
+  if (r.status === 401 && TOKEN && !yol.startsWith("/giris")) { oturumuBitir(); throw new Error("Oturum süresi doldu."); }
+  if (!r.ok) throw new Error(j.hata || "Bir hata oluştu.");
+  return j;
+}
+function uygula(d) {
+  PROFILLER.length = 0; PROFILLER.push(...d.profiller);
+  for (const p of d.profiller) if (!p.bot) ONLINE[p.id] = p.cevrimici;
+  S.me = d.me; S.act = d.act; S.matches = d.matches; S.likedMe = d.likedMe; S.blocked = d.blocked; S.chats = d.chats; S.supers = d.supers;
+}
+function oturumuBitir() {
+  TOKEN = null; try { localStorage.removeItem("eslesme_token"); } catch { /* yok say */ }
+  if (ws) { ws.onclose = null; ws.close(); ws = null; }
+  PROFILLER.length = 0; S = varsayilan(); undoStack = []; acikSohbetId = null; kapat(); render();
+}
+let ws = null, ilkBaglanti = true;
+function baglan() {
+  if (ws) { ws.onclose = null; ws.close(); }
+  ws = new WebSocket((location.protocol === "https:" ? "wss://" : "ws://") + location.host + "/ws");
+  ws.onopen = () => ws.send(JSON.stringify({ t: "auth", token: TOKEN }));
+  ws.onmessage = e => { try { olay(JSON.parse(e.data)); } catch { /* bozuk mesaj */ } };
+  ws.onclose = () => { if (TOKEN) setTimeout(baglan, 3000); };
+}
+async function yenidenYukle() { try { uygula(await api("GET", "/durum")); if ($("#overlay").hidden) render(); } catch { /* sonra denenir */ } }
+function profilEkle(p) { if (p && !byId(p.id)) PROFILLER.push(p); }
+function olay(e) {
+  if (e.t === "hazir") { if (!ilkBaglanti) yenidenYukle(); ilkBaglanti = false; return; }
+  if (e.t === "presence") { ONLINE[e.id] = e.online; if (acikSohbetId === e.id) { const d = $("#cDurum"); if (d) d.textContent = e.online ? "🟢 Çevrimiçi" : "Çevrimdışı"; } return; }
+  if (e.t === "typing") {
+    if (acikSohbetId !== e.from || !$("#msgs")) return;
+    let t = $("#typing"); if (!t) { t = document.createElement("div"); t.id = "typing"; t.className = "typing"; t.textContent = `${byId(e.from)?.ad || ""} yazıyor...`; $("#msgs").appendChild(t); $("#msgs").scrollTop = 1e9; }
+    clearTimeout(olay.tt); olay.tt = setTimeout(() => $("#typing")?.remove(), 3500); return;
+  }
+  if (e.t === "msg") {
+    $("#typing")?.remove();
+    const c = S.chats[e.from] ||= { m: [], okunmadi: 0 }; c.m.push({ k: "on", x: e.x, t: e.ts });
+    if (acikSohbetId === e.from) { api("POST", "/okundu", { id: e.from }).catch(() => {}); sohbetYenile?.(); }
+    else { c.okunmadi = (c.okunmadi || 0) + 1; toast(`💬 ${byId(e.from)?.ad || "Yeni mesaj"}: ${e.x.slice(0, 40)}`); rozetler(); if (tab === "mesajlar" && $("#overlay").hidden) mesajlar(); }
+    return;
+  }
+  if (e.t === "like") { profilEkle(e.profil); if (!S.likedMe.includes(e.profil.id)) S.likedMe.push(e.profil.id); toast("💗 Biri seni beğendi!"); rozetler(); if (tab === "begenenler" && $("#overlay").hidden) begenenler(); return; }
+  if (e.t === "match") {
+    profilEkle(e.profil); if (!S.matches.includes(e.id)) S.matches.push(e.id); S.chats[e.id] ||= { m: [], okunmadi: 0 };
+    S.likedMe = S.likedMe.filter(x => x !== e.id); render();
+    if ($("#overlay").hidden) eslesmeEkrani(byId(e.id)); else toast(`🎉 ${e.profil.ad} ile eşleştin!`);
+  }
+}
 
 /* ---------- Uyum hesaplama ---------- */
 function burcUyumu(a, b) {
@@ -65,12 +119,13 @@ function avatar(p, cls, ekstra = "") {
 }
 function acik(html) { const o = $("#overlay"); o.innerHTML = html; o.hidden = false; return o; }
 function kapat() { const o = $("#overlay"); o.hidden = true; o.innerHTML = ""; }
-function cevrimici(p) { return hash(p.id + bugun()) % 3 === 0; }
+function cevrimici(p) { return p.bot ? hash(p.id + bugun()) % 3 === 0 : !!ONLINE[p.id]; }
 
 /* ---------- Ana çizim ---------- */
 function render() {
   document.documentElement.dataset.tema = S.ayar.koyu ? "koyu" : "";
   const tabs = $("#tabs");
+  if (!TOKEN) { tabs.hidden = true; $("#topRight").innerHTML = ""; return girisEkrani(); }
   if (!S.me) { tabs.hidden = true; $("#topRight").innerHTML = ""; return onboarding(); }
   tabs.hidden = false;
   tabs.querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.tab === tab));
@@ -86,6 +141,32 @@ function rozetler() {
   $("#topRight").innerHTML = `<span class="mut">⭐ ${k} süper beğeni</span>`;
 }
 $("#tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { tab = b.dataset.tab; render(); } });
+
+/* ---------- Giriş / kayıt ---------- */
+function girisEkrani(kayit = false) {
+  $("#view").innerHTML = `<div class="hero-wel"><div class="big">💘</div><h2>${kayit ? "Hesap oluştur" : "Giriş yap"}</h2></div>
+  <div class="card"><label class="f">E-posta</label><input id="aMail" type="email" autocomplete="email" placeholder="ornek@mail.com">
+  <label class="f">Şifre ${kayit ? "(en az 8 karakter)" : ""}</label><input id="aSifre" type="password" autocomplete="${kayit ? "new-password" : "current-password"}">
+  ${kayit ? '<label class="row" style="margin-top:12px;font-size:14px"><input id="aOnay" type="checkbox" style="width:auto"> 18 yaşından büyüğüm; kullanım koşullarını ve gizlilik (KVKK) metnini kabul ediyorum.</label>' : ""}
+  <p class="mut" id="aHata" style="color:#d92d2d"></p>
+  <button class="btn block" id="aGonder">${kayit ? "Kayıt ol" : "Giriş yap"}</button>
+  <button class="btn sec block" id="aGecis" style="margin-top:8px">${kayit ? "Zaten hesabım var" : "Yeni hesap oluştur"}</button></div>`;
+  const gonder = async () => {
+    const hata = $("#aHata"), btn = $("#aGonder"); hata.textContent = ""; btn.disabled = true;
+    try {
+      const r = await api("POST", kayit ? "/kayit" : "/giris", { email: $("#aMail").value, sifre: $("#aSifre").value, onay: kayit ? $("#aOnay").checked : undefined });
+      TOKEN = r.token; try { localStorage.setItem("eslesme_token", TOKEN); } catch { /* yok say */ }
+      await boot();
+    } catch (e) { hata.textContent = e.message; btn.disabled = false; }
+  };
+  $("#aGonder").onclick = gonder; $("#aSifre").onkeydown = e => { if (e.key === "Enter") gonder(); };
+  $("#aGecis").onclick = () => girisEkrani(!kayit);
+}
+async function boot() {
+  if (!TOKEN) return render();
+  try { uygula(await api("GET", "/durum")); ilkBaglanti = true; baglan(); render(); }
+  catch (e) { if (!TOKEN) return; $("#view").innerHTML = `<div class="empty"><div class="e">📡</div><p>Sunucuya ulaşılamadı.</p><button class="btn" id="tekrar">Tekrar dene</button></div>`; $("#tekrar").onclick = boot; }
+}
 
 /* ---------- Kayıt / profil formu ---------- */
 function onboarding(duzenle) {
@@ -122,20 +203,17 @@ function onboarding(duzenle) {
   $("#fEmoji").onclick = e => { const c = e.target.closest(".chip"); if (!c) return; emoji = c.dataset.e; foto = ""; $("#fEmoji").querySelectorAll(".chip").forEach(x => x.classList.toggle("on", x === c)); $("#fPrev").innerHTML = avatar({ emoji, renk: m.renk }, "s"); };
   $("#fFoto").onchange = e => küçült(e.target.files[0], d => { foto = d; $("#fPrev").innerHTML = avatar({ foto }, "s"); });
   if ($("#fIptal")) $("#fIptal").onclick = render;
-  $("#fKaydet").onclick = () => {
+  $("#fKaydet").onclick = async () => {
     const ad = $("#fAd").value.trim(), dg = $("#fDogum").value, hata = $("#fHata");
     const ilgi = [...$("#fIlgi").querySelectorAll(".chip.on")].map(c => c.dataset.i);
     if (!ad) return hata.textContent = "Lütfen adını yaz.";
     if (!dg) return hata.textContent = "Doğum tarihini seç.";
-    const d = new Date(dg), now = new Date();
-    let yas = now.getFullYear() - d.getFullYear(); if (now < new Date(now.getFullYear(), d.getMonth(), d.getDate())) yas--;
-    if (isNaN(yas) || yas < 18) return hata.textContent = "Bu uygulamayı yalnızca 18 yaş ve üstü kullanabilir.";
-    if (yas > 99) return hata.textContent = "Geçerli bir doğum tarihi gir.";
     if (ilgi.length < 3) return hata.textContent = "En az 3 ilgi alanı seç.";
-    const yeni = { ...m, ad, dogum: dg, yas, burc: burcBul(d.getMonth() + 1, d.getDate()), cins: $("#fCins").value, ilgi_cins: $("#fIlgiCins").value, sehir: $("#fSehir").value, meslek: $("#fMeslek").value.trim() || "—", boy: +$("#fBoy").value || 170, hedef: $("#fHedef").value, sigara: $("#fSigara").value, alkol: $("#fAlkol").value, hakkinda: $("#fHak").value.trim(), ilgi, emoji, foto, renk: m.renk ?? 340, dogrulanmis: !!m.dogrulanmis };
-    const ilk = !S.me; S.me = yeni;
-    if (ilk) S.likedMe = PROFILLER.filter(p => ilgilenir(yeni, p)).sort((a, b) => uyum(b).toplam - uyum(a).toplam).slice(0, 6).map(p => p.id);
-    save(); tab = "kesfet"; render(); toast(ilk ? `Hoş geldin ${ad}! 🎉` : "Profil güncellendi");
+    const ilk = !S.me, btn = $("#fKaydet"); btn.disabled = true; hata.textContent = "";
+    try {
+      uygula(await api("PUT", "/ben", { ad, dogum: dg, cins: $("#fCins").value, ilgi_cins: $("#fIlgiCins").value, sehir: $("#fSehir").value, meslek: $("#fMeslek").value.trim(), boy: +$("#fBoy").value, hedef: $("#fHedef").value, sigara: $("#fSigara").value, alkol: $("#fAlkol").value, hakkinda: $("#fHak").value.trim(), ilgi, emoji, foto, renk: m.renk ?? 340 }));
+      tab = "kesfet"; render(); toast(ilk ? `Hoş geldin ${ad}! 🎉` : "Profil güncellendi");
+    } catch (e) { hata.textContent = e.message; btn.disabled = false; }
   };
 }
 function küçült(file, cb) {
@@ -208,23 +286,20 @@ function sürükle(el) {
 function superHakki() { if (S.supers.d !== bugun()) S.supers = { d: bugun(), n: 0 }; return S.supers.n < GUNLUK_SUPER; }
 
 /* ---------- Karar & eşleşme ---------- */
-function karar(id, tip) {
+async function karar(id, tip) {
   const p = byId(id); if (!p || S.act[id]) return render();
-  let eslesti = false;
-  S.act[id] = tip;
-  if (tip === "super") { superHakki(); S.supers.n++; }
-  if (tip !== "pass") {
-    const beni = S.likedMe.includes(id), sans = hash(id + S.me.ad) % 100 < (tip === "super" ? 85 : 55);
-    if ((beni || sans) && !S.matches.includes(id)) { S.matches.push(id); eslesti = true; S.chats[id] ||= { m: [], okunmadi: 0 }; }
-  }
-  undoStack.push({ id, eslesti }); undoStack = undoStack.slice(-5);
-  save(); render();
-  if (eslesti) { eslesmeEkrani(p); setTimeout(() => botYaz(id, "selam"), 4000 + hash(id) % 4000); }
+  S.act[id] = tip; if (tip === "super") { superHakki(); S.supers.n++; }
+  const giris = { id, eslesti: false }; undoStack.push(giris); undoStack = undoStack.slice(-5);
+  render();
+  try {
+    const r = await api("POST", "/begeni", { id, tip });
+    if (r.eslesti) { giris.eslesti = true; if (!S.matches.includes(id)) S.matches.push(id); S.chats[id] ||= { m: [], okunmadi: 0 }; render(); eslesmeEkrani(p); }
+  } catch (e) { delete S.act[id]; if (tip === "super") S.supers.n = Math.max(0, S.supers.n - 1); undoStack = undoStack.filter(x => x !== giris); toast(e.message); render(); }
 }
-function geriAl() {
+async function geriAl() {
   const son = undoStack.pop(); if (!son) return toast("Geri alınacak bir şey yok");
   if (son.eslesti) { undoStack.push(son); return toast("Eşleşmeyi geri alamazsın"); }
-  delete S.act[son.id]; save(); render(); toast("Son kararın geri alındı");
+  try { await api("POST", "/geri", { id: son.id }); delete S.act[son.id]; render(); toast("Son kararın geri alındı"); } catch (e) { toast(e.message); }
 }
 function eslesmeEkrani(p) {
   const o = acik(`<div class="match"><div style="font-size:48px">🎉</div><h1>Eşleştiniz!</h1><p>Sen ve ${esc(p.ad)} birbirinizi beğendiniz.</p>
@@ -256,12 +331,12 @@ function detay(id) {
   $("#dGec")?.addEventListener("click", () => { kapat(); karar(id, "pass"); });
   $("#dMsj")?.addEventListener("click", () => { kapat(); sohbet(id); });
   $("#dSikayet").onclick = () => sikayet(id);
-  $("#dEngel").onclick = () => { if (confirm(`${p.ad} engellensin mi? Artık birbirinizi göremezsiniz.`)) { S.blocked.push(id); S.matches = S.matches.filter(x => x !== id); save(); kapat(); render(); toast("Kullanıcı engellendi"); } };
+  $("#dEngel").onclick = () => { if (confirm(`${p.ad} engellensin mi? Artık birbirinizi göremezsiniz.`)) api("POST", "/engelle", { id }).then(() => { S.blocked.push(id); S.matches = S.matches.filter(x => x !== id); S.likedMe = S.likedMe.filter(x => x !== id); kapat(); render(); toast("Kullanıcı engellendi"); }).catch(e => toast(e.message)); };
 }
 function sikayet(id) {
   const nedenler = ["Sahte profil", "Uygunsuz içerik", "Taciz / rahatsız edici davranış", "Dolandırıcılık / para isteme", "Reşit olmayan kullanıcı"];
   const n = prompt("Şikayet nedenini yaz (numara):\n" + nedenler.map((x, i) => `${i + 1}) ${x}`).join("\n"));
-  if (!n) return; S.reported.push({ id, neden: nedenler[+n - 1] || n }); save(); toast("Şikayetin alındı, teşekkürler 🙏");
+  if (!n) return; api("POST", "/sikayet", { id, neden: nedenler[+n - 1] || n }).then(() => toast("Şikayetin alındı, teşekkürler 🙏")).catch(e => toast(e.message));
 }
 
 /* ---------- Beğenenler ---------- */
@@ -285,8 +360,8 @@ function mesajlar() {
 const BUZ_KIRICI = ["Hafta sonu planın ne? ☕", "Kahve mi çay mı? ", "En son izlediğin güzel dizi neydi?", "Hayalindeki tatil nerede?", "Çocukluk lakabın neydi? 😄", "İstanbul mu, İzmir mi?"];
 function sohbet(id) {
   const p = byId(id); const c = S.chats[id] ||= { m: [], okunmadi: 0 };
-  c.okunmadi = 0; save(); rozetler();
-  const o = acik(`<div class="full" style="position:absolute"><div class="chat-h"><button class="back" id="cGeri">‹</button>${avatar(p, "s")}<div class="grow"><b>${esc(p.ad)}</b><div class="mut" id="cDurum">${cevrimici(p) ? "🟢 Çevrimiçi" : "Son görülme: bugün"}</div></div><button class="back" id="cDetay" title="Profil">ⓘ</button></div>
+  acikSohbetId = id; if (c.okunmadi) api("POST", "/okundu", { id }).catch(() => {}); c.okunmadi = 0; rozetler();
+  const o = acik(`<div class="full" style="position:absolute"><div class="chat-h"><button class="back" id="cGeri">‹</button>${avatar(p, "s")}<div class="grow"><b>${esc(p.ad)}</b><div class="mut" id="cDurum">${cevrimici(p) ? "🟢 Çevrimiçi" : "Çevrimdışı"}</div></div><button class="back" id="cDetay" title="Profil">ⓘ</button></div>
     <div id="msgs"></div><div class="ice" id="ice"></div>
     <div class="chat-f"><input id="cIn" maxlength="500" placeholder="Mesaj yaz..." autocomplete="off"><button class="btn" id="cGonder">➤</button></div></div>`);
   o.style.justifyContent = "stretch";
@@ -298,39 +373,19 @@ function sohbet(id) {
   ciz();
   const ice = $("#ice"); ice.innerHTML = c.m.length ? "" : BUZ_KIRICI.concat(uyum(p).ortak.slice(0, 2).map(i => `${i} konusunda ne düşünüyorsun?`)).map(t => `<span class="chip">${esc(t)}</span>`).join("");
   ice.onclick = e => { const ch = e.target.closest(".chip"); if (ch) { $("#cIn").value = ch.textContent; $("#cIn").focus(); } };
-  const gonder = () => {
+  sohbetYenile = ciz;
+  const sonYaz = { t: 0 };
+  $("#cIn").addEventListener("input", () => { if (Date.now() - sonYaz.t > 2000 && ws?.readyState === 1) { sonYaz.t = Date.now(); ws.send(JSON.stringify({ t: "typing", to: id })); } });
+  const gonder = async () => {
     const i = $("#cIn"), t = i.value.trim(); if (!t) return;
-    c.m.push({ k: "ben", x: t, t: Date.now() }); i.value = ""; ice.innerHTML = ""; save(); ciz();
-    const tp = document.createElement("div"); tp.className = "typing"; tp.textContent = `${p.ad} yazıyor...`;
-    setTimeout(() => { if ($("#msgs") === msgs) { msgs.appendChild(tp); msgs.scrollTop = msgs.scrollHeight; } }, 600);
-    setTimeout(() => { tp.remove(); botYaz(id, t, true); if ($("#msgs") === msgs) ciz(); }, 1800 + Math.random() * 1500);
+    const msj = { k: "ben", x: t, t: Date.now() }; c.m.push(msj); i.value = ""; ice.innerHTML = ""; ciz();
+    try { await api("POST", "/mesaj", { to: id, text: t }); } catch (e) { c.m = c.m.filter(x => x !== msj); ciz(); toast(e.message); }
   };
   $("#cGonder").onclick = gonder; $("#cIn").onkeydown = e => { if (e.key === "Enter") gonder(); };
-  $("#cGeri").onclick = () => { o.style.justifyContent = ""; kapat(); render(); };
-  $("#cDetay").onclick = () => { o.style.justifyContent = ""; detay(id); };
+  const cik = () => { acikSohbetId = null; sohbetYenile = null; o.style.justifyContent = ""; };
+  $("#cGeri").onclick = () => { cik(); kapat(); render(); };
+  $("#cDetay").onclick = () => { cik(); detay(id); };
 }
-function botYaz(id, girdi, acikSohbet) {
-  const p = byId(id); if (!p || S.blocked.includes(id) || !S.matches.includes(id)) return;
-  const c = S.chats[id] ||= { m: [], okunmadi: 0 }, g = String(girdi).toLowerCase();
-  const ort = uyum(p).ortak;
-  let yanit;
-  if (girdi === "selam") yanit = [`Selam! Eşleştik, çok sevindim 😊 ${ort[0] ? ort[0] + " seviyormuşsun, ben de!" : "Nasılsın?"}`, `Merhaba ${S.me.ad}! Profilini çok beğendim 🌸`][hash(id) % 2];
-  else if (/merhaba|selam|slm|hey/.test(g)) yanit = `Selam! Nasılsın? 😊`;
-  else if (/nasıl|naber|ne yap/.test(g)) yanit = `İyiyim, teşekkürler! Sen nasılsın? Bugün ${p.meslek.toLowerCase()} olarak yoğun bir gün geçirdim 😅`;
-  else if (/kahve|çay/.test(g)) yanit = `Kahve! ☕ Ama güzel bir çay da olur. Bir ara buluşup içelim mi?`;
-  else if (/hafta sonu|plan|buluş/.test(g)) yanit = `Hafta sonu için henüz planım yok, ${p.sehir}'de güzel bir yer bulabiliriz. Ama önce biraz daha tanışalım 😊`;
-  else if (/tatil|seyahat/.test(g)) yanit = `Tatil dedin mi aklıma deniz geliyor 🌊 Sen nereyi seversin?`;
-  else if (/dizi|film|sinema/.test(g)) yanit = `Dizi konusunda önerilere açığım! Son zamanlarda sürekli bir şey izliyorum 😄`;
-  else if (/lakap/.test(g)) yanit = `Bana ${p.ad.slice(0, 3)}${p.ad.slice(2, 3)}cik derlerdi 😂 Sen?`;
-  else if (/istanbul|izmir|ankara|şehir/.test(g)) yanit = `Şehirlerin hepsinin ayrı güzelliği var ama ben ${p.sehir}'i seviyorum 💛`;
-  else if (/\?/.test(g)) yanit = ["Güzel soru! Biraz düşünmem lazım 🤔 Sen ne dersin?", "Bence evet 😄 Peki ya sen?"][g.length % 2];
-  else yanit = ["Hmm ilginç, biraz daha anlatır mısın? 😊", "Haha çok doğru 😄", `Ben de öyle düşünüyorum! ${ort[0] ? ort[0] + " konusunda da anlaşırız herhalde." : ""}`, "Seninle sohbet etmek çok güzel 🌸"][g.length % 4];
-  c.m.push({ k: "on", x: yanit, t: Date.now() });
-  if (!acikSohbet || !$("#msgs")) c.okunmadi = (c.okunmadi || 0) + 1;
-  save(); rozetler();
-  if (!acikSohbet && $("#msgs") == null) { toast(`💬 ${p.ad}: ${yanit.slice(0, 40)}`); if (tab === "mesajlar") mesajlar(); }
-}
-
 /* ---------- Profil & ayarlar ---------- */
 function filtrePenceresi() {
   const f = S.ayar;
@@ -346,31 +401,25 @@ function filtrePenceresi() {
 }
 function profil() {
   const m = S.me;
-  const alanlar = [m.hakkinda, m.foto || m.emoji, m.ilgi.length >= 5, m.meslek !== "—", m.dogrulanmis];
+  const alanlar = [m.hakkinda, m.foto || m.emoji, m.ilgi.length >= 5, m.meslek !== "—", m.foto];
   const tam = Math.round(40 + alanlar.filter(Boolean).length / alanlar.length * 60);
   $("#view").innerHTML = `<div class="card" style="text-align:center">${avatar(m, "s", "margin:0 auto;width:96px;height:96px;font-size:48px")}
     <h2 style="margin:10px 0 0">${esc(m.ad)}, ${m.yas} ${m.dogrulanmis ? '<span class="ver">✔</span>' : ""}</h2>
     <div class="mut">${BURC_SIMGE[m.burc]} ${esc(m.burc)} · 📍 ${esc(m.sehir)} · ${esc(m.hedef)}</div>
     <div class="row" style="margin:12px 0 4px"><span class="mut">Profil doluluğu</span><div class="bar grow"><i style="width:${tam}%"></i></div><b>%${tam}</b></div>
-    <div class="row" style="margin-top:12px"><button class="btn sec grow" id="pDuzenle">✏️ Düzenle</button><button class="btn sec grow" id="pDogrula" ${m.dogrulanmis ? "disabled" : ""}>${m.dogrulanmis ? "✔ Doğrulandı" : "🛡️ Doğrula"}</button></div></div>
-    <div class="card"><div class="sw-row"><div><b>Gizli mod</b><div class="mut">Sadece beğendiklerin seni görür</div></div><button class="tg ${S.ayar.gizli ? "on" : ""}" id="pGizli"></button></div>
+    <div class="row" style="margin-top:12px"><button class="btn sec grow" id="pDuzenle">✏️ Düzenle</button><button class="btn sec grow" id="pCikis">🚪 Çıkış yap</button></div></div>
+    <div class="card"><div class="sw-row"><div><b>Gizli mod</b><div class="mut">Sadece beğendiklerin seni görür</div></div><button class="tg ${m.gizli ? "on" : ""}" id="pGizli"></button></div>
     <div class="sw-row"><div><b>Koyu tema</b></div><button class="tg ${S.ayar.koyu ? "on" : ""}" id="pKoyu"></button></div>
     <div class="sw-row" style="border:0"><div><b>Keşfet filtreleri</b><div class="mut">${S.ayar.minYas}–${S.ayar.maxYas} yaş${S.ayar.ayniSehir ? " · aynı şehir" : ""}${S.ayar.hedef ? " · " + esc(S.ayar.hedef) : ""}</div></div><button class="btn sec" id="pFiltre" style="padding:8px 14px">Aç</button></div></div>
     <div class="card"><b>🔒 Güvenlik ipuçları</b><ul class="mut" style="padding-left:18px;margin:8px 0 0"><li>Para isteyen veya yatırım öneren kişilere karşı dikkatli ol.</li><li>İlk buluşmayı kalabalık, herkese açık bir yerde yap.</li><li>Kişisel bilgilerini (TC, adres, banka) paylaşma.</li><li>Rahatsız edici biri olursa engelle ve şikayet et.</li></ul></div>
     <div class="card"><div class="mut">Engellenenler: ${S.blocked.length} · Eşleşmeler: ${S.matches.length}</div>
-    <button class="btn sec block" id="pSifirla" style="margin-top:10px">Verilerimi sil ve çıkış yap</button></div>`;
+    <button class="btn sec block" id="pSifirla" style="margin-top:10px">Hesabımı ve verilerimi sil</button></div>`;
   $("#pDuzenle").onclick = () => onboarding(true);
-  $("#pDogrula").onclick = () => { if (confirm("Demo: gerçek bir selfie doğrulaması yapılmaz. Rozet yine de eklensin mi?")) { S.me.dogrulanmis = true; save(); profil(); toast("Profilin doğrulandı ✔"); } };
-  $("#pGizli").onclick = () => { S.ayar.gizli = !S.ayar.gizli; save(); profil(); };
+  $("#pCikis").onclick = () => api("POST", "/cikis").catch(() => {}).finally(oturumuBitir);
+  $("#pGizli").onclick = () => api("PUT", "/gizli", { gizli: !S.me.gizli }).then(() => { S.me.gizli = !S.me.gizli; profil(); }).catch(e => toast(e.message));
   $("#pKoyu").onclick = () => { S.ayar.koyu = !S.ayar.koyu; save(); render(); };
   $("#pFiltre").onclick = filtrePenceresi;
-  $("#pSifirla").onclick = () => { if (confirm("Tüm verilerin silinecek. Emin misin?")) { try { localStorage.removeItem(KEY); } catch {} S = varsayilan(); undoStack = []; render(); } };
+  $("#pSifirla").onclick = () => { if (confirm("Hesabın ve tüm verilerin kalıcı olarak silinecek. Emin misin?")) api("DELETE", "/ben").then(oturumuBitir).catch(e => toast(e.message)); };
 }
 
-render();
-// Eşleşmiş botlar arada bir kendiliğinden yazar
-setInterval(() => {
-  if (!S.me || !S.matches.length || document.hidden) return;
-  const id = S.matches[Math.floor(Math.random() * S.matches.length)], c = S.chats[id];
-  if (c && c.m.length && c.m.at(-1).k === "ben" && Date.now() - c.m.at(-1).t > 60000) botYaz(id, "nasılsın?");
-}, 45000);
+boot();
